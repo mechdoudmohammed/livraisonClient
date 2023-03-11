@@ -1,0 +1,212 @@
+<template>
+    <div class="content-wrapper-customise">
+        <div class="page-header-dashboard">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-home"></i>
+                </span> List of invoices
+            </h3>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                      
+
+                        <div id="btn-top-package">
+                
+                            <div class="search_bar">
+                            <vs-select class="selectExample" v-model="formDataCherche.selected_option">
+                                <vs-select-item :key="index" :value="item.value" :text="item.text"
+                                    v-for="item, index in options2" />
+                            </vs-select>
+                            
+
+                                <vs-input placeholder="Search" v-model="formDataCherche.valeur_recherche" />
+                                <button class="btn-chercher" @click="getFactures(formDataCherche3.selected_option3)"><i
+                                        class="fa fa-search" aria-hidden="true"></i></button>
+                            </div>
+                            <vs-select class="selectExample" v-model="formDataCherche3.selected_option3"
+                                @change="getFactures(formDataCherche3.selected_option3)">
+                                <vs-select-item :key="index" :value="item.value" :text="item.text"
+                                    v-for="item, index in options3" />
+                            </vs-select>
+                        </div>
+                        <vs-table stripe :data="factures.data">
+                            <template slot="thead">
+                                <vs-th>
+                                    Num Invoice
+                                </vs-th>
+                                <vs-th>
+                                    Type Invoice
+                                </vs-th>
+                                <vs-th>
+                                    Number of orders
+                                </vs-th>
+                                <vs-th>
+                                    Tolal
+                                </vs-th>
+                                <vs-th>
+                                    Delivery price
+                                </vs-th>
+                                <vs-th>
+                                    Total net
+                                </vs-th>
+                                <vs-th>
+                                    Statut
+                                </vs-th>
+                                <vs-th>
+                                    Operation
+                                </vs-th>
+                            </template>
+
+                            <template slot-scope="{data}">
+                                <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+                                    <vs-td :data="tr.id_facture">
+                                        {{ tr.id_facture }}<br>
+                                        <span><time-ago :datetime="tr.updated_at" long></time-ago> </span>
+                                    </vs-td>
+                               
+                                    <vs-td :data="tr.type_facture">
+                                        <b v-if="tr.type_facture == 'client'"
+                                            class="badge badge badge-gradient-info">F</b>
+                                        <b v-if="tr.type_facture == 'clientManual'"
+                                            class="badge badge badge-gradient-primary">M</b>
+                                    </vs-td>
+                                    <vs-td :data="tr.nombre_commande">
+                                        {{ tr.nombre_commande }}
+                                    </vs-td>
+                                    <vs-td :data="tr.total_facture">
+                                        {{ tr.total_facture }} Dhs
+                                    </vs-td>
+
+                                    <vs-td :data="tr.frais_livraison_facture" v-if="tr.frais_livraison_facture">
+                                        {{ tr.frais_livraison_facture }} Dhs
+                                    </vs-td>
+                                    <vs-td :data="tr.frais_livraison_facture" v-else-if="!tr.frais_livraison_facture">
+                                        0 Dhs
+                                    </vs-td>
+
+                                    <vs-td :data="tr.frais_livraison_facture" >
+                                        {{ tr.total_facture - tr.frais_livraison_facture }} Dhs
+                                    </vs-td>
+                                   
+
+                                    <vs-td :data="tr.statut_facture">
+                                        <b class="badge badge badge-gradient-danger"
+                                            v-if="tr.statut_facture == 'NOTPAID'">{{
+                                                    tr.statut_facture
+                                            }}</b>
+
+                                        <b class="badge badge badge-gradient-success"
+                                            v-if="tr.statut_facture == 'PAID'">{{
+                                                    tr.statut_facture
+                                            }}</b>
+                                    </vs-td>
+                                    <vs-td>
+                                        <button type="button" class="btn btn-valide" @click.prevent="downloadFactureClient(tr.id_facture)"><i
+                                                class="fa fa-print"></i></button>
+                                        <button type="button" class="btn btn-danger" @click.prevent=""><i
+                                                class="fa fa-download"></i></button>
+                                    </vs-td>
+
+                                </vs-tr>
+                            </template>
+                        </vs-table>
+                        <vs-pagination @input="getFactures(0)" :max="9" :total="factures.last_page"
+                            v-model="factures.current_page" prev-icon="arrow_back"
+                            next-icon="arrow_forward"></vs-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</template>
+<script>
+
+import axios from 'axios'
+import { TimeAgo } from 'vue2-timeago'
+import 'vue2-timeago/dist/vue2-timeago.css'
+export default {
+    props: ['Client'],
+    name: 'TransactionClientComponent',
+    components: { TimeAgo, },
+    data() {
+        return {
+            token: localStorage.getItem('token'),
+            edit: false,
+            errors: {},
+            factures: {
+                'data': '',
+                'current_page': 1,
+                'last_page': 1
+            },
+            nom_err: '',
+            options3: [
+                { text: '1-20 items', value: '20' },
+                { text: '1-50 items', value: '50' },
+                { text: '1-150 items', value: '150' },
+
+            ],
+            formDataCherche3: {
+                selected_option3: '20',
+
+            },
+            options2: [
+                { text: 'Invoice N°', value: 'id_facture' },
+
+            ],
+
+            formDataCherche: {
+                selected_option: 'id_facture',
+                valeur_recherche: '',
+                selected_option2:'',
+            },
+        }
+    },
+
+
+    methods: {
+        async getFactures(count_nbr) {
+            this.formDataCherche.selected_option2=this.formDataCherche3.selected_option3;
+            this.$vs.loading({ color: '#22c16b' })
+            setTimeout(async () => {
+                if (count_nbr > 1) {
+                    await axios.post('/api/FactureClient?page=' + this.factures.current_page + '&count_nbr=' + count_nbr,this.formDataCherche)
+                        .then(res => { this.factures = res.data.data; })
+                        .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
+                } else {
+                    await axios.post('/api/FactureClient?page=' + this.factures.current_page + '&count_nbr=20',this.formDataCherche)
+                        .then(res => { this.factures = res.data.data; })
+                        .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
+                }
+            }, 200);
+
+        },
+        downloadFactureClient(id){
+
+            axios.get('/api/getFacture/'+id,{ responseType: 'blob' })
+                .then(res => {
+                    window.open(URL.createObjectURL(res.data))
+                 })
+                .catch(error => console.log(res));
+        },
+    },
+    async beforeMount() {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+
+
+    },
+    mounted() {
+
+    },
+
+}
+
+
+
+
+</script>
