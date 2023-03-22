@@ -57,9 +57,7 @@ switch ($level) {
 'actionText' => $actionText,
 ]
 ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
-@component('mail::footer')
-© 2023 ColiZone . All rights reserved.
-@endcomponent
+
 @endslot
 
 @endisset
