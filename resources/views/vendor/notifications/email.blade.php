@@ -1,4 +1,4 @@
-@component('mail::message')
+@component('mail::message', ['header_url' => $header_url, 'header_title' => $header_title])
 {{-- Greeting --}}
 @if (! empty($greeting))
 # {{ $greeting }}
