@@ -100,8 +100,8 @@ class StatistiqueController extends Controller
         $user = auth('sanctum')->user();
             $RevenuOfMonth = DB::table("commandes")
             ->whereIn('etat_commande', ['DELIVERED'])
-            ->where('created_at', '>', $date_debut)
-            ->where('created_at', '<', $date_fin)
+            ->where('updated_at', '>', $date_debut)
+            ->where('updated_at', '<', $date_fin)
             ->where('id_client', $user->id)
             ->selectRaw("sum(prix_commande) as somme")
             ->first();
@@ -109,8 +109,8 @@ class StatistiqueController extends Controller
         $Livraison = DB::table("commandes")
             ->join('villes', 'villes.id', 'commandes.id_ville')
             ->whereIn('etat_commande', ['DELIVERED', 'CANCELED', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDEV', 'RETURNED', 'RETURNEDRR'])
-            ->where('commandes.created_at', '>', $date_debut)
-            ->where('commandes.created_at', '<', $date_fin)
+            ->where('commandes.updated_at', '>', $date_debut)
+            ->where('commandes.updated_at', '<', $date_fin)
             ->where('id_client', $user->id)
             ->selectRaw('commandes.etat_commande,villes.prix_retour,villes.prix_refus,commandes.prix_livraison_final')
             ->get();
@@ -144,8 +144,8 @@ class StatistiqueController extends Controller
             $commande = DB::table("commandes")
                 ->where('id_client', $user->id)
                 ->whereIn('etat_commande', ['DELIVERED', 'CANCELED', 'RETURNEDAG','RETURNEDLV','RETURNEDEV','RETURNEDRR','RETURNED', 'DMSUIVIE'])
-                ->where('created_at', '>', $date_debut)
-                ->where('created_at', '<', $date_fin)
+                ->where('updated_at', '>', $date_debut)
+                ->where('updated_at', '<', $date_fin)
                 ->groupBy('etat_commande')
                 ->selectRaw("count(id_commande) as nbrCommande,etat_commande")
                 ->get();
@@ -153,8 +153,8 @@ class StatistiqueController extends Controller
             $colisEnCours = DB::table("commandes")
                 ->where('id_client', $user->id)
                 ->whereIn('etat_commande', ['CANCELED', 'RELANCER', 'DMSUIVIE', 'ENROUTE', 'TRANSIT', 'REPORTED', 'ANNULER_CL', 'ANNULER', 'INHOUSE', 'HOME', 'ASSIGN', 'NOREPONSE', 'RETURNEDLV','RETURNEDEV','RETURNEDRR',])
-                ->where('created_at', '>', $date_debut)
-                ->where('created_at', '<', $date_fin)
+                ->where('updated_at', '>', $date_debut)
+                ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
 
@@ -162,16 +162,16 @@ class StatistiqueController extends Controller
             $colisDelivred = DB::table("commandes")
                 ->where('id_client', $user->id)
                 ->whereIn('etat_commande', ['DELIVERED'])
-                ->where('created_at', '>', $date_debut)
-                ->where('created_at', '<', $date_fin)
+                ->where('updated_at', '>', $date_debut)
+                ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
 
             $colisTauxLivraison = DB::table("commandes")
                 ->where('id_client', $user->id)
                 ->whereNotIn('etat_commande', ['CREATED', 'CONFIRMED', 'PROCESSING', 'PICKUP'])
-                ->where('created_at', '>', $date_debut)
-                ->where('created_at', '<', $date_fin)
+                ->where('updated_at', '>', $date_debut)
+                ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
             $tauxLivraison = 0;
@@ -186,23 +186,23 @@ class StatistiqueController extends Controller
                 ->where('id_client', $user->id)
                 ->whereIn('etat_commande', ['DELIVERED'])
                 ->where('paid', 0)
-                ->where('created_at', '>', $date_debut)
-                ->where('created_at', '<', $date_fin)
+                ->where('updated_at', '>', $date_debut)
+                ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
             $colisFacture = DB::table("commandes")
                 ->where('id_client', $user->id)
                 ->whereIn('etat_commande', ['DELIVERED'])
                 ->where('paid', 1)
-                ->where('created_at', '>', $date_debut)
-                ->where('created_at', '<', $date_fin)
+                ->where('updated_at', '>', $date_debut)
+                ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
             $nbrFacture = DB::table("commandes")
                 ->join('factures', 'commandes.id_facture', 'factures.id_facture')
                 ->where('commandes.id_client', $user->id)
-                ->where('factures.created_at', '>', $date_debut)
-                ->where('factures.created_at', '<', $date_fin)
+                ->where('factures.updated_at', '>', $date_debut)
+                ->where('factures.updated_at', '<', $date_fin)
                 ->groupBy('commandes.id_facture')
                 ->selectRaw("count(distinct commandes.id_facture) as nbrFacture")
                 ->first();
@@ -213,8 +213,8 @@ class StatistiqueController extends Controller
 
             $totalColis = DB::table("commandes")
                 ->where('id_client', $user->id)
-                ->where('created_at', '>', $date_debut)
-                ->where('created_at', '<', $date_fin)
+                ->where('updated_at', '>', $date_debut)
+                ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
 

@@ -10,41 +10,47 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class FactureController extends Controller
 {
     public function index(Request $request)
     {
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                if ($request->selected_option == "id_facture" && $request->valeur_recherche != '') {
+                    $clients = DB::table('clients')
+                        ->join('commandes', 'commandes.id_client', '=', 'clients.id')
+                        ->join('factures', 'factures.id_facture', '=', 'commandes.id_facture')
+                        ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
+                        ->where('commandes.id_client', $user->id)
+                        ->where('factures.id_facture', 'LIKE', "%{$request->valeur_recherche}%")
+                        ->groupBy('factures.id_facture')
+                        ->orderBy('factures.updated_at', 'desc')
+                        ->selectRaw('factures.updated_at,count(commandes.id_commande) as nombre_commande,factures.statut_facture,clients.id as id_client,clients.username,factures.id_facture')
+                        ->paginate($_GET['count_nbr']);
+                } else {
+                    $clients = DB::table('factures')
+                        ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
+                        ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')
 
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            if ($request->selected_option == "id_facture" && $request->valeur_recherche != '') {
-                $clients = DB::table('clients')
-                    ->join('commandes', 'commandes.id_client', '=', 'clients.id')
-                    ->join('factures', 'factures.id_facture', '=', 'commandes.id_facture')
-                    ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
-                    ->where('commandes.id_client', $user->id)
-                    ->where('factures.id_facture', 'LIKE', "%{$request->valeur_recherche}%")
-                    ->groupBy('factures.id_facture')
-                    ->orderBy('factures.updated_at', 'desc')
-                    ->selectRaw('factures.updated_at,count(commandes.id_commande) as nombre_commande,factures.statut_facture,clients.id as id_client,clients.username,factures.id_facture')
-                    ->paginate($_GET['count_nbr']);
-            } else {
-                $clients = DB::table('factures')
-                    ->leftjoin('commandes', 'commandes.id_facture','factures.id_facture')
-                    ->leftjoin('manualfactures','manualfactures.id_facture','factures.id_facture')
+                        ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
+                        ->where('factures.id_client', $user->id)
+                        ->groupBy('factures.id_facture')
+                        ->orderBy('factures.updated_at', 'desc')
+                        ->selectRaw('factures.updated_at,factures.type_facture,factures.total_facture,factures.frais_livraison_facture,count(factures.id_facture) as nombre_commande,factures.statut_facture,factures.id_facture')
+                        ->paginate($_GET['count_nbr']);
+                }
 
-                    ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
-                    ->where('factures.id_client', $user->id)
-                    ->groupBy('factures.id_facture')
-                    ->orderBy('factures.updated_at', 'desc')
-                    ->selectRaw('factures.updated_at,factures.type_facture,factures.total_facture,factures.frais_livraison_facture,count(factures.id_facture) as nombre_commande,factures.statut_facture,factures.id_facture')
-                    ->paginate($_GET['count_nbr']);
+
+                return response()->json([
+                    'data' => $clients,
+                ]);
             }
-          
-
+        } catch (Throwable $e) {
             return response()->json([
-                'data' => $clients,
+                'message' => 'Erreur'
             ]);
         }
     }
@@ -104,28 +110,34 @@ class FactureController extends Controller
     //             return $pdf->stream('document.pdf');
 
     //         }
-           
-            
+
+
     //     }
     // }
 
     public function getFacture($id)
     {
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $facture = DB::table('factures')
-            ->where('factures.id_facture', $id)
-            ->where('factures.id_client',$user->id)
-            ->select('factures.id_facture','factures.type_facture')
-            ->first();
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $facture = DB::table('factures')
+                    ->where('factures.id_facture', $id)
+                    ->where('factures.id_client', $user->id)
+                    ->select('factures.id_facture', 'factures.type_facture')
+                    ->first();
 
-            if($facture->type_facture == 'clientManual'){
-                $contents = Storage::disk('s3')->download('public/factures/facturesClientManual/'.$facture->id_facture.'.pdf');
-                return $contents;
-            }else if($facture->type_facture == 'client'){
-                $contents = Storage::disk('s3')->download('public/factures/facturesClient/'.$facture->id_facture.'.pdf');
-                return $contents;
+                if ($facture->type_facture == 'clientManual') {
+                    $contents = Storage::disk('s3')->download('public/factures/facturesClientManual/' . $facture->id_facture . '.pdf');
+                    return $contents;
+                } else if ($facture->type_facture == 'client') {
+                    $contents = Storage::disk('s3')->download('public/factures/facturesClient/' . $facture->id_facture . '.pdf');
+                    return $contents;
+                }
             }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
 
@@ -133,37 +145,42 @@ class FactureController extends Controller
 
     public function bonRamassage(Request $request)
     {
+        try {
+            $user = auth('sanctum')->user();
+            if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
+                $packageClient = DB::table('commandes')
+                    ->join('clients', 'commandes.id_client', '=', 'clients.id')
+                    ->join('villes', 'commandes.id_ville', '=', 'villes.id')
+                    ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
+                    ->where(function ($query) use ($user) {
+                        $query->where('commandes.id_client', $user->id)
+                            ->orwhere('commandes.id_client', $user->superviseur);
+                    })
+                    ->where('commandes.id_package', $request->id)
+                    ->select('commandes.id_commande', 'commandes.nom_client_commande', 'commandes.telephone_client_commande', 'commandes.prix_commande', 'villes.nom_ville as ville', 'clients.company', 'clients.telephone as telephone_client', 'villes2.nom_ville as ville_client')
+                    ->orderBy('.commandes.updated_at', 'desc')
+                    ->get();
 
-        $user = auth('sanctum')->user();
-        if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
-            $packageClient = DB::table('commandes')
-                ->join('clients', 'commandes.id_client', '=', 'clients.id')
-                ->join('villes', 'commandes.id_ville', '=', 'villes.id')
-                ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('commandes.id_client', $user->id)
-                        ->orwhere('commandes.id_client', $user->superviseur);
-                })
-                ->where('commandes.id_package', $request->id)
-                ->select('commandes.id_commande', 'commandes.nom_client_commande', 'commandes.telephone_client_commande', 'commandes.prix_commande', 'villes.nom_ville as ville', 'clients.company', 'clients.telephone as telephone_client', 'villes2.nom_ville as ville_client')
-                ->orderBy('.commandes.updated_at', 'desc')
-                ->get();
+                $data = ['data' => $user, 'data2' => $packageClient];
+                // return $data;
 
-            $data = ['data' => $user, 'data2' => $packageClient];
-            // return $data;
 
-            
-            $pdf = PDF::loadView('bonRamassage', $data)
-            ->setOption('margin-top', 1)
-            ->setOption('margin-right', 1)
-            ->setOption('margin-left', 1)
-            ->setOption('margin-bottom', 1);
-            return $pdf->stream('document.pdf');
+                $pdf = PDF::loadView('bonRamassage', $data)
+                    ->setOption('margin-top', 1)
+                    ->setOption('margin-right', 1)
+                    ->setOption('margin-left', 1)
+                    ->setOption('margin-bottom', 1);
+                return $pdf->stream('document.pdf');
 
-            // return response()->json([
-            //     'data' => $clients,
-            // ]);
+                // return response()->json([
+                //     'data' => $clients,
+                // ]);
 
+            }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
 }

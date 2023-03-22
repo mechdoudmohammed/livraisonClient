@@ -20,7 +20,7 @@
                             </vs-select>
                             <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
                                 data-bs-target="#ajouterArticle" data-bs-whatever="@mdo"
-                                @click="checkArticle(false)" v-if="Client.role == 'Client'">New Articles</button>
+                                @click="" v-if="Client.role == 'Client'">New Articles</button>
                         </div>
                         <vs-table stripe :data="articles.data">
                             <template slot="thead">
@@ -146,9 +146,9 @@ export default {
             edit: false,
             errors: {},
             articles: {
-                'data': '',
-                'current_page': 1,
-                'last_page': 1
+                data: "",
+                current_page: 1,
+                last_page: 1,
             },
             nom_err: '',
             formData: {
@@ -208,14 +208,15 @@ export default {
         
         },
         async getArticles(count_nbr) {
+  
             this.$vs.loading({ color: '#22c16b' })
             setTimeout(async () => {
                 if (count_nbr > 1) {
-                    await axios.get('/api/Article?page=' + this.articles.current_page + '&count_nbr=' + count_nbr)
+                    await axios.get("/api/Article?page=" + this.articles.current_page + "&count_nbr=" + count_nbr)
                         .then(res => { this.articles = res.data.data; })
                         .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
                 } else {
-                    await axios.get('/api/Article?page=' + this.articles.current_page + '&count_nbr=20')
+                    await axios.get("/api/Article?page=" + this.articles.current_page + "&count_nbr=20")
                         .then(res => { this.articles = res.data.data; })
                         .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
                 }
@@ -245,7 +246,7 @@ export default {
                     this.nom_err = this.errors[Object.keys(this.errors)[0]];
                 }
             })
-            await this.getArticles();
+            await this.getArticles(0);
     
 
 
@@ -254,7 +255,6 @@ export default {
             this.nom_err = '',
                 this.edit = false,
                 this.errors = {},
-                this.articles = {},
                 this.formData = {
                     nom_article: '',
                     prix_article: '',

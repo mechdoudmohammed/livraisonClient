@@ -23,175 +23,153 @@ use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class ClientController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth('sanctum')->user();
-        if ($user->role == 'responsable') {
-            $client = DB::table('clients')->join('villes', 'clients.id_ville', '=', 'villes.id')->select('clients.*', 'villes.nom_ville as ville')->get();
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'responsable') {
+                $client = DB::table('clients')->join('villes', 'clients.id_ville', '=', 'villes.id')->select('clients.*', 'villes.nom_ville as ville')->get();
+                return response()->json([
+                    'data' => $client,
+                ]);
+            }
+        } catch (Throwable $e) {
             return response()->json([
-                'data' => $client,
+                'message' => 'Erreur'
             ]);
         }
     }
     public function updatePassword(Request $request)
     {
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $this->validate($request, [
-                'old_password' => 'required|String',
-                'new_password' => 'required|String',
+        $this->validate($request, [
+            'old_password' => 'required|String',
+            'new_password' => 'required|String',
 
-            ]);
+        ]);
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+             
 
-            if (!Hash::check($request->old_password, $user->password)) {
-                return response()->json([
-                    'message' => 'old password incorrect'
-                ]);
-            }
-            if (strcmp($request->new_password, $request->old_password) == 0) {
-                return response()->json([
-                    'message' => 'old password and new password can\'t be same'
-                ]);
-            }
-            $user = Client::where('id', $user->id)->first();
-            if (Hash::check($request->old_password, $user->password)) {
-                $user->password = Hash::make($request->new_password);
-                $statut = $user->save();
-                if ($statut) {
+                if (!Hash::check($request->old_password, $user->password)) {
                     return response()->json([
-                        'message' => 'password update successfully'
-                    ]);
-                } else {
-                    return response()->json([
-                        'message' => 'Erreur'
+                        'message' => 'old password incorrect'
                     ]);
                 }
+                if (strcmp($request->new_password, $request->old_password) == 0) {
+                    return response()->json([
+                        'message' => 'old password and new password can\'t be same'
+                    ]);
+                }
+                $user = Client::where('id', $user->id)->first();
+                if (Hash::check($request->old_password, $user->password)) {
+                    $user->password = Hash::make($request->new_password);
+                    $statut = $user->save();
+                    if ($statut) {
+                        return response()->json([
+                            'message' => 'password update successfully'
+                        ]);
+                    } else {
+                        return response()->json([
+                            'message' => 'Erreur'
+                        ]);
+                    }
+                }
             }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
 
     public function modifier(Request $request)
     {
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $client = Client::find($request->id);
-            if ($client->prenom != null && $client->nom != null && $client->cin != null) {
-                $this->validate($request, [
-                    'adresse' => 'required|String',
-                    'company' => 'required|String',
-                    'website' => 'required|String',
 
-                    'ribBank' => 'required|String',
-                    'email' => 'required|max:150|unique:clients,email,' . $user->id,
-                    'telephone' => 'required|regex:/(0)[0-9]{9}/',
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $client = Client::find($request->id);
+                if ($client->prenom != null && $client->nom != null && $client->cin != null) {
+                    $this->validate($request, [
+                        'adresse' => 'required|String',
+                        'company' => 'required|String',
+                        'website' => 'required|String',
 
+                        'ribBank' => 'required|String',
+                        'email' => 'required|max:150|unique:clients,email,' . $user->id,
+                        'telephone' => 'required|regex:/(0)[0-9]{9}/',
+
+                    ]);
+                } else {
+                    $this->validate($request, [
+                        'nom' => 'required|String',
+                        'prenom' => 'required|String',
+                        'adresse' => 'required|String',
+                        'cin' => 'required|String',
+                        'company' => 'required|String',
+                        'website' => 'required|String',
+                        'ribBank' => 'required|String',
+                        'email' => 'required|max:150|unique:clients,email,' . $user->id,
+                        'telephone' => 'required|regex:/(0)[0-9]{9}/',
+
+                    ]);
+                    $client->nom = $request->nom;
+                    $client->prenom = $request->prenom;
+                    $client->cin = $request->cin;
+                }
+                $client->notification_statut = $request->notification_statut;
+
+                $client->adresse = $request->adresse;
+                $client->telephone = $request->telephone;
+                $client->email = $request->email;
+                $client->company = $request->company;
+                $client->website = $request->website;
+
+                $client->ribBank = $request->ribBank;
+                $client->id_bank = $request->id_bank;
+
+
+                $client->save();
+                return response()->json([
+                    'message' => 'Client update successfully'
                 ]);
-            } else {
-                $this->validate($request, [
-                    'nom' => 'required|String',
-                    'prenom' => 'required|String',
-                    'adresse' => 'required|String',
-                    'cin' => 'required|String',
-                    'company' => 'required|String',
-                    'website' => 'required|String',
-                    'ribBank' => 'required|String',
-                    'email' => 'required|max:150|unique:clients,email,' . $user->id,
-                    'telephone' => 'required|regex:/(0)[0-9]{9}/',
-
-                ]);
-                $client->nom = $request->nom;
-                $client->prenom = $request->prenom;
-                $client->cin = $request->cin;
             }
-            $client->notification_statut = $request->notification_statut;
-
-            $client->adresse = $request->adresse;
-            $client->telephone = $request->telephone;
-            $client->email = $request->email;
-            $client->company = $request->company;
-            $client->website = $request->website;
-
-            $client->ribBank = $request->ribBank;
-            $client->id_bank = $request->id_bank;
-
-
-            $client->save();
-            return response()->json([
-                'message' => 'Client update successfully'
-            ]);
-        }
+     
     }
     public function show($id)
     {
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'SuperAdmin' && $user->statut == 'Active') {
+                $client = Client::join('commandes', 'commandes.id_client', '=', 'clients.id')
+                    ->join('villes', 'commandes.id_ville', '=', 'villes.id')
+                    ->leftjoin('employes as ramasseurs', 'ramasseurs.id', '=', 'commandes.ramasser_par')
+                    ->leftjoin('employes as livreurs', 'livreurs.id', '=', 'commandes.livre_par')
+                    ->where('clients.id', $id)
+                    ->selectRaw('ramasseurs.id as id_ramasseur,livreurs.id as id_livreur,commandes.*,villes.nom_ville,livreurs.nom as livreur,ramasseurs.nom as ramasseur')
+                    ->get();
+                return response()->json([
+                    'data' => $client,
+                ]);
+            } else {
+                $client = Client::find($id);
+                return response()->json([
+                    'data' => $client,
 
-        $user = auth('sanctum')->user();
-        if ($user->role == 'SuperAdmin' && $user->statut == 'Active') {
-            $client = Client::join('commandes', 'commandes.id_client', '=', 'clients.id')
-                ->join('villes', 'commandes.id_ville', '=', 'villes.id')
-                ->leftjoin('employes as ramasseurs', 'ramasseurs.id', '=', 'commandes.ramasser_par')
-                ->leftjoin('employes as livreurs', 'livreurs.id', '=', 'commandes.livre_par')
-                ->where('clients.id', $id)
-                ->selectRaw('ramasseurs.id as id_ramasseur,livreurs.id as id_livreur,commandes.*,villes.nom_ville,livreurs.nom as livreur,ramasseurs.nom as ramasseur')
-                ->get();
+                ]);
+            }
+        } catch (Throwable $e) {
             return response()->json([
-                'data' => $client,
-            ]);
-        } else {
-            $client = Client::find($id);
-            return response()->json([
-                'data' => $client,
-
+                'message' => 'Erreur'
             ]);
         }
     }
     public function inscription(Request $request)
     {
-        // $user = auth('sanctum')->user();
-        // if ($user->role == 'Responsable') {
-        //     $this->validate($request, [
-        //         'nom' => 'required|String',
-        //         'prenom' => 'required|String',
-        //         'adresse' => 'required|String',
-        //         'telephone' => 'required|String',
-        //         'cin' => 'String',
-        //         'company' => 'String',
-        //         'website' => 'String',
-        //         'bankName' => 'String',
-        //         'ribBank' => 'String',
-        //         'username' => 'String',
-        //         'id_ville' => 'integer',
-        //         'email' => 'required|unique:clients,email|email',
-        //         'password' => 'required|String',
-        //     ]);
-        //     if ($request->hasFile('cin_photo')) {
-        //         $file = $request->file('cin_photo');
-        //         $file_extension_img = $file->getClientOriginalExtension();
-        //         $file_name = $request->cin . '-' . time() . "." . $file_extension_img;
-        //         $file->move(public_path('images/client/cin'), $file_name);
-
-        //         $statut = Client::create([
-        //             'nom' => $request->nom,
-        //             'prenom' => $request->prenom,
-        //             'adresse' => $request->adresse,
-        //             'telephone' => $request->telephone,
-        //             'email' => $request->email,
-        //             'cin' =>  $request->cin,
-        //             'cin_photo' => $file_name,
-        //             'company' => $request->company,
-        //             'website' => $request->website,
-        //             'bankName' => $request->bankName,
-        //             'ribBank' => $request->ribBank,
-        //             'username' =>  $request->username,
-        //             'id_ville' => $request->id_ville,
-        //             'ajoute_par' =>  $user->id,
-        //             'password' => Hash::make($request->password),
-        //         ]);
-        //     }
-        // } else {
-
         $this->validate($request, [
             'ville' => 'required',
             'username' => 'required|String|unique:clients,username|max:55',
@@ -199,19 +177,24 @@ class ClientController extends Controller
             'telephone' => 'required|regex:/(0)[0-9]{9}/',
             'password' => 'required|String|min:8',
         ]);
-
-        $user = Client::create([
-            'username' => $request->username,
-            'telephone' => $request->telephone,
-            'email' => $request->email,
-            'id_ville' => $request->ville['id'],
-            'password' => Hash::make($request->password),
-        ]);
-        //}
-        if ($user) {
-            event(new Registered($request));
-            return $user->createToken($request->device_name)->plainTextToken;
-        } else {
+        try {
+            $user = Client::create([
+                'username' => $request->username,
+                'telephone' => $request->telephone,
+                'email' => $request->email,
+                'id_ville' => $request->ville['id'],
+                'password' => Hash::make($request->password),
+            ]);
+            //}
+            if ($user) {
+                event(new Registered($request));
+                return $user->createToken($request->device_name)->plainTextToken;
+            } else {
+                return response()->json([
+                    'message' => 'Erreur'
+                ]);
+            }
+        } catch (Throwable $e) {
             return response()->json([
                 'message' => 'Erreur'
             ]);
@@ -224,62 +207,91 @@ class ClientController extends Controller
             'password' => 'required',
             'device_name' => 'required',
         ]);
-        $client = Client::where('email', $request->email)->orWhere('username', $request->email)->first();
+        try {
+            $client = Client::where('email', $request->email)->orWhere('username', $request->email)->first();
+            if (!$client || !Hash::check($request->password, $client->password)) {
+                throw ValidationException::withMessages([
+                    'email' => ['Les informations d\'identification fournies sont incorrectes.'],
+                ]);
+            }
+            if ($client->statut == 'Inactive') {
+                return response()->json(
+                    [
+                        "data" => "bloque"
+                    ]
 
-        if (!$client || !Hash::check($request->password, $client->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Les informations d\'identification fournies sont incorrectes.'],
+                );
+            }
+            return $client->createToken($request->device_name)->plainTextToken;
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
             ]);
         }
-        if ($client->statut == 'Inactive') {
-            return response()->json(
-                [
-                    "data" => "bloque"
-                ]
-
-            );
-        }
-        return $client->createToken($request->device_name)->plainTextToken;
     }
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['msg' => 'Logout Successfull']);
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json(['msg' => 'Logout Successfull']);
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
+        }
     }
     public function destroy($id)
     {
-        $user = auth('sanctum')->user();
-        if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
-            $client = Client::find($id);
-            $client->delete();
-            return response()->json("Record deleted!");
+        try {
+            $user = auth('sanctum')->user();
+            if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
+                $client = Client::find($id);
+                $client->delete();
+                return response()->json("Record deleted!");
+            }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
     public function getVilles()
     {
-        $villes = DB::table('villes')->select('villes.id', 'villes.nom_ville as ville')->get();
-        return response()->json([
-            'data' => $villes
-        ]);
+        try {
+            $villes = DB::table('villes')->select('villes.id', 'villes.nom_ville as ville')->get();
+            return response()->json([
+                'data' => $villes
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
+        }
     }
     public function showPackage()
     {
-        $user = auth('sanctum')->user();
-        if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
-            $packagesClient = DB::table('commandes')
-                ->join('clients', 'commandes.id_client', '=', 'clients.id')
-                ->where(function ($query) use ($user) {
-                    $query->where('commandes.id_client', $user->id)
-                        ->orwhere('commandes.id_client', $user->superviseur);
-                })
-                ->where('commandes.id_package', '!=', null)
-                ->whereNotIn('commandes.etat_commande', ['CREATED', 'CONFIRMED'])
-                ->groupBy('commandes.id_package')
-                ->orderBy('commandes.updated_at', 'desc')
-                ->selectRaw('commandes.id_package , count(commandes.id_package) as nombre_commande,commandes.id_commande,commandes.updated_at,commandes.type_commande')
-                ->paginate($_GET['count_nbr']);
+        try {
+            $user = auth('sanctum')->user();
+            if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
+                $packagesClient = DB::table('commandes')
+                    ->join('clients', 'commandes.id_client', '=', 'clients.id')
+                    ->where(function ($query) use ($user) {
+                        $query->where('commandes.id_client', $user->id)
+                            ->orwhere('commandes.id_client', $user->superviseur);
+                    })
+                    ->where('commandes.id_package', '!=', null)
+                    ->whereNotIn('commandes.etat_commande', ['CREATED', 'CONFIRMED'])
+                    ->groupBy('commandes.id_package')
+                    ->orderBy('commandes.updated_at', 'desc')
+                    ->selectRaw('commandes.id_package , count(commandes.id_package) as nombre_commande,commandes.id_commande,commandes.updated_at,commandes.type_commande')
+                    ->paginate($_GET['count_nbr']);
+                return response()->json([
+                    'data' => $packagesClient
+                ]);
+            }
+        } catch (Throwable $e) {
             return response()->json([
-                'data' => $packagesClient
+                'message' => 'Erreur'
             ]);
         }
     }
@@ -287,56 +299,62 @@ class ClientController extends Controller
 
     public function pickupSelectedCommande(Request $request)
     {
-        $id_package = 'RM' . strtoupper(Str::random(6)) . time();
-        $user = auth('sanctum')->user();
-        $statut2 = 0;
-        $statut = 0;
-        if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
-            for ($i = 0; $i < count($request->all()); $i++) {
+        try {
+            $id_package = 'RM' . strtoupper(Str::random(6)) . time();
+            $user = auth('sanctum')->user();
+            $statut2 = 0;
+            $statut = 0;
+            if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
+                for ($i = 0; $i < count($request->all()); $i++) {
 
-                if ($request[$i]['type_commande'] == 'stock' && $request[$i]['etat_commande'] == 'CONFIRMED') {
-                    $statut2 = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                        ->where(function ($query) use ($user) {
-                            $query->where('commandes.id_client', $user->id)
-                                ->orwhere('commandes.id_client', $user->superviseur);
-                        })
-                        ->where('commandes.etat_commande', 'CONFIRMED')
-                        ->where('commandes.id_commande', $request[$i]['id_commande'])
-                        ->update(['etat_commande' => 'PROCESSING']);
-                    HistoriqueCommande::create([
-                        "id_commande" =>  $request[$i]['id_commande'],
-                        "etat_commande" => 'PROCESSING',
-                        "id_client" => $user->id,
-                    ]);
-                } else if ($request[$i]['type_commande'] == 'ramassage' && $request[$i]['etat_commande'] == 'CONFIRMED') {
+                    if ($request[$i]['type_commande'] == 'stock' && $request[$i]['etat_commande'] == 'CONFIRMED') {
+                        $statut2 = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
+                            ->where(function ($query) use ($user) {
+                                $query->where('commandes.id_client', $user->id)
+                                    ->orwhere('commandes.id_client', $user->superviseur);
+                            })
+                            ->where('commandes.etat_commande', 'CONFIRMED')
+                            ->where('commandes.id_commande', $request[$i]['id_commande'])
+                            ->update(['etat_commande' => 'PROCESSING']);
+                        HistoriqueCommande::create([
+                            "id_commande" =>  $request[$i]['id_commande'],
+                            "etat_commande" => 'PROCESSING',
+                            "id_client" => $user->id,
+                        ]);
+                    } else if ($request[$i]['type_commande'] == 'ramassage' && $request[$i]['etat_commande'] == 'CONFIRMED') {
 
-                    $statut = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                        ->where(function ($query) use ($user) {
-                            $query->where('commandes.id_client', $user->id)
-                                ->orwhere('commandes.id_client', $user->superviseur);
-                        })
-                        ->where('commandes.etat_commande', 'CONFIRMED')
-                        ->where('commandes.id_commande', $request[$i]['id_commande'])
-                        ->update(['id_package' => $id_package, 'etat_commande' => 'PICKUP']);
-                    HistoriqueCommande::create([
-                        "id_commande" =>  $request[$i]['id_commande'],
-                        "etat_commande" => 'PICKUP',
-                        "id_client" => $user->id,
+                        $statut = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
+                            ->where(function ($query) use ($user) {
+                                $query->where('commandes.id_client', $user->id)
+                                    ->orwhere('commandes.id_client', $user->superviseur);
+                            })
+                            ->where('commandes.etat_commande', 'CONFIRMED')
+                            ->where('commandes.id_commande', $request[$i]['id_commande'])
+                            ->update(['id_package' => $id_package, 'etat_commande' => 'PICKUP']);
+                        HistoriqueCommande::create([
+                            "id_commande" =>  $request[$i]['id_commande'],
+                            "etat_commande" => 'PICKUP',
+                            "id_client" => $user->id,
 
-                    ]);
+                        ]);
+                    }
                 }
             }
-        }
-        if ($statut == 1 || $statut2 == 1) {
-            HistoriqueRamassage::create([
-                "id_ville" => $user->id_ville,
-                "statut_ramassage" => 'pas encour',
-                "id_client" => $user->id,
-            ]);
-            return response()->json([
-                'message' => 'commande created successfully'
-            ]);
-        } elseif ($statut == 0 && $statut2 == 0) {
+            if ($statut == 1 || $statut2 == 1) {
+                HistoriqueRamassage::create([
+                    "id_ville" => $user->id_ville,
+                    "statut_ramassage" => 'pas encour',
+                    "id_client" => $user->id,
+                ]);
+                return response()->json([
+                    'message' => 'commande created successfully'
+                ]);
+            } elseif ($statut == 0 && $statut2 == 0) {
+                return response()->json([
+                    'message' => 'Erreur'
+                ]);
+            }
+        } catch (Throwable $e) {
             return response()->json([
                 'message' => 'Erreur'
             ]);
@@ -344,154 +362,183 @@ class ClientController extends Controller
     }
     public function confirmeSelectedCommande(Request $request)
     {
-        $user = auth('sanctum')->user();
-        $statut = false;
-        for ($i = 0; $i < count($request->all()); $i++) {
+        try {
+            $user = auth('sanctum')->user();
+            $statut = false;
+            for ($i = 0; $i < count($request->all()); $i++) {
 
-            if ($request[$i]['etat_commande'] == 'CREATED' && $request[$i]['type_commande'] == 'stock') {
-                $commande_client = DetailsCommandes::join('commandes', 'commandes.id_commande', 'detailscommandes.id_commande')
-                    ->join('clients', 'commandes.id_client', '=', 'clients.id')
-                    ->where('commandes.id_client', $user->id)
-                    ->where('commandes.id_commande', $request[$i]['id_commande'])
-                    ->where('commandes.etat_commande', 'CREATED')
-                    ->selectRaw('commandes.id_commande,id_article,quantite_article,type_commande')
-                    ->get();
-                //pour savoir le nombre des articles deja confirmer
-                for ($n = 0; $n < count($commande_client); $n++) {
-                    $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
-                        ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
+                if ($request[$i]['etat_commande'] == 'CREATED' && $request[$i]['type_commande'] == 'stock') {
+                    $commande_client = DetailsCommandes::join('commandes', 'commandes.id_commande', 'detailscommandes.id_commande')
+                        ->join('clients', 'commandes.id_client', '=', 'clients.id')
                         ->where('commandes.id_client', $user->id)
-                        ->where('detailscommandes.id_article', $commande_client[$n]->id_article)
-                        ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
-                        ->first();
-                    // that if means it's the first confirmed of the article
-                    if ($article->qnt_article == null) {
-                        $article_in_stock = Article::where('articles.id', $commande_client[$n]->id_article)
-                            ->selectRaw('articles.stock_article as qnt_article_stock')
+                        ->where('commandes.id_commande', $request[$i]['id_commande'])
+                        ->where('commandes.etat_commande', 'CREATED')
+                        ->selectRaw('commandes.id_commande,id_article,quantite_article,type_commande')
+                        ->get();
+                    //pour savoir le nombre des articles deja confirmer
+                    for ($n = 0; $n < count($commande_client); $n++) {
+                        $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
+                            ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
+                            ->where('commandes.id_client', $user->id)
+                            ->where('detailscommandes.id_article', $commande_client[$n]->id_article)
+                            ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
                             ->first();
-                        $articles = $article_in_stock->qnt_article_stock;
-                    } else {
-                        //pour savoir la quantite exist en stock
-                        $article_in_stock = Article::where('articles.id', $commande_client[$n]->id_article)
-                            ->selectRaw('articles.stock_article as qnt_article_stock')
-                            ->first();
-                        $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
+                        // that if means it's the first confirmed of the article
+                        if ($article->qnt_article == null) {
+                            $article_in_stock = Article::where('articles.id', $commande_client[$n]->id_article)
+                                ->selectRaw('articles.stock_article as qnt_article_stock')
+                                ->first();
+                            $articles = $article_in_stock->qnt_article_stock;
+                        } else {
+                            //pour savoir la quantite exist en stock
+                            $article_in_stock = Article::where('articles.id', $commande_client[$n]->id_article)
+                                ->selectRaw('articles.stock_article as qnt_article_stock')
+                                ->first();
+                            $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
+                        }
+                        if ($commande_client[$n]->quantite_article > (int)$articles) {
+                            return response()->json([
+                                'message' => 'Quantity not available in:' . $commande_client[$n]->id_commande
+                            ]);
+                        }
                     }
-                    if ($commande_client[$n]->quantite_article > (int)$articles) {
-                        return response()->json([
-                            'message' => 'Quantity not available in:' . $commande_client[$n]->id_commande
+
+                    $commande = Commande::where('commandes.id_commande', $request[$i]['id_commande'])->first();
+                    $commande->etat_commande = 'CONFIRMED';
+                    $statut = $commande->save();
+                    if ($statut) {
+                        HistoriqueCommande::create([
+                            "id_commande" =>  $request[$i]['id_commande'],
+                            "etat_commande" => 'CONFIRMED',
+                            "id_client" => $user->id,
+                        ]);
+                    }
+                } elseif ($request[$i]['etat_commande'] == 'CREATED' && $request[$i]['type_commande'] == 'ramassage') {
+
+                    $commande_client = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
+                        ->where(function ($query) use ($user) {
+                            $query->where('commandes.id_client', $user->id)
+                                ->orwhere('commandes.id_client', $user->superviseur);
+                        })
+                        ->where('commandes.id_commande', $request[$i]['id_commande'])
+                        ->where('commandes.etat_commande', 'CREATED')
+                        ->selectRaw('commandes.id_commande')
+                        ->first();
+
+                    $statut = Commande::where('commandes.id_commande', $request[$i]['id_commande'])
+                        ->update(['etat_commande' => 'CONFIRMED']);
+                    if ($statut) {
+                        HistoriqueCommande::create([
+                            "id_commande" =>  $request[$i]['id_commande'],
+                            "etat_commande" => 'CONFIRMED',
+                            "id_client" => $user->id,
                         ]);
                     }
                 }
-
-                $commande = Commande::where('commandes.id_commande', $request[$i]['id_commande'])->first();
-                $commande->etat_commande = 'CONFIRMED';
-                $statut = $commande->save();
-                if ($statut) {
-                    HistoriqueCommande::create([
-                        "id_commande" =>  $request[$i]['id_commande'],
-                        "etat_commande" => 'CONFIRMED',
-                        "id_client" => $user->id,
-                    ]);
-                }
-            } elseif ($request[$i]['etat_commande'] == 'CREATED' && $request[$i]['type_commande'] == 'ramassage') {
-
-                $commande_client = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                    ->where(function ($query) use ($user) {
-                        $query->where('commandes.id_client', $user->id)
-                            ->orwhere('commandes.id_client', $user->superviseur);
-                    })
-                    ->where('commandes.id_commande', $request[$i]['id_commande'])
-                    ->where('commandes.etat_commande', 'CREATED')
-                    ->selectRaw('commandes.id_commande')
-                    ->first();
-
-                $statut = Commande::where('commandes.id_commande', $request[$i]['id_commande'])
-                    ->update(['etat_commande' => 'CONFIRMED']);
-                if ($statut) {
-                    HistoriqueCommande::create([
-                        "id_commande" =>  $request[$i]['id_commande'],
-                        "etat_commande" => 'CONFIRMED',
-                        "id_client" => $user->id,
-                    ]);
-                }
             }
-        }
-        if ($statut) {
+            if ($statut) {
+                return response()->json([
+                    'message' => 'Commande Confirmed successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'No order confirmed'
+                ]);
+            }
+        } catch (Throwable $e) {
             return response()->json([
-                'message' => 'Commande Confirmed successfully'
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'No order confirmed'
+                'message' => 'Erreur'
             ]);
         }
     }
     public function getClientsData()
     {
-
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            return Excel::download(new DataClients($user->id), 'DataClients.xlsx');
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                return Excel::download(new DataClients($user->id), 'DataClients.xlsx');
+            }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
     public function demandeActiverStock()
     {
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $notification = Notification::where('titre', 'Demande Activation Stock')->where('id_client', $user->id)->first();
-            if ($notification) {
-                return response()->json([
-                    'message' => 'Demande déja envoyé'
-                ]);
-            } else {
-                $statut = Notification::create([
-                    "description" => 'Demande Activation Stock par: ' . $user->id,
-                    "titre" => 'Demande Activation Stock',
-                    "affichage" =>  'notSeen',
-                    "id_client" => $user->id,
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $notification = Notification::where('titre', 'Demande Activation Stock')->where('id_client', $user->id)->first();
+                if ($notification) {
+                    return response()->json([
+                        'message' => 'Demande déja envoyé'
+                    ]);
+                } else {
+                    $statut = Notification::create([
+                        "description" => 'Demande Activation Stock par: ' . $user->id,
+                        "titre" => 'Demande Activation Stock',
+                        "affichage" =>  'notSeen',
+                        "id_client" => $user->id,
 
-                ]);
+                    ]);
+                }
+
+
+                if ($statut) {
+                    return response()->json([
+                        'message' => 'Demande envoyer successfully'
+                    ]);
+                } else {
+                    return response()->json([
+                        'message' => 'Erreur'
+                    ]);
+                }
             }
-
-
-            if ($statut) {
-                return response()->json([
-                    'message' => 'Demande envoyer successfully'
-                ]);
-            } else {
-                return response()->json([
-                    'message' => 'Erreur'
-                ]);
-            }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
     public function checkBlackList($telephone)
     {
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $blacklists = blacklist::where('telephone', $telephone)
-                ->selectRaw('blacklists.telephone')
-                ->first();
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $blacklists = blacklist::where('telephone', $telephone)
+                    ->selectRaw('blacklists.telephone')
+                    ->first();
 
-            if ($blacklists != '') {
-                return response()->json([
-                    'message' => 'Le numéro entrer est en liste noir'
-                ]);
-            } else {
-                return response()->json([
-                    'message' => 'Le numéro n\'est pas en liste noir'
-                ]);
+                if ($blacklists != '') {
+                    return response()->json([
+                        'message' => 'Le numéro entrer est en liste noir'
+                    ]);
+                } else {
+                    return response()->json([
+                        'message' => 'Le numéro n\'est pas en liste noir'
+                    ]);
+                }
             }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
     public function getAnnonces()
     {
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $annonces = DB::table('annonces')->where('type_user', 'Client')->where('statut', 'Active')->orderBy('updated_at')->get();
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $annonces = DB::table('annonces')->where('type_user', 'Client')->where('statut', 'Active')->orderBy('updated_at')->get();
+                return response()->json([
+                    'data' => $annonces,
+                ]);
+            }
+        } catch (Throwable $e) {
             return response()->json([
-                'data' => $annonces,
+                'message' => 'Erreur'
             ]);
         }
     }
@@ -504,62 +551,72 @@ class ClientController extends Controller
     public function sendMessage(Request $request)
 
     {
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $reclamation = Reclamation::where('id_client', $user->id)->where('id_reclamation', $request->id_reclamation)->first();
 
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $reclamation = Reclamation::where('id_client', $user->id)->where('id_reclamation', $request->id_reclamation)->first();
-
-            if ($reclamation->statut_reclamation == "Close" || $reclamation->statut_reclamation == "Done") {
-                return response()->json([
-                    'message' => 'Your claim is ' . $reclamation->statut_reclamation
-                ]);
-            } else {
-                $statut = Message::create([
-                    "id_reclamation" =>  $request->id_reclamation,
-                    "id_client" => $user->id,
-                    "message" => $request->message,
-                ]);
-
-                $reclamation->statut_reclamation = 'Pending';
-                $reclamation->save();
-
-                if ($statut) {
+                if ($reclamation->statut_reclamation == "Close" || $reclamation->statut_reclamation == "Done") {
                     return response()->json([
-                        'message' => 'Message envoyer successfully'
+                        'message' => 'Your claim is ' . $reclamation->statut_reclamation
                     ]);
                 } else {
-                    return response()->json([
-                        'message' => 'Erreur'
+                    $statut = Message::create([
+                        "id_reclamation" =>  $request->id_reclamation,
+                        "id_client" => $user->id,
+                        "message" => $request->message,
                     ]);
+
+                    $reclamation->statut_reclamation = 'Pending';
+                    $reclamation->save();
+
+                    if ($statut) {
+                        return response()->json([
+                            'message' => 'Message envoyer successfully'
+                        ]);
+                    } else {
+                        return response()->json([
+                            'message' => 'Erreur'
+                        ]);
+                    }
                 }
             }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
     public function getMessages($id)
 
     {
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $messages = Message::leftjoin('employes', 'messages.id_employe', 'employes.id')
+                    ->join('reclamations', 'reclamations.id_reclamation', 'messages.id_reclamation')
+                    ->where('reclamations.id_client', $user->id)
 
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $messages = Message::leftjoin('employes', 'messages.id_employe', 'employes.id')
-                ->join('reclamations', 'reclamations.id_reclamation', 'messages.id_reclamation')
-                ->where('reclamations.id_client', $user->id)
+                    ->where('messages.id_reclamation', $id)
 
-                ->where('messages.id_reclamation', $id)
+                    ->orderBy('messages.created_at', 'asc')
+                    ->selectRaw('messages.message,messages.created_at,messages.id_admin,employes.nom,employes.prenom,messages.id_employe,messages.id_client')
+                    ->get();
 
-                ->orderBy('messages.created_at', 'asc')
-                ->selectRaw('messages.message,messages.created_at,messages.id_admin,employes.nom,employes.prenom,messages.id_employe,messages.id_client')
-                ->get();
-
-            if ($messages) {
-                return response()->json([
-                    'data' => $messages
-                ]);
-            } else {
-                return response()->json([
-                    'data' => 'Erreur'
-                ]);
+                if ($messages) {
+                    return response()->json([
+                        'data' => $messages
+                    ]);
+                } else {
+                    return response()->json([
+                        'data' => 'Erreur'
+                    ]);
+                }
             }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
 }

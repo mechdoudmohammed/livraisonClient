@@ -512,7 +512,7 @@
                                                         v-if="hCommande.etat_commande == 'PROCESSING'">
                                                         processe By:
 
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <b>{{ hCommande.clientUsername }}</b>
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}
@@ -522,7 +522,8 @@
                                                         v-if="hCommande.etat_commande == 'PICKUP'">
                                                         Request Pickup By:
 
-                                                        <b>{{ hCommande.clientUsername }}</b>
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}
@@ -883,23 +884,70 @@ export default {
         },
 
         async showDetails(id) {
-            this.$vs.loading({ color: "#22c16b" });
+            this.$vs.loading({ color: "#22c22b" });
             await axios
                 .get("/api/Commande/" + id)
                 .then((res) => {
                     this.commande = res.data.data;
                     var text =
                         "<table class='table table-borderless' style='text-align: left;'>" +
-                        "<tr><td><i class='fa fa-map-marker-alt'></i><b> </b></td><td>" +
-                        this.commande.adresse_client_commande;
-                    text +=
-                        "</td></tr><tr><td><i class='fa fa-dollar-sign'></i><b> </b></td><td>" +
-                        this.commande.prix_commande +
-                        " Dhs" +
+                        "<tr><td colspan='2'><b>Original</b></td></tr>";
+
+                    if (res.data.data.nom_store != null) {
+                        text +=
+                            "</td></tr><tr><td>Store :<b> </b></td><td>" +
+                            this.commande.nom_store +
+                            "</td></tr>";
+                    } else {
+                        text +=
+                            "</td></tr><tr><td>Store :<b> </b></td><td>" +
+                            this.commande.company +
+                            "</td></tr>";
+                    }
+
+                    if (res.data.data.nom != null && res.data.data.prenom != null) {
+                        text +=
+                        "</td></tr><tr><td>Responsable :<b> </b></td><td>" +
+                        this.commande.nom + ' ' + this.commande.prenom +
                         "</td></tr>";
+                        text +=
+                        "</td></tr><tr><td>Phone :<b> </b></td><td>" +
+                        this.commande.telephone_responsable +
+                        "</td></tr>";
+                    }
+
+                    text +=
+                        "<tr><td colspan='2'><b>Destination</b></td></tr>" +
+                        "</td></tr><tr><td>ORDER N°</td><td>" +
+                        this.commande.id_commande +
+                        "</td></tr>";
+                    text +=
+                        "</td></tr><tr><td>Client :<b> </b></td><td>" +
+                        this.commande.nom_client_commande
+                    "</td></tr>";
+
+                    text +=
+                        "</td></tr><tr><td>City :<b> </b></td><td>" +
+                        this.commande.nom_ville +
+                        "</td></tr>";
+                    text +=
+                        "</td></tr><tr><td>Adresse :<b> </b></td><td>" +
+                        this.commande.adresse_client_commande +
+                        "</td></tr>";
+                    text +=
+                        "</td></tr><tr><td>Phone :<b> </b></td><td>" +
+                        this.commande.telephone_client_commande +
+                        "</td></tr>";
+                    text +=
+                        "</td></tr><tr><td>Price :<b> </b></td><td>" +
+                        this.commande.prix_commande +
+                        " Dhs </td></tr>";
+
+
+
                     if (res.data.data.additional_commentaire != null) {
                         text +=
-                            "<tr><td><i class='fa fa-comment'></i><b> </b></td><td>" +
+                            "<tr><td>Commentaire :</td><td>" +
                             this.commande.additional_commentaire;
                     }
                     if (res.data.data.nom_article != null) {
@@ -911,6 +959,7 @@ export default {
                             i++
                         ) {
                             text +=
+
                                 "<tr><td>" +
                                 res.data.data2[i].nom_article +
                                 "</td><td>" +
@@ -919,7 +968,7 @@ export default {
                         }
                     }
                     Swal.fire({
-                        title: "<h5><b>Order N°: " + this.commande.id_commande + "</b></h5>",
+                        title: "<h5><b>Package informations</b></h5>",
                         html: text,
                         showCancelButton: false,
                     });

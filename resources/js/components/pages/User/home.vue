@@ -509,7 +509,7 @@
                                                         v-if="hCommande.etat_commande == 'PROCESSING'">
                                                         processe By:
 
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <b>{{ hCommande.clientUsername }}</b>
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}
@@ -519,7 +519,8 @@
                                                         v-if="hCommande.etat_commande == 'PICKUP'">
                                                         Request Pickup By:
 
-                                                        <b>{{ hCommande.clientUsername }}</b>
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}

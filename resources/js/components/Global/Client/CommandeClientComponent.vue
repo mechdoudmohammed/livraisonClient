@@ -267,7 +267,7 @@
                         <h5 class="modal-title" id="ajouterCommandeStock" v-if="edit">
                             Edit Order
                         </h5>
-                        <div class="stockChange" v-if="Client.stock == 1">
+                        <div class="stockChange" id="stockButton" v-if="Client.stock == 1">
                             <label class="switch">
                                 <input type="checkbox" v-model="selected_type" />
                                 <span class="slider round"></span>
@@ -292,15 +292,13 @@
                                     <div class="col-12">
                                         <v-select placeholder="Please select an item" multiple v-model="ListArticles"
                                             name="article" :options="articles" label="nom_article" index="id"
-                                            @input="checkStock(ListArticles)">
+                                            @input="">
                                         </v-select>
                                     </div>
                                     <div class="row" id="qnt" v-for="x in ListArticles">
                                         <div class="col-6 quantite_colm">
                                             <label for="quantite_article"><b
-                                                    class="badge badge badge-gradient-info">Quantity available:{{
-                                                        x.qnt
-                                                    }}</b></label>
+                                                    class="badge badge badge-gradient-info">Quantity available:<span v-if="x.qnt">{{x.qnt}}</span><span v-else>0</span></b></label>
                                         </div>
                                         <div class="col-6">
                                             <input type="number" min="1" :max="x.stock_article" v-model="x.quantite" />
@@ -747,11 +745,6 @@
 
                                                     </div>
 
-
-
-
-
-
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'ENROUTE'">
                                                         Package sent to
@@ -810,10 +803,18 @@
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'CONFIRMED'">
+                                                        Confirmer By:
+                                                        <b>{{ hCommande.clientUsername }}</b>
+                                                        <br />
+                                                        At
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'PROCESSING'">
                                                         processe By:
-
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <b>{{ hCommande.clientUsername }}</b>
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}
@@ -823,21 +824,14 @@
                                                         v-if="hCommande.etat_commande == 'PICKUP'">
                                                         Request Pickup By:
 
-                                                        <b>{{ hCommande.clientUsername }}</b>
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CONFIRMED'">
-                                                        Confirmer By:
-                                                        <b>{{ hCommande.clientUsername }}</b>
-                                                        <br />
-                                                        At
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
+                                              
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CREATED'">
                                                         Create By:
@@ -1178,6 +1172,7 @@ export default {
     watch: {
         // whenever question changes, this function will run
         selected_type(newQuestion, oldQuestion) {
+  
             this.getStores();
             this.nom_err = "";
             this.formData = {
@@ -1186,12 +1181,12 @@ export default {
                 adresse_client_commande: "",
                 telephone_client_commande: "",
                 prix_commande: "",
-                selected_commande: "",
                 fichierCommande: "",
                 quantite_article: 0,
                 additional_commentaire: "",
                 type_autorisation: "",
             };
+
         },
 
         selected(neww, oldd) {
@@ -1244,17 +1239,16 @@ export default {
                             "</td></tr>";
                     }
 
-
-
-
-                    text +=
+                    if (res.data.data.nom != null && res.data.data.prenom != null) {
+                        text +=
                         "</td></tr><tr><td>Responsable :<b> </b></td><td>" +
                         this.commande.nom + ' ' + this.commande.prenom +
                         "</td></tr>";
-                    text +=
+                        text +=
                         "</td></tr><tr><td>Phone :<b> </b></td><td>" +
                         this.commande.telephone_responsable +
                         "</td></tr>";
+                    }
 
                     text +=
                         "<tr><td colspan='2'><b>Destination</b></td></tr>" +
@@ -1292,7 +1286,7 @@ export default {
                     }
                     if (res.data.data.nom_article != null) {
                         text +=
-                            "</td></tr><tr><td><b><i class='fa fa-shopping-bag'></i> Article :</b></td><td><b><i class='fa fa-sort'></i> Quantite :</b></td></tr>";
+                            "</td></tr><tr><td><b>Articles :</b></td></tr>";
                         for (
                             let i = 0;
                             i < Object.keys(res.data.data2).length;
@@ -1354,7 +1348,10 @@ export default {
             }, 200);
         },
         async classifierCommande(count_nbr) {
-            this.$vs.loading({ color: "#22c22b" });
+            if (this.formDataCherche.valeur_recherche != '') {
+                this.chercher(this.formDataCherche3.selected_option3)
+            } else {
+                   this.$vs.loading({ color: "#22c22b" });
             setTimeout(async () => {
                 if (count_nbr > 1) {
                     await axios
@@ -1386,6 +1383,8 @@ export default {
                 }
                 this.nbrCommande = this.commandes.to;
             }, 200);
+            }
+         
 
 
 
@@ -1676,8 +1675,10 @@ export default {
             this.selected = [];
         },
         async updateCommande() {
+            document.getElementById('stockButton').style.display='none';
             this.formData.selected_type = this.selected_type;
             this.formData.articles = this.ListArticles;
+            console.log(this.formData);
             await axios
                 .post("/api/updateCommande", this.formData)
                 .then((res) => {
@@ -1712,7 +1713,6 @@ export default {
         },
         async checkCommande(btn_val, tr) {
             await this.getArticles();
-            console.log(this.articles);
             if (tr.type_commande == "stock") {
                 this.selected_type = true;
             } else if (tr.type_commande == "ramassage") {

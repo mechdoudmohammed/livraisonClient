@@ -16,7 +16,7 @@ class CreateArticlesTable extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->string('nom_article',150);
-            $table->string('commentaire');
+            $table->string('commentaire')->nullable();
             $table->double('prix_article');
             $table->integer('stock_article');
             $table->string('etat_article',50);
