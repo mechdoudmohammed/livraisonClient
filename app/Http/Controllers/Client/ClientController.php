@@ -188,6 +188,7 @@ class ClientController extends Controller
             //}
             if ($user) {
                 event(new Registered($request));
+                $user->sendEmailVerificationNotification();
                 return $user->createToken($request->device_name)->plainTextToken;
             } else {
                 return response()->json([
