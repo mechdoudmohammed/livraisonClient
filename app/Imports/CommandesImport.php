@@ -26,13 +26,12 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     public function __construct($store)
     {
         $this->data = [];
-        $this->store=$store;
+        $this->store = $store;
     }
     public function array(array $rows)
     {
 
         if (count($rows) <= 100) {
-            
             foreach ($rows as $row) {
                 if ($row[0] != null) {
                     $this->data[] = array(
@@ -44,15 +43,15 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                     );
                     $user = auth('sanctum')->user();
                     $ville = DB::table('villes')
-                        ->where('villes.nom_ville', $row[1])
+                        ->whereRaw("lower(villes.nom_ville) LIKE '%'" . strtolower($row[1]) . "'%'")
                         ->select('villes.id', 'prix_livraison')->first();
                     $ville = Ville::where('id', $ville->id)->first();
-                $id_commande = $ville->pref_ville.strtoupper(Str::random(6)) . time();
-                    
+                    $id_commande = $ville->pref_ville . strtoupper(Str::random(6)) . time();
+
                     Commande::create([
                         "id_commande" => $id_commande,
                         "id_ville" =>  $ville->id,
-                         "id_store" => $this->store,
+                        "id_store" => $this->store,
                         "nom_client_commande" => $row[0],
                         "adresse_client_commande" => $row[2],
                         "telephone_client_commande" => $row[3],
@@ -65,13 +64,13 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                     HistoriqueCommande::create([
                         "id_commande" =>  $id_commande,
                         "etat_commande" => 'CREATED',
-                        "id_client"=>$user->id,
+                        "id_client" => $user->id,
                     ]);
                 }
             }
-            $this->data=['Les commandes created successfully'];
-        }else{
-            $this->data=['Le fichier depasse 100 row'];
+            $this->data = ['Les commandes created successfully'];
+        } else {
+            $this->data = ['Le fichier depasse 100 row'];
         }
     }
     public function getArray(): array
@@ -87,9 +86,11 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     public function rules(): array
     {
         $ville = DB::table('villes')->pluck('nom_ville')->toArray();
+
+ 
         return [
             '0' => 'required|string',
-            '1' => ['required', 'string', Rule::in($ville),],
+            '1' => ['required', 'string', Rule::in(array_map('strtolower', $ville))],
             '2' => 'required|string',
             '3' => 'required|numeric',
             '4' => 'required|numeric',
@@ -98,12 +99,12 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
         ];
     }
     public function customValidationMessages()
-{
-    return [
-        '1.in' => 'Please check City name',
-        '5.in' => 'The field need to be \'allow\' or \'deny\'',
-    ];
-}
+    {
+        return [
+            '1.in' => 'Please check City name (write City in small character)',
+            '5.in' => 'The field need to be \'allow\' or \'deny\'',
+        ];
+    }
     public function sheets(): array
     {
         return [

@@ -40,6 +40,9 @@ class CreateCommandesTable extends Migration
             $table->unsignedBigInteger('id_employe_client')->nullable();
             $table->foreign('id_employe_client')->references('id')->on('clients');
 
+            $table->string('id_bon_retour_client',100)->nullable();
+            $table->foreign('id_bon_retour_client')->references('id_bon_retour_client')->on('bonretourclients');
+
             $table->string('id_facture',100)->nullable();
             $table->foreign('id_facture')->references('id_facture')->on('factures');
 

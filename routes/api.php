@@ -77,7 +77,7 @@ Route::middleware(['auth:client'])
 
         Route::post('updateCommande', 'Client\CommandeController@updateCommande');
         Route::post('suivieCommande', 'Client\CommandeController@getCommandeSuivie');
-        Route::post('retourCommande', 'Client\CommandeController@getALLCommandeRetourRR');
+        Route::post('bonRetour', 'Client\CommandeController@getBonRetour');
 
         Route::get('showPackage', 'Client\ClientController@showPackage');
         Route::post('getPackage', 'Client\CommandeController@getPackage');
@@ -111,6 +111,9 @@ Route::middleware(['auth:client'])
         Route::get('getAnnonces', 'Client\ClientController@getAnnonces');
         Route::post('sendMessage', 'Client\ClientController@sendMessage');
         Route::get('getMessages/{id}', 'Client\ClientController@getMessages');
+
+
+        Route::get('getBonRetour/{id}', 'Client\CommandeController@getBonRetourClient');
 
     });
 
