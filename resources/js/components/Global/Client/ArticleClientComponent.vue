@@ -172,6 +172,7 @@ export default {
 
     methods: {
         async downloadHistoriqueArticle(id){
+            this.$vs.loading({ color: '#22c16b' })
             let formData = new FormData()
             formData.append('id', id)
             _.each(this.formData, (value, key) => { formData.append(key, value) })
@@ -185,12 +186,13 @@ export default {
                         link.remove();
 
                     })
-                    .catch(error => console.log(res));
+                    .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
 
 
 
         },
         async downloadSticker(id) {
+            this.$vs.loading({ color: '#22c16b' })
             let formData = new FormData()
             formData.append('id', id)
             _.each(this.formData, (value, key) => { formData.append(key, value) })
@@ -204,7 +206,7 @@ export default {
                         link.remove();
 
                     })
-                    .catch(error => console.log(res));
+                    .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
         
         },
         async getArticles(count_nbr) {
@@ -224,20 +226,22 @@ export default {
 
         },
         async getArticle(id) {
+            this.$vs.loading({ color: '#22c16b' })
             await axios.get('/api/Article/' + id)
                 .then(res => { this.formData = res.data.data })
-                .catch(error => console.log(res));
+                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
         },
 
         async addArticle() {
+            this.$vs.loading({ color: '#22c16b' })
             await axios.post('/api/Article', this.formData).then((res) => {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'La article a été enregistrée',
-                    showConfirmButton: false,
-                    timer: 4000
-                })
+                this.$vs.notify({
+                                title:'La article a été enregistrée',
+                                color: 'success',
+                                position: "top-right",
+                                time: 4000,
+                            });
+               
                 this.initialiserFormData();
                 document.getElementById("btn_cancel").click()
             }).catch(error => {
@@ -245,10 +249,9 @@ export default {
                     this.errors = error.response.data.errors || {};
                     this.nom_err = this.errors[Object.keys(this.errors)[0]];
                 }
-            })
+            }).finally(() => this.$vs.loading.close());
             await this.getArticles(0);
     
-
 
         },
         initialiserFormData() {

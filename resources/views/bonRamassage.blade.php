@@ -35,14 +35,13 @@
         }
 
         .invoice-box {
-            max-width: 800px;
+          
             margin: auto;
             padding: 30px;
 
             font-size: 16px;
             line-height: 24px;
-            /* font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-				color: #555; */
+            
         }
 
         .invoice-box table {
@@ -57,24 +56,14 @@
             vertical-align: top;
         }
 
-        /* .invoice-box table tr td:nth-child(2) {
-				text-align: right;
-			} */
-
         .invoice-box table tr.top table td {
             padding-bottom: 20px;
         }
-
         .invoice-box table tr.top table td.title {
             font-size: 45px;
             line-height: 45px;
             color: #333;
         }
-
-        /* .invoice-box table tr.information table td {
-				padding-bottom: 40px;
-			} */
-
         .invoice-box table tr.heading td {
             background: #00b4c2;
             border-bottom: 1px solid #ddd;
@@ -145,13 +134,15 @@
                 <table>
                     <tr>
 
-                        <td class="title">
-                            <img src="{{ public_path('/images/logo.png') }}" alt="Company logo" style="width: 35%; max-width: 300px" />
+                    <td class="title">
+                              <img src="{{ public_path('/images/logoFiles.png') }}" alt="Company logo" style="width: 37%; max-width: 330px" />
                         </td>
 
                         <td class='facture_info'>
-                            Information Entreprise<br />
-                            Date: 12/1/2022<br />
+                            <b>ColiZone S.A.R.L</b><br />
+                            <b>CITE DHAR MEHREZ FES</b><br />
+                            <b>+212 767 09 13 77</b><br />
+                            <b>Contact@ColiZone.ma</b><br />
                         </td>
                     </tr>
                 </table>

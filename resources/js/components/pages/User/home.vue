@@ -452,7 +452,7 @@
                                                         v-if="hCommande.etat_commande == 'ENROUTE'">
                                                         Package sent to
                                                         <b>{{ hCommande.nom_ville }}</b>
-                                                        By:
+                                                        By
                                                         <b>{{ hCommande.username }}</b>
                                                         <br />
                                                         At
@@ -498,8 +498,8 @@
                                                         v-if="hCommande.etat_commande == 'HOME'">
                                                         package is in Hub
                                                         <b>{{ hCommande.nom_ville }}</b>
-                                                        with
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <!-- with
+                                                        <b>{{ hCommande.username }}</b> -->
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}

@@ -749,7 +749,7 @@
                                                         v-if="hCommande.etat_commande == 'ENROUTE'">
                                                         Package sent to
                                                         <b>{{ hCommande.nom_ville }}</b>
-                                                        By:
+                                                        By
                                                         <b>{{ hCommande.username }}</b>
                                                         <br />
                                                         At
@@ -795,8 +795,8 @@
                                                         v-if="hCommande.etat_commande == 'HOME'">
                                                         package is in Hub
                                                         <b>{{ hCommande.nom_ville }}</b>
-                                                        with
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <!-- with
+                                                        <b>{{ hCommande.username }}</b> -->
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}
@@ -1558,13 +1558,18 @@ export default {
                         this.message == "Erreur" ||
                         this.message == "Erreur la quantité entrer plus que le stock" || this.message == "Vous avez saisi un grand nombre de commandes pendant une journée !!"
                     ) {
-                        var statut_icon = "error";
+                        var statut_icon = "danger";
                     } else if (
                         this.message == "commande created successfully"
                     ) {
                         var statut_icon = "success";
                     }
-                    this.sweetAlert(statut_icon, this.message);
+                    this.$vs.notify({
+                                title: this.message,
+                                color: statut_icon,
+                                position: "top-right",
+                                time: 4000,
+                            });
                     this.initialiserFormData();
                     this.getArticles();
                 })
@@ -1582,10 +1587,13 @@ export default {
                     .post("/api/pickupCommande", this.selected)
                     .then((res) => {
                         if (res.data.message == "Erreur") {
-                            this.sweetAlert(
-                                "warning",
-                                "No order confirmed"
-                            );
+                            this.$vs.notify({
+                                title: "No order confirmed",
+                                color: 'warning',
+                                position: "top-right",
+                                time: 4000,
+                            });
+                            
                         } else {
                             this.$vs.notify({
                                 title: `Commande Confirmed`,
@@ -1608,10 +1616,14 @@ export default {
                     .get("/api/pickupCommande")
                     .then((res) => {
                         if (res.data.message == "Erreur") {
-                            this.sweetAlert(
-                                "warning",
-                                "No order confirmed"
-                            );
+                            this.$vs.notify({
+                                title: "No order confirmed",
+                                color: "warning",
+                                position: "top-right",
+                                time: 4000,
+                            });
+                          
+                           
                         } else {
                             this.$vs.notify({
                                 title: `Commande Confirmed`,
@@ -1653,8 +1665,14 @@ export default {
                 this.message == "Erreur" ||
                 this.message == "No order confirmed"
             ) {
-                var statut_icon = "error";
-                this.sweetAlert(statut_icon, this.message);
+                var statut_icon = "danger";
+                this.$vs.notify({
+                                title: this.message,
+                                color: statut_icon,
+                                position: "top-right",
+                                time: 4000,
+                            });
+               
             } else if (
                 this.message == "Commande Stock Confirmed successfully" ||
                 this.message == "Commande Confirmed successfully"
@@ -1668,7 +1686,12 @@ export default {
                 });
             } else {
                 var statut_icon = "error";
-                this.sweetAlert(statut_icon, this.message);
+                this.$vs.notify({
+                                title: this.message,
+                                color: statut_icon,
+                                position: "top-right",
+                                time: 4000,
+                            });
             }
 
             this.classifierCommande(this.formDataCherche3.selected_option3)
@@ -1695,11 +1718,16 @@ export default {
                         this.message ==
                         "Erreur la quantité entrer plus que le stock"
                     ) {
-                        var statut_icon = "error";
+                        var statut_icon = "danger";
                     } else if (this.message == "commande update successfully") {
                         var statut_icon = "success";
                     }
-                    this.sweetAlert(statut_icon, this.message);
+                    this.$vs.notify({
+                                title: this.message,
+                                color: statut_icon,
+                                position: "top-right",
+                                time: 4000,
+                            });
                     this.formData.fichierCommande = "";
                     this.nomFile = "";
                     this.initialiserFormData();
@@ -1831,15 +1859,7 @@ export default {
                 }),
                 (this.btn_confirme = false);
         },
-        sweetAlert(typeMessage, Message) {
-            Swal.fire({
-                position: "center",
-                icon: typeMessage,
-                title: Message,
-                showConfirmButton: false,
-                timer: 6000,
-            });
-        },
+      
         async getNotification() {
             var commande;
             await axios

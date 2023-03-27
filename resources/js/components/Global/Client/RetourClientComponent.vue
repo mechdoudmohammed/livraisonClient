@@ -139,13 +139,15 @@ export default {
 
     methods: {
         getBonRetour(id) {
+            this.$vs.loading({ color: "#22c16b" });
             axios.get('/api/getBonRetour/' + id, { responseType: 'blob' })
                 .then(res => {
                     window.open(URL.createObjectURL(res.data))
                 })
-                .catch(error => console.log(res));
+                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
         },
         downloadBonRetour(id) {
+            this.$vs.loading({ color: "#22c16b" });
             axios.get('/api/getBonRetour/' + id, { responseType: 'blob' })
                 .then(res => {
                     const link = document.createElement('a');
@@ -155,7 +157,7 @@ export default {
                     link.click();
                     link.remove();
                 })
-                .catch(error => console.log(res));
+                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
         },
 
         async classifierBonRetour(count_nbr) {
