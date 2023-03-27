@@ -105,9 +105,9 @@
                                             }}</b>
                                     </vs-td>
                                     <vs-td>
-                                        <button type="button" class="btn btn-valide" @click.prevent="downloadFactureClient(tr.id_facture)"><i
+                                        <button type="button" class="btn btn-valide" @click.prevent="getFactureClient(tr.id_facture)"><i
                                                 class="fa fa-print"></i></button>
-                                        <button type="button" class="btn btn-danger" @click.prevent=""><i
+                                        <button type="button" class="btn btn-danger" @click.prevent="downloadFactureClient(tr.id_facture)"><i
                                                 class="fa fa-download"></i></button>
                                     </vs-td>
 
@@ -186,14 +186,28 @@ export default {
             }, 200);
 
         },
-        downloadFactureClient(id){
+        getFactureClient(id){
 
             axios.get('/api/getFacture/'+id,{ responseType: 'blob' })
                 .then(res => {
-                    window.open(URL.createObjectURL(res.data))
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(res.data);
+                    link.download = id+'.pdf';
+                    document.body.append(link);
+                    link.click();
+                    link.remove();
+                   
                  })
                 .catch(error => console.log(res));
         },
+        downloadFactureClient(id){
+
+axios.get('/api/getFacture/'+id,{ responseType: 'blob' })
+    .then(res => {
+        window.open(URL.createObjectURL(res.data))
+     })
+    .catch(error => console.log(res));
+},
     },
     async beforeMount() {
         axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`

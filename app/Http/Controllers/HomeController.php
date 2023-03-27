@@ -33,6 +33,7 @@ class HomeController extends Controller
     {
         $villes = DB::table('villes')
             ->Where('villes.nom_ville', 'LIKE', "%{$request->ville}%")
+            ->where('villes.statut','Active')
             ->selectRaw('nom_ville,prix_livraison,prix_retour')->paginate();
         return response()->json([
             'data' => $villes,

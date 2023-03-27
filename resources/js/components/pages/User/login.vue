@@ -5,7 +5,7 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6 text-center mb-5">
-            <a class="heading-section" href="/">ColiZone</a>
+            <a class="heading-section" href="/"><img src="/images/logoFiles.png" alt="Company logo" style="width: 35%; max-width: 300px" /></a>
           </div>
         </div>
         <div class="row justify-content-center">
@@ -19,14 +19,7 @@
                   <div class="w-100">
                     <h3 class="mb-4">Sign In</h3>
                   </div>
-                  <div class="w-100">
-                    <p class="social-media d-flex justify-content-end">
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span
-                          class="fa fa-facebook"></span></a>
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span
-                          class="fa fa-twitter"></span></a>
-                    </p>
-                  </div>
+            
                 </div>
                 <div class="alert alert-danger" role="alert" v-if="nom_err">
                   {{ nom_err[0] }}

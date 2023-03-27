@@ -259,7 +259,7 @@ class ClientController extends Controller
     public function getVilles()
     {
         try {
-            $villes = DB::table('villes')->select('villes.id', 'villes.nom_ville as ville')->get();
+            $villes = DB::table('villes')->select('villes.id', 'villes.nom_ville as ville')->where('villes.statut','Active')->get();
             return response()->json([
                 'data' => $villes
             ]);

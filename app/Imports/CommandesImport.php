@@ -43,7 +43,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                     );
                     $user = auth('sanctum')->user();
                     $ville = DB::table('villes')
-                        ->whereRaw("lower(villes.nom_ville) LIKE '%'" . strtolower($row[1]) . "'%'")
+                        ->where("villes.nom_ville",$row[1])
                         ->select('villes.id', 'prix_livraison')->first();
                     $ville = Ville::where('id', $ville->id)->first();
                     $id_commande = $ville->pref_ville . strtoupper(Str::random(6)) . time();
@@ -85,8 +85,8 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     use Importable;
     public function rules(): array
     {
-        $ville = DB::table('villes')->pluck('nom_ville')->toArray();
-
+        $ville = DB::table('villes') ->where('villes.statut','Active')->pluck('nom_ville')->toArray();
+       
  
         return [
             '0' => 'required|string',
@@ -101,7 +101,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     public function customValidationMessages()
     {
         return [
-            '1.in' => 'Please check City name (write City in small character)',
+            '1.in' => 'Please check City name or (write City in small character)',
             '5.in' => 'The field need to be \'allow\' or \'deny\'',
         ];
     }
