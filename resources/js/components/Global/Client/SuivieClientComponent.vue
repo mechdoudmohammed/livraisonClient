@@ -1188,7 +1188,6 @@ export default {
 
         reclamationCommande(tr) {
             this.formData = tr;
-            console.log(this.formData);
             $("#reclamationCommande").modal("show");
         },
         editStatut(button) {

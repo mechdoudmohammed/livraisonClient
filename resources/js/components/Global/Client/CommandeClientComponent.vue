@@ -203,7 +203,7 @@
                                             Invoiced
                                         </button>
                                         <b class="badge badge badge-gradient-danger"
-                                            v-else-if="tr.statut_facture == null ">NOTPAID</b>
+                                            v-else-if="tr.statut_facture == null">NOTPAID</b>
                                     </vs-td>
                                     <vs-td v-if="Client.role == 'EmployeClient'">
                                         <button class="badge badge badge-gradient-success"
@@ -211,7 +211,7 @@
                                             PAID
                                         </button>
                                         <button class="badge badge badge-gradient-info"
-                                            v-else-if="tr.statut_facture == 'NOTPAID'  &&  tr.type_facture == 'client'">
+                                            v-else-if="tr.statut_facture == 'NOTPAID' && tr.type_facture == 'client'">
                                             Invoiced
                                         </button>
                                         <b class="badge badge badge-gradient-danger"
@@ -291,14 +291,14 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <v-select placeholder="Please select an item" multiple v-model="ListArticles"
-                                            name="article" :options="articles" label="nom_article" index="id"
-                                            @input="">
+                                            name="article" :options="articles" label="nom_article" index="id" @input="">
                                         </v-select>
                                     </div>
                                     <div class="row" id="qnt" v-for="x in ListArticles">
                                         <div class="col-6 quantite_colm">
                                             <label for="quantite_article"><b
-                                                    class="badge badge badge-gradient-info">Quantity available:<span v-if="x.qnt">{{x.qnt}}</span><span v-else>0</span></b></label>
+                                                    class="badge badge badge-gradient-info">Quantity available:<span
+                                                        v-if="x.qnt">{{ x.qnt }}</span><span v-else>0</span></b></label>
                                         </div>
                                         <div class="col-6">
                                             <input type="number" min="1" :max="x.stock_article" v-model="x.quantite" />
@@ -824,14 +824,15 @@
                                                         v-if="hCommande.etat_commande == 'PICKUP'">
                                                         Request Pickup By:
 
-                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername }}</b>
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
                                                         <b v-else>{{ hCommande.username }}</b>
                                                         <br />
                                                         At
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                              
+
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CREATED'">
                                                         Create By:
@@ -947,16 +948,18 @@
                                                 </div>
                                                 <div class="tl-content">
                                                     <div class="etat_commande">
-                                                        <b class="badge badge badge-gradient-danger" v-if="
-                                                            hCommande.statut_facture == 'NOTPAID' &&  hCommande.type_facture == 'client' "> Invoiced
+                                                        <b class="badge badge badge-gradient-danger"
+                                                            v-if="
+                                                                hCommande.statut_facture == 'NOTPAID' && hCommande.type_facture == 'client'"> Invoiced
                                                         </b>
-                                                        <b class="badge badge badge-gradient-success" v-if="
-                                                            hCommande.statut_facture == 'PAID'  &&  hCommande.type_facture == 'client'">{{
+                                                        <b class="badge badge badge-gradient-success"
+                                                            v-if="
+                                                                hCommande.statut_facture == 'PAID' && hCommande.type_facture == 'client'">{{
         hCommande.statut_facture }}</b>
                                                     </div>
 
                                                     <div class="tl-date text-muted mt-1" v-if="
-                                                        hCommande.statut_facture == 'NOTPAID' ">
+                                                        hCommande.statut_facture == 'NOTPAID'">
                                                         Invoiced By:
                                                         <b v-if="
                                                             hCommande.username ==
@@ -1046,9 +1049,11 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-6"
-                                        v-if="formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'NOREPONSE' || formData.etat_commande == 'DMSUIVIE'">
+                                
+                                <div class="form-group row" v-if="relaunch">
+                                    <div class="col-6" v-if="formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'NOREPONSE' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'REPORTED'
+                                        || formData.etat_commande == 'HOME'
+                                    ">
                                         <button type="button" class="btn btn-warning" @click.prevent="
                                             editStatut('RELANCER')
                                         ">
@@ -1068,7 +1073,7 @@
                 </div>
             </div>
         </div>
-</div>
+    </div>
 </template>
 <style scoped>
 input[type="number"] {
@@ -1167,12 +1172,13 @@ export default {
             btn_confirme: false,
             historiqueFacture: [],
             stores: [],
+            relaunch:'',
         };
     },
     watch: {
         // whenever question changes, this function will run
         selected_type(newQuestion, oldQuestion) {
-  
+
             this.getStores();
             this.nom_err = "";
             this.formData = {
@@ -1241,13 +1247,13 @@ export default {
 
                     if (res.data.data.nom != null && res.data.data.prenom != null) {
                         text +=
-                        "</td></tr><tr><td>Responsable :<b> </b></td><td>" +
-                        this.commande.nom + ' ' + this.commande.prenom +
-                        "</td></tr>";
+                            "</td></tr><tr><td>Responsable :<b> </b></td><td>" +
+                            this.commande.nom + ' ' + this.commande.prenom +
+                            "</td></tr>";
                         text +=
-                        "</td></tr><tr><td>Phone :<b> </b></td><td>" +
-                        this.commande.telephone_responsable +
-                        "</td></tr>";
+                            "</td></tr><tr><td>Phone :<b> </b></td><td>" +
+                            this.commande.telephone_responsable +
+                            "</td></tr>";
                     }
 
                     text +=
@@ -1351,40 +1357,40 @@ export default {
             if (this.formDataCherche.valeur_recherche != '') {
                 this.chercher(this.formDataCherche3.selected_option3)
             } else {
-                   this.$vs.loading({ color: "#22c22b" });
-            setTimeout(async () => {
-                if (count_nbr > 1) {
-                    await axios
-                        .post(
-                            "/api/classifierCommande?page=" +
-                            this.commandes.current_page +
-                            "&count_nbr=" +
-                            count_nbr,
-                            this.formDataCherche2
-                        )
-                        .then((res) => {
-                            this.commandes = res.data.data;
-                        })
-                        .catch((error) => console.log(res))
-                        .finally(() => this.$vs.loading.close());
-                } else {
-                    await axios
-                        .post(
-                            "/api/classifierCommande?page=" +
-                            this.commandes.current_page +
-                            "&count_nbr=20",
-                            this.formDataCherche2
-                        )
-                        .then((res) => {
-                            this.commandes = res.data.data;
-                        })
-                        .catch((error) => console.log(res))
-                        .finally(() => this.$vs.loading.close());
-                }
-                this.nbrCommande = this.commandes.to;
-            }, 200);
+                this.$vs.loading({ color: "#22c22b" });
+                setTimeout(async () => {
+                    if (count_nbr > 1) {
+                        await axios
+                            .post(
+                                "/api/classifierCommande?page=" +
+                                this.commandes.current_page +
+                                "&count_nbr=" +
+                                count_nbr,
+                                this.formDataCherche2
+                            )
+                            .then((res) => {
+                                this.commandes = res.data.data;
+                            })
+                            .catch((error) => console.log(res))
+                            .finally(() => this.$vs.loading.close());
+                    } else {
+                        await axios
+                            .post(
+                                "/api/classifierCommande?page=" +
+                                this.commandes.current_page +
+                                "&count_nbr=20",
+                                this.formDataCherche2
+                            )
+                            .then((res) => {
+                                this.commandes = res.data.data;
+                            })
+                            .catch((error) => console.log(res))
+                            .finally(() => this.$vs.loading.close());
+                    }
+                    this.nbrCommande = this.commandes.to;
+                }, 200);
             }
-         
+
 
 
 
@@ -1565,11 +1571,11 @@ export default {
                         var statut_icon = "success";
                     }
                     this.$vs.notify({
-                                title: this.message,
-                                color: statut_icon,
-                                position: "top-right",
-                                time: 4000,
-                            });
+                        title: this.message,
+                        color: statut_icon,
+                        position: "top-right",
+                        time: 4000,
+                    });
                     this.initialiserFormData();
                     this.getArticles();
                 })
@@ -1593,7 +1599,7 @@ export default {
                                 position: "top-right",
                                 time: 4000,
                             });
-                            
+
                         } else {
                             this.$vs.notify({
                                 title: `Commande Confirmed`,
@@ -1622,8 +1628,8 @@ export default {
                                 position: "top-right",
                                 time: 4000,
                             });
-                          
-                           
+
+
                         } else {
                             this.$vs.notify({
                                 title: `Commande Confirmed`,
@@ -1667,12 +1673,12 @@ export default {
             ) {
                 var statut_icon = "danger";
                 this.$vs.notify({
-                                title: this.message,
-                                color: statut_icon,
-                                position: "top-right",
-                                time: 4000,
-                            });
-               
+                    title: this.message,
+                    color: statut_icon,
+                    position: "top-right",
+                    time: 4000,
+                });
+
             } else if (
                 this.message == "Commande Stock Confirmed successfully" ||
                 this.message == "Commande Confirmed successfully"
@@ -1687,21 +1693,20 @@ export default {
             } else {
                 var statut_icon = "error";
                 this.$vs.notify({
-                                title: this.message,
-                                color: statut_icon,
-                                position: "top-right",
-                                time: 4000,
-                            });
+                    title: this.message,
+                    color: statut_icon,
+                    position: "top-right",
+                    time: 4000,
+                });
             }
 
             this.classifierCommande(this.formDataCherche3.selected_option3)
             this.selected = [];
         },
         async updateCommande() {
-            document.getElementById('stockButton').style.display='none';
+            document.getElementById('stockButton').style.display = 'none';
             this.formData.selected_type = this.selected_type;
             this.formData.articles = this.ListArticles;
-            console.log(this.formData);
             await axios
                 .post("/api/updateCommande", this.formData)
                 .then((res) => {
@@ -1723,11 +1728,11 @@ export default {
                         var statut_icon = "success";
                     }
                     this.$vs.notify({
-                                title: this.message,
-                                color: statut_icon,
-                                position: "top-right",
-                                time: 4000,
-                            });
+                        title: this.message,
+                        color: statut_icon,
+                        position: "top-right",
+                        time: 4000,
+                    });
                     this.formData.fichierCommande = "";
                     this.nomFile = "";
                     this.initialiserFormData();
@@ -1859,7 +1864,7 @@ export default {
                 }),
                 (this.btn_confirme = false);
         },
-      
+
         async getNotification() {
             var commande;
             await axios
@@ -1888,8 +1893,18 @@ export default {
                 }
             }
         },
-        reclamationCommande(tr) {
+        async reclamationCommande(tr) {
             this.formData = tr;
+            await axios
+                .get("/api/verificationRelaunch/" + tr.id_commande)
+                .then((res) => {
+                    if (res.data.message == 'Order not relaunched') {
+                        this.relaunch = true;
+                    }else if(res.data.message == 'Order already relaunch'){
+                        this.relaunch =false;
+                    }
+                })
+                .catch((error) => console.log(res));
             $("#reclamationCommande").modal("show");
         },
         editStatut(button) {

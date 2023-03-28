@@ -111,8 +111,7 @@ Route::middleware(['auth:client'])
         Route::get('getAnnonces', 'Client\ClientController@getAnnonces');
         Route::post('sendMessage', 'Client\ClientController@sendMessage');
         Route::get('getMessages/{id}', 'Client\ClientController@getMessages');
-
-
+        Route::get('verificationRelaunch/{id}', 'Client\CommandeController@verificationRelaunch');
         Route::get('getBonRetour/{id}', 'Client\CommandeController@getBonRetourClient');
 
     });

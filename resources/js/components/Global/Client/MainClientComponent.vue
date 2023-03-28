@@ -160,11 +160,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div>
-        <apexchart width="500" type="bar" :options="chartOptions" :series="series"></apexchart>
-      </div>
-    </div>
+   
 
   </div>
 </template>

@@ -218,7 +218,6 @@ export default {
           if(this.Client.nom!=null && this.Client.prenom!=null && this.Client.cin!=null && this.Client.ribBank!=null && this.Client.company!=null && this.Client.website!=null && this.Client.adresse!=null){
             this.infoComplete=true;
           }
-          console.log(this.infoComplete);
     },
 
 

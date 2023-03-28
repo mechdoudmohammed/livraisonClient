@@ -21,6 +21,7 @@ use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Carbon\Carbon;
 use Hamcrest\Type\IsString;
 use Illuminate\Support\Facades\Storage;
+use Psy\Command\HistoryCommand;
 use Throwable;
 
 class CommandeController extends Controller
@@ -866,9 +867,6 @@ class CommandeController extends Controller
             ]);
         }
     }
-
-
-
     public function receptionRetour($id)
     {
         try {
@@ -907,4 +905,31 @@ class CommandeController extends Controller
             ]);
         }
     }
+    public function verificationRelaunch($id)
+    {
+        try {
+            $user = auth('sanctum')->user();
+            if ($user->role == 'Client' && $user->statut == 'Active') {
+                $statut =HistoriqueCommande::where('historiquecommandes.id_commande', $id)->where('historiquecommandes.id_client', $user->id)->where('historiquecommandes.etat_commande', 'RELAUNCH')->first();
+
+                    if ($statut) {
+                        return response()->json([
+                            'message' => 'Order already relaunch'
+                        ]);
+                    } else {
+                        return response()->json([
+                            'message' => 'Order not relaunched'
+                        ]);
+                    }
+              
+            }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
+        }
+    }
+
+
+
 }

@@ -25,13 +25,13 @@ export default {
 			await axios.get('api/client').then((response) => {
 				this.currentUser = response.data;
 			}).catch((errors) => {
-				console.log(errors)
+				if (errors.response.status === 401) {
+					localStorage.removeItem('token');
+                	}
 			})
 		};
 		if(this.$route.name === 'dashboardClient'){
 			axios.get('api/importantNotification').then((response) => {
-
-
 			if (response.data.data['nbrNotification']>0) {
 				Swal.fire({
 					icon: 'warning',
@@ -43,7 +43,6 @@ export default {
 					// 		.map(notification => `<tr><td>${vehicule.nature_maintenance}:</td><td>${vehicule.nom} ${vehicule.immatriculation}</td><td style='color:red'>${vehicule.duree} J</td></tr>`)
 					// 		.join('')
 					// 	+ '</table>',
-
 				})
 			}
 

@@ -225,7 +225,6 @@ export default {
 
     methods: {
         async changeFavorite(id) {
-            console.log(id)
             await axios.get('/api/changeFavorite/'+id)
                 .then(res => {  })
                 .catch(error => console.log(res));
@@ -301,7 +300,6 @@ export default {
             await axios.get('/api/Store/' + id)
 
                 .then(res => {
-                    console.log(res.data.data['id_commande'])
                     var text = "<table class='table table-borderless' style='text-align: left;'>" +
                         "<tr><td><b>Object:</b></td></tr><tr><td>" + res.data.data['object_store'];
                     text += "</td></tr><tr><td><b>Msg:</b></td></tr><tr><td>" + res.data.data['message_store'] + "</td></tr>"

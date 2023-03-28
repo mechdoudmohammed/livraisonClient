@@ -28,8 +28,7 @@ let routes = [
                         if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
            next({path: '/dashboardClient',});
                           } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
-                            console.log('im here')
-                            console.log(store.state.loginClient);
+                       
                             next({path: '/waitVerification',})
                        
                           } 
@@ -78,7 +77,7 @@ let routes = [
         },
     },
     {
-        name: "login",
+        name: "loginClient",
         path: "/login",
         component: login,
         beforeEnter: async (to, from, next) => {
@@ -90,8 +89,7 @@ let routes = [
                         if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
            next({path: '/dashboardClient',});
                           } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
-                            console.log('im here')
-                            console.log(store.state.loginClient);
+                     
                             next({path: '/waitVerification',})
                        
                           } 
@@ -142,29 +140,26 @@ let routes = [
         beforeEnter: async (to, from, next) => {
             if (localStorage.getItem('token') != null) {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
+                
                 await axios.get('api/client')
                     .then(response => {
                         store.state.loginClient = true;
                         if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
                             next();
                           } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
-                            console.log('im here')
-                            console.log(store.state.loginClient);
                             next({path: '/waitVerification',})
                        
                           } 
                     })
                     .catch(error => {
                         if (error.response.status === 401) {
+                            localStorage.removeItem('token');
                             next();
                            }
                     })
 
             } else {
-                next({
-                    path: '/login',
-                    query: { redirect: to.fullPath }
-                  })
+              
             }
 
         },

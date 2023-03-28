@@ -24,7 +24,7 @@
         <span class="mdi mdi-menu"></span>
       </button>
       <ul class="navbar-nav navbar-nav-right">
-       
+
         <li class="nav-item d-none d-lg-block full-screen-link">
           <a class="nav-link">
             <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
@@ -56,9 +56,9 @@
             <div class="dropdown-divider"></div>
 
 
-            <a class="dropdown-item preview-item" v-if="notification.titre=='Demande Suivie'"
-              @click.prevent="getCommandeSuivie(notification.id_commande,notification.id)"
-              v-for="notification in notifications" >
+            <a class="dropdown-item preview-item" v-if="notification.titre == 'Demande Suivie'"
+              @click.prevent="getCommandeSuivie(notification.id_commande, notification.id)"
+              v-for="notification in notifications">
               <div class="preview-thumbnail">
                 <div class="preview-icon bg-warning">
                   <i class="mdi mdi-calendar"></i>
@@ -112,7 +112,7 @@
           </div>
         </li>
       </ul>
-     
+
     </div>
   </nav>
 </template>
@@ -132,26 +132,25 @@ export default {
     }
   },
   methods: {
-    async getNotification(){
+    async getNotification() {
       await axios.get('api/Notification').then((response) => {
-       this.notifications=response.data
-                }).catch((errors) => {
-                    console.log(errors)
-                })
+        this.notifications = response.data
+      }).catch((errors) => {
+        console.log(errors)
+      })
     },
-    async getCommandeSuivie(id,id_notification){
-      console.log(id)
-      if(this.$route.name != 'suivie'){
+    async getCommandeSuivie(id, id_notification) {
+      if (this.$route.name != 'suivie') {
         await this.$router.push('suivie');
 
       }
-         this.$root.$refs.SuivieClientComponent.getHistoriqueCommande(id);
-     
-      axios.delete('api/Notification/'+id_notification).then((response) => {
-                }).catch((errors) => {
-                    console.log(errors)
-                })
-                this.getNotification();
+      this.$root.$refs.SuivieClientComponent.getHistoriqueCommande(id);
+
+      axios.delete('api/Notification/' + id_notification).then((response) => {
+      }).catch((errors) => {
+        console.log(errors)
+      })
+      this.getNotification();
     },
 
     async logout() {
