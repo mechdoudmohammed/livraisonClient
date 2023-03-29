@@ -44,7 +44,7 @@
             <div class="row company" style="border: 1px solid;font-weight: 600;text-align: center;">
                 <table style="margin-left:10px">
                     <tr>
-                        <td style="width:80px ; padding:10px;">
+                        <td style="width:130px ; padding:10px;">
                             <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
                         <td>
