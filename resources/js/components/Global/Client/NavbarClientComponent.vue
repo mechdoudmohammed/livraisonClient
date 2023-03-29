@@ -9,7 +9,7 @@
       <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
         <span class="mdi mdi-menu"></span>
       </button>
-      <div class="search-field d-none d-md-block">
+      <!-- <div class="search-field d-none d-md-block">
         <form class="d-flex align-items-center h-100" action="#">
           <div class="input-group">
             <div class="input-group-prepend bg-transparent">
@@ -18,7 +18,7 @@
             <input type="text" class="form-control bg-transparent border-0" placeholder="Chercher ">
           </div>
         </form>
-      </div>
+      </div> -->
       <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
         data-toggle="offcanvas">
         <span class="mdi mdi-menu"></span>

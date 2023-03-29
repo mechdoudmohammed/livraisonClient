@@ -33,11 +33,12 @@
             <div class="row company" style="border-top: 1px solid;font-weight: 600;text-align: center;">
                 <table style="margin-left:10px">
                     <tr>
-                        <td style="width:80px ;">
-                            <img src="{{ public_path('/images/logo.png') }}" width="50" height="50" />
+                        <td style="width:130px ;margin-left:10px">
+                            <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
                         <td>
-                            <span style="font-size: 12px;">ColiZone</span>
+                        <span style="font-size: 12px;">ColiZone S.A.R.L</span><br>
+                            <span style="font-size: 12px;"> +212 767 09 13 77</span>
                         </td>
                     </tr>
                     <tr>

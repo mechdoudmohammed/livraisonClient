@@ -1049,7 +1049,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group row" v-if="relaunch">
                                     <div class="col-6" v-if="formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'NOREPONSE' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'REPORTED'
                                         || formData.etat_commande == 'HOME'
@@ -1172,7 +1172,7 @@ export default {
             btn_confirme: false,
             historiqueFacture: [],
             stores: [],
-            relaunch:'',
+            relaunch: '',
         };
     },
     watch: {
@@ -1209,19 +1209,34 @@ export default {
             this.classifierCommande(0);
         },
         async deleteCommande(id) {
-            await axios
-                .delete("/api/Commande/" + id)
-                .then((res) => {
-                    this.$vs.notify({
-                        time: 5000,
-                        title: `La Commande:` + id,
-                        text: "La commande bien supprimer",
-                        color: "danger",
-                        position: "top-right",
-                    });
-                    this.classifierCommande(this.formDataCherche3.selected_option3)
-                })
-                .catch((error) => console.log(res));
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want delete Order!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "I Confirme",
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    this.$vs.loading({ color: "#22c22b" });
+                    await axios
+                        .delete("/api/Commande/" + id)
+                        .then((res) => {
+                            this.$vs.notify({
+                                time: 5000,
+                                title: `La Commande:` + id,
+                                text: "La commande bien supprimer",
+                                color: "danger",
+                                position: "top-right",
+                            });
+                            this.classifierCommande(this.formDataCherche3.selected_option3)
+                        })
+                        .catch((error) => console.log(res)).finally(() => this.$vs.loading.close());
+                }
+            });
+
+
         },
         async showDetails(id) {
             this.$vs.loading({ color: "#22c22b" });
@@ -1473,6 +1488,7 @@ export default {
                 .catch((error) => console.log(res));
         },
         async addCommande(excel) {
+            this.$vs.loading({ color: "#22c22b" });
             this.nom_err = "";
             this.errors = {};
             if (excel == "excel") {
@@ -1487,18 +1503,9 @@ export default {
                         this.formData.store['id']
                     );
                 }
-
-
                 formData.append("typeCommande", "excel");
-
                 await axios
-                    .post("/api/Commande", formData, {
-                        headers: {
-                            "Content-Type":
-                                "multipart/form-data; charset=utf-8;boundary=" +
-                                Math.random().toString().substr(2),
-                        },
-                    })
+                    .post("/api/Commande", formData, { headers: { "Content-Type": "multipart/form-data; charset=utf-8;boundary=" + Math.random().toString().substr(2), } })
                     .then(async (res) => {
                         this.message = res.data.message;
                         if (
@@ -1528,7 +1535,7 @@ export default {
                             this.nom_err =
                                 this.errors[Object.keys(this.errors)[0]];
                         }
-                    });
+                    }).finally(() => this.$vs.loading.close());
             }
         },
         async getHistoriqueCommande(id) {
@@ -1691,7 +1698,7 @@ export default {
                     time: 4000,
                 });
             } else {
-                var statut_icon = "error";
+                var statut_icon = "danger";
                 this.$vs.notify({
                     title: this.message,
                     color: statut_icon,
@@ -1895,13 +1902,14 @@ export default {
         },
         async reclamationCommande(tr) {
             this.formData = tr;
+            this.nom_err='';
             await axios
                 .get("/api/verificationRelaunch/" + tr.id_commande)
                 .then((res) => {
                     if (res.data.message == 'Order not relaunched') {
                         this.relaunch = true;
-                    }else if(res.data.message == 'Order already relaunch'){
-                        this.relaunch =false;
+                    } else if (res.data.message == 'Order already relaunch') {
+                        this.relaunch = false;
                     }
                 })
                 .catch((error) => console.log(res));
@@ -1971,19 +1979,18 @@ export default {
                 })
                 .catch((error) => console.log(res));
             if (this.message == "Erreur") {
-                var statut_icon = "error";
+                var statut_icon = "danger";
             } else if (this.message == "Successfully") {
                 var statut_icon = "success";
             } else {
                 var statut_icon = "warning";
             }
-            Swal.fire({
-                position: "center",
-                icon: statut_icon,
-                title: this.message,
-                showConfirmButton: false,
-                timer: 4000,
-            });
+            this.$vs.notify({
+                        time: 5000,
+                        title:  this.message,
+                        color: statut_icon,
+                        position: "top-right",
+                    });
             this.classifierCommande(this.formDataCherche3.selected_option3)
 
             this.initialiserFormData();

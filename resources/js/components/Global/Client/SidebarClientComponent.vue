@@ -4,18 +4,21 @@
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
       <ul class="nav">
         <li class="nav-item nav-profile">
-          <a href="#" class="nav-link">
+          <router-link to="/profile">
+          <a class="nav-link">
             <div class="nav-profile-image">
               <img src="images/profile/profile.jpg" alt="profile">
               <span class="login-status online"></span>
               <!--change to offline or busy as needed-->
             </div>
+         
             <div class="nav-profile-text d-flex flex-column">
-              <span class="font-weight-bold mb-2">{{ currentUser.nom }} {{ currentUser.prenom }}</span>
-              <span class="text-secondary text-small">{{ currentUser.role }}</span>
+              <span class="font-weight-bold mb-2">{{ Client.nom }} {{ Client.prenom }}</span>
+              <span class="text-secondary text-small">{{ Client.company }}</span>
             </div>
             <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
           </a>
+        </router-link>
         </li>
         <li class="nav-item" v-if="Client.role == 'Client'">
           <router-link to="/dashboardClient">

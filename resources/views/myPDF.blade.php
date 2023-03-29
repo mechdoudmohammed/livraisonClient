@@ -40,15 +40,16 @@
     <div class="row test">
 
         @foreach($data as $key)
-        <div class="col-6 sticker" style="margin:5px 1%;border:1.5px solid" v-for="(item, index) in getpackageClient" :key="index">
+        <div class="col-6 sticker" style="margin:3px 1%;border:1.5px solid" v-for="(item, index) in getpackageClient" :key="index">
             <div class="row company" style="border: 1px solid;font-weight: 600;text-align: center;">
                 <table style="margin-left:10px">
                     <tr>
-                        <td style="width:80px ; padding:10px">
-                            <img src="{{ public_path('/images/logo.png') }}" width="50" height="50" />
+                        <td style="width:80px ; padding:10px;">
+                            <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
                         <td>
-                            <span style="font-size: 12px;">ColiZone</span>
+                            <span style="font-size: 12px;">ColiZone S.A.R.L</span><br>
+                            <span style="font-size: 12px;"> +212 767 09 13 77</span>
                         </td>
                     </tr>
                     <tr>
@@ -66,7 +67,7 @@
                 </div>
 
             </div>
-            <div class="row client" style="border: 1px solid;padding:16px;height:130px">
+            <div class="row client" style="border: 1px solid;padding:16px;height:120px">
                 <span style="font-size: 15px;font-weight: 600;margin-left:10px">Destination:</span>
                 <table style="margin-left:20px">
                     <tr>
@@ -231,8 +232,7 @@
                             @else
                             {{$key->company}}
                             @endif
-                        vous
-                                remercie pour votre commande</span></td>
+                        vous remercie pour votre commande</span></td>
                     </tr>
                 </table>
 

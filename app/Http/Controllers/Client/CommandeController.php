@@ -718,7 +718,7 @@ class CommandeController extends Controller
                         $reported_date = Carbon::parse($request->dateReported);
                     }
                     if ($request->statut == 'ANNULER') {
-                        $commentaire_commande = 'Commande Annuler par ' . $user->username;
+                        $commentaire_commande = 'Order Cancel by' . $user->username;
                         $commande->etat_commande = $request->statut;
                     } else if ($request->statut == 'CHANGERPRIX') {
                         if ($request->commentaire_commande < 0) {
