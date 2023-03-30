@@ -31,7 +31,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     public function array(array $rows)
     {
         $id_employe_client = null;
-        if (count($rows) <= 10000) {
+        if (count($rows) <= 100) {
             foreach ($rows as $row) {
                 if ($row[0] != null) {
                     $this->data[] = array(
@@ -119,6 +119,6 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     }
     public function limit(): int
     {
-        return 11000;
+        return 110;
     }
 }
