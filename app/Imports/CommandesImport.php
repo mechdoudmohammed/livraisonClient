@@ -30,8 +30,8 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     }
     public function array(array $rows)
     {
-
-        if (count($rows) <= 100) {
+        $id_employe_client = null;
+        if (count($rows) <= 10000) {
             foreach ($rows as $row) {
                 if ($row[0] != null) {
                     $this->data[] = array(
@@ -47,7 +47,12 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                         ->select('villes.id', 'prix_livraison')->first();
                     $ville = Ville::where('id', $ville->id)->first();
                     $id_commande = $ville->pref_ville . strtoupper(Str::random(6)) . time();
-
+                    if ($user->role == 'EmployeClient') {
+                        $id_client = $user->superviseur;
+                        $id_employe_client = $user->id;
+                    } else if ($user->role == 'Client') {
+                        $id_client = $user->id;
+                    }
                     Commande::create([
                         "id_commande" => $id_commande,
                         "id_ville" =>  $ville->id,
@@ -58,8 +63,9 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                         "prix_commande" => $row[4],
                         "etat_commande" => "CREATED",
                         'type_autorisation' => $row[5],
-                        "id_client" => $user->id,
+                        "id_client" => $id_client,
                         "prix_livraison_final" => $ville->prix_livraison,
+                        'id_employe_client' => $id_employe_client,
                     ]);
                     HistoriqueCommande::create([
                         "id_commande" =>  $id_commande,
@@ -113,6 +119,6 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     }
     public function limit(): int
     {
-        return 110;
+        return 11000;
     }
 }

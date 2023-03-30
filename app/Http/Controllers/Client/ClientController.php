@@ -208,9 +208,11 @@ class ClientController extends Controller
             'password' => 'required',
             'device_name' => 'required',
         ]);
-        try {
+
             $client = Client::where('email', $request->email)->orWhere('username', $request->email)->first();
+           
             if (!$client || !Hash::check($request->password, $client->password)) {
+
                 throw ValidationException::withMessages([
                     'email' => ['Les informations d\'identification fournies sont incorrectes.'],
                 ]);
@@ -224,11 +226,7 @@ class ClientController extends Controller
                 );
             }
             return $client->createToken($request->device_name)->plainTextToken;
-        } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
-        }
+      
     }
     public function logout(Request $request)
     {
@@ -342,11 +340,20 @@ class ClientController extends Controller
                 }
             }
             if ($statut == 1 || $statut2 == 1) {
-                HistoriqueRamassage::create([
-                    "id_ville" => $user->id_ville,
-                    "statut_ramassage" => 'pas encour',
-                    "id_client" => $user->id,
-                ]);
+                if($user->role=='Client'){
+                    HistoriqueRamassage::create([
+                        "id_ville" => $user->id_ville,
+                        "statut_ramassage" => 'pas encour',
+                        "id_client" => $user->id,
+                    ]);
+                }elseif($user->role=='EmployeClient'){
+                    HistoriqueRamassage::create([
+                        "id_ville" => $user->id_ville,
+                        "statut_ramassage" => 'pas encour',
+                        "id_client" => $user->superviseur,
+                    ]);
+                }
+               
                 return response()->json([
                     'message' => 'commande created successfully'
                 ]);

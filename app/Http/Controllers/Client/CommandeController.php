@@ -144,6 +144,7 @@ class CommandeController extends Controller
                         $id_employe_client = $user->id;
                     } else if ($user->role == 'Client') {
                         $id_client = $user->id;
+                        
                     }
                     $statut = Commande::create([
                         "id_commande" =>  $id_commande,
@@ -652,7 +653,7 @@ class CommandeController extends Controller
     {
         try {
             $user = auth('sanctum')->user();
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
+            if ($user->role == 'Client'  && $user->statut == 'Active') {
                 $commandes2 = DB::table('historiquecommandes')
                     ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
                     ->join('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
@@ -681,6 +682,46 @@ class CommandeController extends Controller
                     ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
                     ->where('commandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
+                    ->select('historiquefactures.statut_facture', 'employes.username', 'historiquefactures.updated_at',)
+                    ->orderBy('historiquefactures.updated_at', 'asc')
+                    ->get();
+
+                return response()->json([
+                    'data' => $commandes,
+                    'responsable' => $commandes2,
+                    'data2' => $historiquefactures,
+                    'livreur' => $livreur
+                ]);
+            }
+            else if (($user->role == 'EmployeClient')  && $user->statut == 'Active') {
+                $commandes2 = DB::table('historiquecommandes')
+                    ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
+                    ->join('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
+                    ->where('historiquecommandes.etat_commande', 'HOME')
+                    ->where('commandes.id_client', $user->superviseur)
+                    ->where('commandes.id_commande', $id)
+                    ->select('employes.telephone')->first();
+                $livreur = DB::table('commandes')
+                    ->join('employes', 'commandes.livre_par', '=', 'employes.id')
+                    ->where('commandes.id_commande', $id)
+                    ->select('employes.telephone', 'employes.nom', 'employes.prenom')->first();
+                $commandes = DB::table('historiquecommandes')
+                    ->leftjoin('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
+                    ->leftjoin('clients', 'historiquecommandes.id_client', '=', 'clients.id')
+                    ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
+
+                    ->join('villes', 'commandes.id_ville', 'villes.id')
+                    ->where('historiquecommandes.id_commande', $id)
+                    ->where('commandes.id_client', $user->superviseur)
+                    ->select('historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
+                    ->orderBy('historiquecommandes.updated_at', 'asc')
+                    ->get();
+
+                $historiquefactures = DB::table('historiquefactures')
+                    ->leftjoin('employes', 'historiquefactures.id_employe', '=', 'employes.id')
+                    ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
+                    ->where('commandes.id_commande', $id)
+                    ->where('commandes.id_client', $user->superviseur)
                     ->select('historiquefactures.statut_facture', 'employes.username', 'historiquefactures.updated_at',)
                     ->orderBy('historiquefactures.updated_at', 'asc')
                     ->get();
@@ -910,7 +951,7 @@ class CommandeController extends Controller
         try {
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
-                $statut =HistoriqueCommande::where('historiquecommandes.id_commande', $id)->where('historiquecommandes.id_client', $user->id)->where('historiquecommandes.etat_commande', 'RELAUNCH')->first();
+                $statut =HistoriqueCommande::where('historiquecommandes.id_commande', $id)->where('historiquecommandes.id_client', $user->id)->where('historiquecommandes.etat_commande', 'RELANCER')->first();
 
                     if ($statut) {
                         return response()->json([
