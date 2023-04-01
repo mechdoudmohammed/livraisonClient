@@ -5,7 +5,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span> List of stores
+                </span> {{$t('message.Stores')}}
             </h3>
         </div>
         <div class="row">
@@ -15,38 +15,37 @@
                       
                         <div id="btn-top-package">
                             <button type="button" style="margin: 0 13px;" class="btn btn-primary float-end"
-                                @click="checkStore(false)"><i class="fa fa-plus" aria-hidden="true"></i> New
-                                Store</button>
+                                @click="checkStore(false)"><i class="fa fa-plus" aria-hidden="true"></i> {{$t('message.Add_Store')}}</button>
                         </div>
                         <vs-table stripe :data="stores.data">
 
                             <template slot="thead">
                                 <vs-th>
-                                    Favorite
+                                    {{$t('message.Favorite')}}
                                 </vs-th>
                                 <vs-th>
-                                    Id Store
+                                    {{$t('message.Store_Id')}}
                                 </vs-th>
                                 <vs-th>
-                                    Name
+                                    {{$t('message.Name')}}
                                 </vs-th>
                                 <vs-th>
-                                    City
+                                    {{$t('message.City')}}
                                 </vs-th>
                                 <vs-th>
-                                    Address
+                                    {{$t('message.Address')}}
                                 </vs-th>
                                 <vs-th>
-                                    Website
+                                    {{$t('message.WebSite')}}
                                 </vs-th>
                                 <vs-th>
-                                    Telephone
+                                    {{$t('message.Phone_Number')}}
                                 </vs-th>
                                 <vs-th>
-                                    Status
+                                    {{$t('message.Status')}}
                                 </vs-th>
                                 <vs-th>
-                                    Operation
+                                    {{$t('message.Operation')}}
                                 </vs-th>
                             </template>
                             <template slot-scope="{data}">
@@ -107,9 +106,9 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ajouterStore" v-if="!edit">Add a new Store
+                        <h5 class="modal-title" id="ajouterStore" v-if="!edit">{{$t('message.Add_Store')}}
                         </h5>
-                        <h5 class="modal-title" id="ajouterStore" v-if="edit">Edit Store</h5>
+                        <h5 class="modal-title" id="ajouterStore" v-if="edit">{{$t('message.Edit_Store')}}</h5>
 
                     </div>
                     <div class="modal-body">
@@ -117,33 +116,33 @@
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="ville_client">City</label>
+                            <label for="ville_client">{{$t('message.City')}}</label>
 
-                            <v-select placeholder="Please select a city" v-model="formData.ville"
+                            <v-select :placeholder="$t('message.Please_Select_City')" v-model="formData.ville"
                                 name="ville" :options="villes" label="ville" index="id" />
                         </div>
 
 
                         <div class="form-group">
 
-                            <label for="nom_store">Store Name</label>
+                            <label for="nom_store">{{$t('message.Store_Name')}}</label>
                             <input type="text" class="form-control" id="nom_store" v-model='formData.nom_store'
                                 name="nom_store">
                         </div>
                         <div class="form-group">
-                            <label for="siteweb_commande">Website</label>
+                            <label for="siteweb_commande">{{$t('message.WebSite')}}</label>
 
                             <input type="text" class="form-control" id="siteweb_commande"
                                 v-model='formData.siteweb_store' name="siteweb_commande">
                         </div>
                         <div class="form-group">
-                            <label for="telephone_store">Telephone</label>
+                            <label for="telephone_store">{{$t('message.Phone_Number')}}</label>
 
                             <input type="text" class="form-control" id="telephone_store"
                                 v-model='formData.telephone_store' name="telephone_store">
                         </div>
                         <div class="form-group">
-                            <label for="adresse_store">Address</label>
+                            <label for="adresse_store">{{$t('message.Address')}}</label>
 
                             <input type="text" class="form-control" id="adresse_store" v-model='formData.adresse_store'
                                 name="adresse_store">
@@ -152,10 +151,9 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addStore()">Valider
-                            Store</button>
+                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addStore()">Create</button>
                         <button type="button" class="btn btn-primary" v-if="edit"
-                            @click.prevent="updateStore()">Modifier Store</button>
+                            @click.prevent="updateStore()">{{$t('message.Edit')}}</button>
 
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
                             data-bs-dismiss="modal">Annuler</button>

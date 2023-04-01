@@ -459,14 +459,16 @@ export default {
             text: 'Veillez-vous contacter l\'administrateur',
           })
         } else {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${response.data}`
-          localStorage.setItem('token', response.data);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.data}`
+          localStorage.setItem('token', response.data.data);
+          localStorage.setItem('locale', response.data.language);
           store.state.loginClient = true;
           await axios.get('api/client')
-            .then(response => {
-              if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
+            .then(res => {
+              console.log(res);
+              if (res.data.statut == 'Active' && res.data.email_verified_at != null) {
                 this.$router.push('dashboardClient');
-              } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
+              } else if ((res.data.statut == 'Inactive' || res.data.statut == 'Active') && res.data.email_verified_at == null) {
                 this.$router.push('waitVerification');
               } 
 

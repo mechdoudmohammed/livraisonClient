@@ -4,7 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span>Statistical
+                </span>{{$t('message.Statistics')}}
             </h3>
         </div>
 
@@ -22,7 +22,7 @@
                             <div class="col-xxl-6 col-md-4">
                                 <div class="dowload_model">
                                 <vs-button color="danger" @click.prevent="getClientsData" type="filled"><i
-                                        class="fa fa-download" aria-hidden="true"></i> Customer data</vs-button>
+                                        class="fa fa-download" aria-hidden="true"></i> {{$t('message.Customer_Data')}}</vs-button>
                             </div>
                             </div>
                         </div>
@@ -34,7 +34,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Total Colis <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Orders_Count')}}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -42,7 +42,7 @@
                                                 <i class="mdi mdi-cube"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ totalColis }} Colis</h6>
+                                                <h6>{{ totalColis }} {{$t('message.Colis')}}</h6>
                                                 <!--  <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -58,7 +58,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Delivred <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Delivred')}} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -66,7 +66,7 @@
                                                 <i class="mdi mdi-check"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ DELIVERED }} Colis</h6>
+                                                <h6>{{ DELIVERED }} {{$t('message.Colis')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -82,7 +82,7 @@
                                 <div class="card info-card customers-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Returned <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Returned')}} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -90,7 +90,7 @@
                                                 <i class="mdi mdi-redo"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ RETURNED }} Colis</h6>
+                                                <h6>{{ RETURNED }} {{$t('message.Colis')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -105,7 +105,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Total COD <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Total_COD')}}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -113,8 +113,8 @@
                                                 <i class="mdi mdi-currency-usd"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6 v-if="REVENU != null">{{ REVENU }} Dhs</h6>
-                                                <h6 v-if="REVENU == null">0 Dhs</h6>
+                                                <h6 v-if="REVENU != null">{{ REVENU }} {{$t('message.Dhs')}}</h6>
+                                                <h6 v-if="REVENU == null">0 {{$t('message.Dhs')}}</h6>
 
                                             </div>
                                         </div>
@@ -127,7 +127,7 @@
                                 <div class="card info-card sales-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Frais Livraison <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Shipping_Fees')}} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -135,8 +135,8 @@
                                                 <i class="mdi mdi-van-utility"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6 v-if="total_livraison != null">{{ total_livraison }} Dhs</h6>
-                                                <h6 v-if="total_livraison == null">0 Dhs</h6>
+                                                <h6 v-if="total_livraison != null">{{ total_livraison }} {{$t('message.Dhs')}}</h6>
+                                                <h6 v-if="total_livraison == null">0 {{$t('message.Dhs')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -151,7 +151,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Revenu NET<span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Revenu_NET')}}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                            
@@ -161,7 +161,7 @@
                                                 <i class="mdi mdi-coin"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ REVENU - total_livraison }} Dhs </h6>
+                                                <h6>{{ REVENU - total_livraison }} {{$t('message.Dhs')}} </h6>
 
 
                                             </div>
@@ -179,7 +179,7 @@
                                 <div class="card info-card en-cours-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Package In Progress <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Package_In_Progress')}} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -187,7 +187,7 @@
                                                 <i class="mdi mdi-package"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisEnCour }} Colis</h6>
+                                                <h6>{{ colisEnCour }} {{$t('message.Colis')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -203,7 +203,7 @@
                                 <div class="card info-card customers-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Package To Track <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Package_To_Track')}}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -211,7 +211,7 @@
                                                 <i class="mdi mdi-phone"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisSuivie }} Colis</h6>
+                                                <h6>{{ colisSuivie }} {{$t('message.Colis')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -227,7 +227,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Pack Delivered Paid <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Paid_Delivered_Orders')}} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -235,7 +235,7 @@
                                                 <i class="mdi mdi-calendar-check"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisFacture }} Colis</h6>
+                                                <h6>{{ colisFacture }} {{$t('message.Colis')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -250,7 +250,7 @@
                                 <div class="card info-card cancel-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Package Delivered Unpaid <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.UnPaid_Delivered_Orders')}}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -258,7 +258,7 @@
                                                 <i class="mdi mdi-calendar-remove"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisNonFacture }} Colis</h6>
+                                                <h6>{{ colisNonFacture }} {{$t('message.Colis')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -273,7 +273,7 @@
                                 <div class="card info-card sales-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Nb Facture <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Invoices_Count')}} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -281,7 +281,7 @@
                                                 <i class="mdi mdi-file"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ nbrFacture }} Facture</h6>
+                                                <h6>{{ nbrFacture }} {{$t('message.Invoices')}}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -296,7 +296,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">Delivery Rate <span></span></h5>
+                                        <h5 class="card-title">{{$t('message.Delivery_Rate')}} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -317,13 +317,13 @@
                         </div>
                         <div class="row statistiqueRow">
                             <div class="statistique">
-                                <h3>Income per day</h3>
+                                <h3>{{$t('message.Income_per_day')}}</h3>
                                 <apexchart type="bar"  :options="chartOptions" :series="chartOptions.series">
                                 </apexchart>
                             </div>
 
                             <div class="statistique">
-                                <h3>Top 10 City</h3>
+                                <h3>{{$t('message.Top_10_Cities')}}</h3>
                                 <apexchart type="bar"  :options="chartOptions2"
                                     :series="chartOptions2.series"></apexchart>
                             </div>
@@ -486,7 +486,7 @@ export default {
                         },
                     },
                         this.chartOptions.series = [{
-                            name: 'Dhs',
+                            name: $t('message.Dhs'),
                             data: res.data.data
                         }]
                 })
@@ -500,7 +500,7 @@ export default {
                         },
                     },
                         this.chartOptions2.series = [{
-                            name: 'Colis',
+                            name: $t('message.Colis'),
                             data: res.data.data
                         }]
                 })

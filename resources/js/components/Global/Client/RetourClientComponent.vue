@@ -5,7 +5,7 @@
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
                 </span>
-                Return receipt
+                {{$t('message.Return_receipt')}}
             </h3>
         </div>
         <div class="row">
@@ -29,7 +29,7 @@
                                 </vs-select>
 
                                 <div class="search_bar">
-                                    <vs-input placeholder="Search" v-model="formDataCherche.valeur_recherche" />
+                                    <vs-input :placeholder="$t('message.Search')" v-model="formDataCherche.valeur_recherche" />
                                     <button class="btn-chercher" @click="classifierBonRetour(formDataCherche3.selected_option3)">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
@@ -39,10 +39,10 @@
 
                         <vs-table stripe v-model="selected" :data="bonRetour.data">
                             <template slot="thead">
-                                <vs-th> Id </vs-th>
-                                <vs-th> NbrColis </vs-th>
-                                <vs-th> Statut </vs-th>
-                                <vs-th> Operation </vs-th>
+                                <vs-th>{{$t('message.Id')}}</vs-th>
+                                <vs-th> {{$t('message.Count_Colis')}} </vs-th>
+                                <vs-th> {{$t('message.Status')}}</vs-th>
+                                <vs-th> {{$t('message.Operation')}} </vs-th>
                             </template>
                             <template slot-scope="{ data }">
                                 <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
@@ -56,9 +56,9 @@
                                     </vs-td>
                                     <vs-td :data="tr.statut_bonRetourClient">
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.statut_bonRetourClient == 'Envoyer'">Envoyer</b>
+                                            v-if="tr.statut_bonRetourClient == 'Envoyer'">{{$t('message.Send')}}</b>
                                         <b class="badge badge badge-gradient-success"
-                                            v-if="tr.statut_bonRetourClient == 'recu'">recu</b>
+                                            v-if="tr.statut_bonRetourClient == 'recu'">{{$t('message.Receipt')}}</b>
                                     </vs-td>
                                     <vs-td :data="tr.statut_bonRetourClient">
                                         <button type="button" class="btn btn-valide"

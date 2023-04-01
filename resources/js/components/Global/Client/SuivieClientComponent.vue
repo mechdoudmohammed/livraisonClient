@@ -4,8 +4,8 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span>
-                Request Tracked <b class="badge badge badge-gradient-secondary">{{ nbrCommande }}</b>
+                </span>{{ $t('message.Track_This_Order') }} <b class="badge badge badge-gradient-secondary">{{ nbrCommande
+                }}</b>
             </h3>
         </div>
         <div class="row">
@@ -32,7 +32,8 @@
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
                                 <div class="search_bar">
-                                    <vs-input placeholder="Search" v-model="formDataCherche.valeur_recherche" />
+                                    <vs-input :placeholder="$t('message.Search')"
+                                        v-model="formDataCherche.valeur_recherche" />
                                     <button class="btn-chercher" @click="chercher(formDataCherche3.selected_option3)">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
@@ -42,15 +43,16 @@
 
                         <vs-table stripe multiple v-model="selected" @dblSelection="copyCommande" :data="commandes.data">
                             <template slot="thead">
-                                <vs-th v-if="Client.stock == 1"> Type </vs-th>
-                                <vs-th> Id </vs-th>
-                                <vs-th> Store </vs-th>
-                                <vs-th> Full Name </vs-th>
-                                <vs-th> Telephone </vs-th>
-                                <vs-th> City </vs-th>
-                                <vs-th> Price </vs-th>
-                                <vs-th> Statut </vs-th>
-                                <vs-th> Operation </vs-th>
+                                <vs-th v-if="Client.stock == 1"> {{ $t('message.Type') }}</vs-th>
+                                <vs-th> {{ $t('message.Id') }} </vs-th>
+                                <vs-th> {{ $t('message.Store') }} </vs-th>
+                                <vs-th> {{ $t('message.Name') }} </vs-th>
+                                <vs-th> {{ $t('message.Phone_Number') }} </vs-th>
+                                <vs-th> {{ $t('message.City') }} </vs-th>
+                                <vs-th> {{ $t('message.Price') }} </vs-th>
+                                <vs-th> {{ $t('message.Status') }} </vs-th>
+                                <vs-th> {{ $t('message.Invoice') }} </vs-th>
+                                <vs-th> {{ $t('message.Operation') }} </vs-th>
                             </template>
                             <template slot-scope="{ data }">
                                 <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
@@ -282,8 +284,7 @@
                                                                 hCommande.etat_commande
                                                             }}</b>
                                                         <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'PICKUP'">Pickup
-                                                            request</b>
+                                                            v-if="hCommande.etat_commande == 'PICKUP'">Pending Pickup</b>
                                                         <b class="badge badge badge-gradient-info"
                                                             v-if="hCommande.etat_commande == 'HOME'">INHOUSE</b>
                                                         <b class="badge badge badge-gradient-info"
@@ -522,7 +523,8 @@
                                                         v-if="hCommande.etat_commande == 'PICKUP'">
                                                         Request Pickup By:
 
-                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername }}</b>
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
                                                         <b v-else>{{ hCommande.username }}</b>
                                                         <br />
                                                         At
@@ -723,7 +725,7 @@
                                     </div>
                                     <div class="col-3">
                                         <b><i class="fas fa-dollar-sign"></i>
-                                            {{ formData.prix_commande }} Dhs</b>
+                                            {{ formData.prix_commande }} {{ $t('message.Dhs') }}</b>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -736,26 +738,32 @@
                                     </div>
                                 </div>
                                 <div class="form-group row"
-                                    v-if="formData.etat_commande == 'PICKUP' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'ENROUTE' || formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'INHOUSE' || formData.etat_commande == 'HOME' || formData.etat_commande == 'ASSIGN'">
+                                    v-if="formData.etat_commande == 'RELANCER' || formData.etat_commande == 'REPORTED' || formData.etat_commande == 'RAMASSER' || formData.etat_commande == 'PICKUP' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'ENROUTE' || formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'INHOUSE' || formData.etat_commande == 'HOME' || formData.etat_commande == 'ASSIGN'">
                                     <div class="col-5">
-                                        <button type="button" class="btn btn-danger" @click.prevent="editStatut('ANNULER')">
+                                        <button type="button" class="btn btn-danger" @click.prevent="
+                                            editStatut('ANNULER')
+                                        ">
                                             <i class="fas fa-check"></i> Annuler
                                         </button>
                                     </div>
                                     <div class="col-7">
-                                        <button type="button" class="btn btn-info"
-                                            @click.prevent="editStatut('CHANGERPRIX')">
-                                            <i class="fas fa-truck"></i> Change Price
+                                        <button type="button" class="btn btn-info" @click.prevent="
+                                            editStatut('CHANGERPRIX')
+                                        ">
+                                            <i class="fas fa-truck"></i> {{ $t('message.Change_Price') }}
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-6"
-                                        v-if="formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'NOREPONSE' || formData.etat_commande == 'DMSUIVIE'">
-                                        <button type="button" class="btn btn-warning"
-                                            @click.prevent="editStatut('RELANCER')">
+
+                                <div class="form-group row" v-if="relaunch">
+                                    <div class="col-6" v-if="formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'NOREPONSE' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'REPORTED'
+                                        || formData.etat_commande == 'HOME'
+                                    ">
+                                        <button type="button" class="btn btn-warning" @click.prevent="
+                                            editStatut('RELANCER')
+                                        ">
                                             <i class="fas fa-clock"></i>
-                                            Relaunch
+                                            {{ $t('message.Relaunch') }}
                                         </button>
                                     </div>
                                 </div>
@@ -770,7 +778,7 @@
                 </div>
             </div>
         </div>
-</div>
+    </div>
 </template>
 <style scoped>
 input[type="number"] {
@@ -825,11 +833,11 @@ export default {
             historiqueCommande: {},
             livreur: '',
             options: [
-                { text: "Num Order", value: "id_commande" },
-                { text: "Full name", value: "nom_client_commande" },
-                { text: "Telephone", value: "telephone_client_commande" },
-                { text: "Price", value: "prix_commande" },
-                { text: "City", value: "nom_ville" },
+            { text:this.FirstLowerRestUper(this.$t('message.Order_id')), value: "id_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.Name')), value: "nom_client_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.Phone_Number')), value: "telephone_client_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.Price')), value: "prix_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.City')), value: "nom_ville" },
             ],
             formDataCherche: {
                 selected_option: "id_commande",
@@ -848,6 +856,7 @@ export default {
             btn_confirme: false,
             historiqueFacture: [],
             stores: [],
+            relaunch: '',
         };
     },
     watch: {
@@ -878,6 +887,9 @@ export default {
         },
     },
     methods: {
+        FirstLowerRestUper(world) {
+            return world[0].toUpperCase() + world.slice(1).toLowerCase();
+        },
         async refreshData() {
             await this.initialiserFormData();
             this.classifierCommande(this.formDataCherche3.selected_option3);
@@ -907,13 +919,13 @@ export default {
 
                     if (res.data.data.nom != null && res.data.data.prenom != null) {
                         text +=
-                        "</td></tr><tr><td>Responsable :<b> </b></td><td>" +
-                        this.commande.nom + ' ' + this.commande.prenom +
-                        "</td></tr>";
+                            "</td></tr><tr><td>Responsable :<b> </b></td><td>" +
+                            this.commande.nom + ' ' + this.commande.prenom +
+                            "</td></tr>";
                         text +=
-                        "</td></tr><tr><td>Phone :<b> </b></td><td>" +
-                        this.commande.telephone_responsable +
-                        "</td></tr>";
+                            "</td></tr><tr><td>Phone :<b> </b></td><td>" +
+                            this.commande.telephone_responsable +
+                            "</td></tr>";
                     }
 
                     text +=
@@ -941,7 +953,7 @@ export default {
                     text +=
                         "</td></tr><tr><td>Price :<b> </b></td><td>" +
                         this.commande.prix_commande +
-                        " Dhs </td></tr>";
+                        $t('message.Dhs') + "</td></tr>";
 
 
 
@@ -1152,11 +1164,11 @@ export default {
                 }),
                 (this.historiqueCommande = {}),
                 (this.options = [
-                    { text: "ID commande", value: "id_commande" },
-                    { text: "Nom", value: "nom_client_commande" },
-                    { text: "Telephone", value: "telephone_client_commande" },
-                    { text: "Prix", value: "prix_commande" },
-                    { text: "Ville", value: "nom_ville" },
+                { text:this.FirstLowerRestUper(this.$t('message.Order_id')), value: "id_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.Name')), value: "nom_client_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.Phone_Number')), value: "telephone_client_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.Price')), value: "prix_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.City')), value: "nom_ville" },
                 ]),
                 (this.formDataCherche = {
                     selected_option: "id_commande",
@@ -1186,21 +1198,32 @@ export default {
             });
         },
 
-        reclamationCommande(tr) {
+        async reclamationCommande(tr) {
             this.formData = tr;
+            this.nom_err = '';
+            await axios
+                .get("/api/verificationRelaunch/" + tr.id_commande)
+                .then((res) => {
+                    if (res.data.message == 'Order not relaunched') {
+                        this.relaunch = true;
+                    } else if (res.data.message == 'Order already relaunch') {
+                        this.relaunch = false;
+                    }
+                })
+                .catch((error) => console.log(res));
             $("#reclamationCommande").modal("show");
         },
         editStatut(button) {
             if (button == "ANNULER") {
                 this.formData.statut = button;
                 Swal.fire({
-                    title: "Are you sure?",
+                    title: this.$t('message.Are_you_sure'),
                     text: "Vous voulez annuler la commande!",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Oui je Confirme",
+                    confirmButtonText: this.$t('message.Yes_I_Confirme'),
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -1211,13 +1234,13 @@ export default {
                 this.formData.statut = button;
 
                 Swal.fire({
-                    title: "Are you sure?",
+                    title: this.$t('message.Are_you_sure'),
                     text: "The command will Relaunch!",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Oui je Confirme",
+                    confirmButtonText: this.$t('message.Yes_I_Confirme'),
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -1227,14 +1250,14 @@ export default {
             } else if (button == "CHANGERPRIX") {
                 this.formData.statut = button;
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: "You want to change the price!",
+                    title: this.$t('message.Are_you_sure'),
+                    text: this.$t('message.You_want_to_change_the_price'),
                     input: "number",
                     icon: "info",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Oui je Confirme",
+                    confirmButtonText: this.$t('message.Yes_I_Confirme'),
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.formData.statut = button;

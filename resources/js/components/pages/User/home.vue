@@ -143,7 +143,7 @@
                                             Ville
                                         </vs-th>
                                         <vs-th>
-                                            Frais livraison
+                                            shipping fees
                                         </vs-th>
                                         <vs-th>
                                             Frais retour
@@ -156,10 +156,10 @@
                                                 {{ tr.nom_ville }}
                                             </vs-td>
                                             <vs-td :data="tr.prix_livraison">
-                                                {{ tr.prix_livraison }} Dhs
+                                                {{ tr.prix_livraison }} {{$t('message.Dhs')}}
                                             </vs-td>
                                             <vs-td :data="tr.prix_retour">
-                                                {{ tr.prix_retour }} Dhs
+                                                {{ tr.prix_retour }} {{$t('message.Dhs')}}
                                             </vs-td>
                                         </vs-tr>
                                     </template>

@@ -106,14 +106,14 @@ Route::middleware(['auth:client'])
         Route::post('NotificationModifier', 'Client\NotificationController@modifier');
         Route::get('checkNotification', 'Client\NotificationController@checkNotification');
         Route::get('importantNotification', 'Client\NotificationController@importantNotification');
-    
+
         //---------------Fin Notification---------------
         Route::get('getAnnonces', 'Client\ClientController@getAnnonces');
         Route::post('sendMessage', 'Client\ClientController@sendMessage');
         Route::get('getMessages/{id}', 'Client\ClientController@getMessages');
         Route::get('verificationRelaunch/{id}', 'Client\CommandeController@verificationRelaunch');
         Route::get('getBonRetour/{id}', 'Client\CommandeController@getBonRetourClient');
-
+        Route::get('getCountDMsuivie', 'Client\NotificationController@getCountDMsuivie');
     });
 
 

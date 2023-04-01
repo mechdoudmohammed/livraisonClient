@@ -184,8 +184,8 @@ let routes = [
     },
 
     {
-        name: "transaction",
-        path: "/transaction",
+        name: "invoices",
+        path: "/invoices",
         component: dashboardClient,
         meta: { requiresAuthClient: true },
     },

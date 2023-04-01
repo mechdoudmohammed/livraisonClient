@@ -4,7 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span> Employee list
+                </span>   {{$t('message.Employee_list')}}
             </h3>
         </div>
         <div class="row">
@@ -14,7 +14,7 @@
                         <div id="btn-top-package">
                             <button type="button" style="margin: 0 13px;" class="btn btn-primary float-end"
                               @click.prevent="checkEmploye(false)"><i
-                                    class="fa fa-plus" aria-hidden="true"></i> New Employe</button>
+                                    class="fa fa-plus" aria-hidden="true"></i>   {{$t('message.Add_Staff')}}</button>
                         </div>
                
                         <vs-table stripe :data="employes.data">
@@ -23,26 +23,25 @@
                                     ID
                                 </vs-th>
                                 <vs-th>
-                                    Full name
+                                    {{$t('message.Name')}}
                                 </vs-th>
                                 <vs-th>
-                                    Telephone
+                                    {{$t('message.Phone_Number')}}
                                 </vs-th>
                                 <vs-th>
-                                    Username
+                                    {{$t('message.Username')}}
                                 </vs-th>
                                 <vs-th>
-                                    Zone
+                                    {{$t('message.Zone')}}
                                 </vs-th>
                                 <vs-th>
-                                    Stock
-                                </vs-th>
-
-                                <vs-th>
-                                    Statut
+                                    {{$t('message.Stock')}}
                                 </vs-th>
                                 <vs-th>
-                                    Operation
+                                    {{$t('message.Status')}}
+                                </vs-th>
+                                <vs-th>
+                                    {{$t('message.Operation')}}
                                 </vs-th>
                             </template>
                             <template slot-scope="{data}">
@@ -64,8 +63,8 @@
                                     </vs-td>
                                     
                                     <vs-td :data="tr.stock">
-                                       <span class="badge badge badge-gradient-info" v-if="tr.stock==1">Oui</span>
-                                        <span class="badge badge badge-gradient-info" v-if="tr.stock==0">Non</span>
+                                       <span class="badge badge badge-gradient-info" v-if="tr.stock==1">{{$t('message.Yes')}}</span>
+                                        <span class="badge badge badge-gradient-info" v-if="tr.stock==0">{{$t('message.No')}}</span>
                                     </vs-td>
                                     <vs-td :data="tr.statut">
                                         <b class="badge badge badge-gradient-danger" v-if="tr.statut == 'Inactive'">{{
@@ -100,32 +99,32 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ajouterEmploye" v-if="!edit">Add a new Employee</h5>
-                        <h5 class="modal-title" id="ajouterEmploye" v-if="edit">Edit Employee</h5>
+                        <h5 class="modal-title" id="ajouterEmploye" v-if="!edit">{{$t('message.Add_Staff')}}</h5>
+                        <h5 class="modal-title" id="ajouterEmploye" v-if="edit">{{$t('message.Edit_Employee')}}</h5>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="id_ville">Ville<span class="text-danger"> *</span></label>
+                            <label for="id_ville">{{$t('message.City')}}<span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
-                            <v-select placeholder="Veuillez-vous selectionner une ville" v-model="ville"
+                            <v-select :placeholder="$t('message.Please_Select_City')" v-model="ville"
                                 name="id_ville" :options="villes" label="ville" index="id" />
                         </div>
 
                         <div class="form-group">
-                            <label for="prenom">Last Name <span class="text-danger"> *</span></label>
+                            <label for="prenom">{{$t('message.Last_Name')}} <span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="nom" v-model="formData.nom" name="nom">
                         </div>
                         <div class="form-group">
-                            <label for="prenom">First Name <span class="text-danger"> *</span> </label>
+                            <label for="prenom">{{$t('message.First_Name')}} <span class="text-danger"> *</span> </label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="prenom" v-model="formData.prenom" name="prenom">
                         </div>
                         <div class="form-group">
-                            <label for="telephone">Telephone <span class="text-danger"> *</span></label>
+                            <label for="telephone">{{$t('message.Phone_Number')}} <span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="telephone" v-model="formData.telephone"
                                 name="telephone">
@@ -147,7 +146,7 @@
                                 name="ribBank">
                         </div>
                         <div class="form-group">
-                            <label for="id_bank">BankName</label>
+                            <label for="id_bank">{{$t('message.BankName')}}</label>
                             <span class="text-danger"></span>
                             <select class="form-control" id="id_bank" v-model="formData.id_bank">
                                 <option name="id_bank" :value="bank.id_bank" v-for="bank in banks">{{ bank.nomBank }}
@@ -161,7 +160,7 @@
                                 name="username">
                         </div>
                         <div class="form-group">
-                            <label for="password">password <span class="text-danger"> *</span></label>
+                            <label for="password">{{$t('message.Password')}} <span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="password" class="form-control" id="password" v-model="formData.password"
                                 name="password">
@@ -171,7 +170,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addEmploye()">Add Employe</button>
                         <button type="button" class="btn btn-primary" v-if="edit"
-                            @click.prevent="updateEmploye(formData.selected_client)">Edit EmployeE</button>
+                            @click.prevent="updateEmploye(formData.selected_client)">{{$t('message.Edit_Employee')}}</button>
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
                             data-bs-dismiss="modal">Annuler</button>
                     </div>
@@ -248,7 +247,7 @@ export default {
             await axios.post('/api/EmployeClient', this.formData).then((res) => {
                 if(res.data.message=='Employe Created successfully'){
                       this.$vs.notify({
-                        title: `Employe Ajouter`,
+                        title: this.$t('message.Add_Employee'),
                         color: 'success', position: 'top-right',
                         time: 4000
                     })

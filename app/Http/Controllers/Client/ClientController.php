@@ -225,7 +225,14 @@ class ClientController extends Controller
 
                 );
             }
-            return $client->createToken($request->device_name)->plainTextToken;
+            return response()->json(
+                [
+                    "data" => $client->createToken($request->device_name)->plainTextToken,
+                    'language'=>$client->language
+                ]
+
+            );
+            return ;
       
     }
     public function logout(Request $request)

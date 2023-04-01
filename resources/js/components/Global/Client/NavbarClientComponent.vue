@@ -1,11 +1,13 @@
 <template>
   <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
 
       <a class="navbar-brand brand-logo" href="/"><img src="/images/logo2.png" alt="logo" /></a>
 
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-stretch">
+
       <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
         <span class="mdi mdi-menu"></span>
       </button>
@@ -20,7 +22,7 @@
         </form>
       </div> -->
       <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
-        data-toggle="offcanvas">
+        @click.prevent="changeToRight" data-toggle="offcanvas">
         <span class="mdi mdi-menu"></span>
       </button>
       <ul class="navbar-nav navbar-nav-right">
@@ -36,6 +38,7 @@
             <i class="mdi mdi-email-outline"></i>
             <span class="count-symbol bg-warning"></span>
           </a>
+
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
             <h6 class="p-3 mb-0">Messages</h6>
             <div class="dropdown-divider"></div>
@@ -111,9 +114,35 @@
               <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
           </div>
         </li>
+        <li class="nav-item dropdown">
+          <div class="lang-menu">
+            <div class="selected-lang" v-if="locale == 'fr'" @click="displayDropdownLang">
+              <img src="https://img.icons8.com/color/32/france.png" style="margin-right: 4px; width: 23px;">French
+            </div>
+            <div class="selected-lang" v-if="locale == 'en'" @click="displayDropdownLang">
+              <img src="https://img.icons8.com/color/32/great-britain.png" style="margin-right: 4px;width: 23px;">English
+            </div>
+            <div class="selected-lang" v-if="locale == 'ar'" @click="displayDropdownLang">
+              <img src="https://img.icons8.com/color/32/morocco.png" style="margin-right: 4px;width: 23px;">العربية
+            </div>
+            <ul id="dropdownLang">
+              <li>
+                <a @click.prevent="changeLanguage('en')" class="en">English</a>
+              </li>
+              <li>
+                <a @click.prevent="changeLanguage('fr')" class="fr">French</a>
+              </li>
+              <li>
+                <a @click.prevent="changeLanguage('ar')" class="ar">العربية</a>
+              </li>
+            </ul>
+
+          </div>
+        </li>
       </ul>
 
     </div>
+
   </nav>
 </template>
 
@@ -128,10 +157,18 @@ export default {
     return {
       currentUser: {},
       token: localStorage.getItem('token'),
+      locale: localStorage.getItem('locale'),
       notifications: [],
     }
   },
   methods: {
+    displayDropdownLang() {
+      document.getElementById('dropdownLang').style.display = 'block'
+    },
+    changeLanguage(lang) {
+      localStorage.setItem('locale', lang);
+      window.location.reload();
+    },
     async getNotification() {
       await axios.get('api/Notification').then((response) => {
         this.notifications = response.data
@@ -152,7 +189,22 @@ export default {
       })
       this.getNotification();
     },
+    changeToRight() {
+      if (localStorage.getItem('locale') == 'ar') {
+        if (window.innerWidth <= 991) {
+          if (document.getElementById("sidebar").style.right == "0px") {
+            document.getElementById("sidebar").style.removeProperty('left');
+            document.getElementById("sidebar").style.removeProperty('right');
+          } else {
+            document.getElementById("sidebar").style.left = "inherit";
+            document.getElementById("sidebar").style.right = "0";
+          }
 
+
+        }
+
+      }
+    },
     async logout() {
       const config = {
         headers: {
@@ -224,3 +276,78 @@ export default {
 
 }
 </script>
+<style scoped>
+.lang-menu {
+  font-weight: bold;
+}
+
+.lang-menu .selected-lang {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+.lang-menu .selected-lang:before {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.lang-menu ul {
+  margin-top: 110px;
+  padding: 0;
+  display: none;
+  background-color: #fff;
+  border: 1px solid #f8f8f8;
+  width: 129px;
+  border-radius: 5px;
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.lang-menu ul li {
+  list-style: none;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+}
+
+.lang-menu ul li a {
+  text-decoration: none;
+  width: 125px;
+  padding: 5px 10px;
+  display: block;
+}
+
+.lang-menu ul li:hover {
+  background-color: #f2f2f2;
+}
+
+.lang-menu ul li a:before {
+  content: '';
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+  margin-right: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+}
+
+
+
+.en:before {
+  background-image: url(https://img.icons8.com/color/32/great-britain.png);
+}
+
+.fr:before {
+  background-image: url(https://img.icons8.com/color/32/france.png);
+}
+
+.ar:before {
+  background-image: url(https://img.icons8.com/color/32/morocco.png);
+}
+</style>

@@ -95,7 +95,7 @@
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-first-name">Telephone</label>
+                          <label class="form-control-label" for="input-first-name">Phone Number</label>
                           <input type="text" class="form-control form-control-alternative" v-model="Client.telephone">
                         </div>
                       </div>

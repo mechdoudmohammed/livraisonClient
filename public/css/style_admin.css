@@ -16191,7 +16191,8 @@ code {
   border-radius: 4px;
   text-align: center;
   -webkit-box-shadow: 0px 3px 8.3px 0.7px #0d6efd57;
-  box-shadow: 0px 3px 8.3px 0.7px #0d6efd57
+  box-shadow: 0px 3px 8.3px 0.7px #0d6efd57;
+  margin-left: 10px;
 }
 
 .page-title .page-title-icon i {
@@ -20495,6 +20496,7 @@ dl li {
   color: #052b4a;
   text-decoration: none;
   margin-left: 9px;
+  margin-right: 9px;
 }
 
 .sidebar .nav .nav-item .nav-link .badge {
@@ -20649,6 +20651,8 @@ dl li {
   .sidebar-offcanvas.active {
     left: 0;
   }
+
+
 }
 
 /* Layouts */
@@ -20893,7 +20897,7 @@ dl li {
 
 .content-wrapper {
   background: #fff;
-  padding: 2.75rem 1.25rem;
+  padding: 2.75rem 0.9rem;
   width: 100%;
   -webkit-box-flex: 1;
   -ms-flex-positive: 1;
@@ -20988,6 +20992,7 @@ div#btn-top-package {
   margin-left: 18px;
   width: 6% !important;
   min-width: 139px;
+  margin-right: 18px;
 }
 .vs-con-input {
   margin-left: 18px;

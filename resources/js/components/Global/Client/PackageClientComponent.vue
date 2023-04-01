@@ -5,7 +5,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span> List of packages
+                </span>{{$t('message.Packages')}}
             </h3>
         </div>
 
@@ -30,16 +30,16 @@
                         <vs-table stripe :data="packagesClient.data">
                             <template slot="thead">
                                 <vs-th>
-                                    Package
+                                    {{$t('message.Package')}}
                                 </vs-th>
                                 <vs-th v-if="Client.stock == 1">
-                                    Type
+                                    {{$t('message.Type')}}
                                 </vs-th>
                                 <vs-th>
-                                    Order number
+                                    {{$t('message.Orders_Count')}}
                                 </vs-th>
                                 <vs-th>
-                                    Operation
+                                    {{$t('message.Operation')}}
                                 </vs-th>
 
                             </template>

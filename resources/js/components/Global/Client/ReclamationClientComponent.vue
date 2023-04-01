@@ -4,7 +4,7 @@
             <section class="msger" id="chatBox2">
                 <header class="msger-header">
                     <div class="msger-header-title">
-                        <i class="fas fa-comment-alt"></i> Reclamation N°: <b>{{ this.formData2.id_reclamation }}</b>
+                        <i class="fas fa-comment-alt"></i> {{$t('message.Claims')}} : <b>{{ this.formData2.id_reclamation }}</b>
                     </div>
                     <div class="msger-header-options" style="cursor: pointer;" @click.prevent="closeChatBox">
                         <span><i class="fa fa-window-close" style=" color: #dc3545; font-size: 23px; "></i></span>
@@ -73,9 +73,9 @@
 
 
                 <div class="msger-inputarea">
-                    <input type="text" class="msger-input" placeholder="Enter your message..."
+                    <input type="text" class="msger-input" :placeholder="$t('message.Enter_your_message')"
                         v-model="formData2.message">
-                    <button @click.prevent="sendMessage" class="msger-send-btn">Send</button>
+                    <button @click.prevent="sendMessage" class="msger-send-btn">{{$t('message.Send')}}</button>
                 </div>
             </section>
         </section>
@@ -85,7 +85,8 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span> Liste des reclamations
+                </span> 
+{{$t('message.Claims')}}
             </h3>
         </div>
         <div class="row">
@@ -97,7 +98,7 @@
 
                             <button type="button" style="margin: 0 13px;" class="btn btn-primary float-end"
                                 data-bs-toggle="modal" data-bs-target="#ajouterReclamation" data-bs-whatever="@mdo"><i
-                                    class="fa fa-plus" aria-hidden="true"></i> New Reclamation</button>
+                                    class="fa fa-plus" aria-hidden="true"></i> {{$t('message.Report_Claim')}}</button>
 
                         </div>
                         <div class="chercher">
@@ -120,7 +121,7 @@
 
                                 </vs-select>
 
-                                <vs-input placeholder="Search" v-model="formDataCherche.valeur_recherche" />
+                                <vs-input :placeholder="$t('message.Search')" v-model="formDataCherche.valeur_recherche" />
 
                                 <button class="btn-chercher"
                                     @click="getReclamations(formDataCherche3.selected_option3)"><i class="fa fa-search"
@@ -141,27 +142,27 @@
                             <template slot="thead">
                                 <vs-th>
 
-                                    Id Reclamation
+                                    {{$t('message.Claim_Id')}}
 
                                 </vs-th>
                                 <vs-th>
 
-                                    Type
+                                    {{$t('message.Type')}}
 
                                 </vs-th>
                                 <vs-th>
 
-                                    Object
+                                    {{$t('message.Subject')}}
 
                                 </vs-th>
 
                                 <vs-th>
 
-                                    Statut
+                                    {{$t('message.Status')}}
 
                                 </vs-th>
                                 <vs-th>
-                                    Operation
+                                    {{$t('message.Operation')}}
                                 </vs-th>
                             </template>
 
@@ -178,11 +179,11 @@
 
                                     <vs-td :data="tr.type_facture">
                                         <b v-if="tr.id_commande != null"
-                                            class="badge badge badge-gradient-info">Order</b>
+                                            class="badge badge badge-gradient-info">{{$t('message.Order')}}</b>
                                         <b v-else-if="tr.id_facture != null"
-                                            class="badge badge badge-gradient-primary">Invoice</b>
+                                            class="badge badge badge-gradient-primary">{{$t('message.Invoice')}}</b>
                                         <b v-else="tr.id_facture != null"
-                                            class="badge badge badge-gradient-primary">Other</b>
+                                            class="badge badge badge-gradient-primary">{{$t('message.Other')}}</b>
                                     </vs-td>
                                     <vs-td :data="tr.object_reclamation">
                                         <span class="reclamation-msg">{{ tr.object_reclamation }}</span>
@@ -229,7 +230,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ajouterReclamation">Add a new Claim
+                        <h5 class="modal-title" id="ajouterReclamation">{{$t('message.Add_New_Claim')}}
                         </h5>
                     </div>
                     <div class="modal-body">
@@ -237,28 +238,28 @@
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="Type_reclamation">Type</label>
+                            <label for="Type_reclamation">{{$t('message.Type')}}</label>
 
                             <select class="form-control" id="Type_reclamation" v-model="formData.Type_reclamation">
-                                <option name="Type_reclamation">Order</option>
-                                <option name="Type_reclamation">Invoice</option>
-                                <option name="Type_reclamation">Other</option>
+                                <option name="Type_reclamation">{{$t('message.Order')}}</option>
+                                <option name="Type_reclamation">{{$t('message.Invoice')}}</option>
+                                <option name="Type_reclamation">{{$t('message.Other')}}</option>
                             </select>
                         </div>
                         <div class="form-group"
-                            v-if='formData.Type_reclamation == "Order" || formData.Type_reclamation == "Invoice"'>
+                            v-if="formData.Type_reclamation == $t('message.Order') || formData.Type_reclamation == $t('message.Invoice')">
                             <label for="id">{{ formData.Type_reclamation }} N°</label>
 
                             <input type="text" class="form-control" id="id" v-model='formData.id' name="id">
                         </div>
                         <div class="form-group">
-                            <label for="object_commande">Object</label>
+                            <label for="object_commande">{{$t('message.Subject')}}</label>
 
                             <input type="text" class="form-control" id="object_commande"
                                 v-model='formData.object_reclamation' name="object_commande">
                         </div>
                         <div class="form-group">
-                            <label for="message_reclamation">Message</label>
+                            <label for="message_reclamation">{{$t('message.Message')}}</label>
 
                             <!-- <input type="text" class="form-control" id="message_reclamation"
                                 v-model='formData.message_reclamation' name="message_reclamation"> -->
@@ -271,8 +272,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click.prevent="addReclamation">Validate
-                            Claim</button>
+                        <button type="button" class="btn btn-primary" @click.prevent="addReclamation">{{$t('message.Report')}}</button>
 
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
                             data-bs-dismiss="modal">Annuler</button>
@@ -473,7 +473,7 @@ export default {
                 object_reclamation: '',
                 message_reclamation: '',
                 id: '',
-                Type_reclamation: 'Order',
+                Type_reclamation: '',
             },
             formData2: {
                 message: '',
@@ -564,7 +564,7 @@ export default {
                 .then(res => {
                     console.log(res.data.data['id_commande'])
                     var text = "<table class='table table-borderless' style='text-align: left;'>" +
-                        "<tr><td><b>Object:</b></td></tr><tr><td>" + res.data.data['object_reclamation'];
+                        "<tr><td><b>Subject:</b></td></tr><tr><td>" + res.data.data['object_reclamation'];
                     if (res.data.data['id_commande'] != null) {
                         text += "<tr><td><b>Id Commande</b></td></tr><tr><td>" + res.data.data['id_commande']
                     }
@@ -663,7 +663,7 @@ export default {
                     object_reclamation: '',
                     message_reclamation: '',
                     id: '',
-                    Type_reclamation: 'Invoice',
+                    Type_reclamation: $t('message.Invoice'),
                 },
                 this.nom_err = '',
                 this.options3 = [

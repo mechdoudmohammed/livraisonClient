@@ -4,7 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span> List of Items
+                </span> {{$t('message.Articles')}}
             </h3>
         </div>
 
@@ -20,7 +20,7 @@
                             </vs-select>
                             <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
                                 data-bs-target="#ajouterArticle" data-bs-whatever="@mdo"
-                                @click="" v-if="Client.role == 'Client'">New Articles</button>
+                                @click="" v-if="Client.role == 'Client'"> {{$t('message.Add_Article')}}</button>
                         </div>
                         <vs-table stripe :data="articles.data">
                             <template slot="thead">
@@ -28,22 +28,22 @@
                                     Id
                                 </vs-th>
                                 <vs-th>
-                                    Name Article
+                                 {{$t('message.Article_Name')}}
                                 </vs-th>
                                 <vs-th>
-                                    Commentaire
+                                  {{$t('message.Comment')}}
                                 </vs-th>
                                 <vs-th>
-                                    Price
+                                 {{$t('message.Price')}}
                                 </vs-th>
                                 <vs-th>
-                                    Stock
+                                  {{$t('message.Stock')}}
                                 </vs-th>
                                 <vs-th>
-                                    Statut
+                                  {{$t('message.Status')}}
                                 </vs-th>
                                 <vs-th v-if="Client.role == 'Client'">
-                                    Operation
+                                  {{$t('message.Operation')}}
                                 </vs-th>
                             </template>
                             <template slot-scope="{data}">
@@ -58,7 +58,7 @@
                                         {{ tr.commentaire }}
                                     </vs-td>
                                     <vs-td :data="tr.prix_article">
-                                        {{ tr.prix_article }} Dhs
+                                        {{ tr.prix_article }} {{$t('message.Dhs')}}
                                     </vs-td>
 
                                     <vs-td :data="tr.stock_article">
@@ -68,7 +68,7 @@
                                         <b class="badge badge badge-gradient-secondary"
                                             v-if="tr.etat_article == 'En stock'">{{ tr.etat_article }}</b>
                                         <b class="badge badge badge-gradient-info"
-                                            v-if="tr.etat_article == 'En traitement'">{{ tr.etat_article }}</b>
+                                            v-if="tr.etat_article == 'En traitement'">{{$t('message.Processing')}}</b>
                                     </vs-td>
                                     <vs-td :data="tr.etat_article" v-if="Client.role == 'Client'">
                                         <button type="button" class="btn btn-valide"
@@ -95,34 +95,34 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ajouterArticle" v-if="!edit">Add a new item</h5>
-                        <h5 class="modal-title" id="ajouterArticle" v-if="edit">Edit Article</h5>
+                        <h5 class="modal-title" id="ajouterArticle" v-if="!edit">{{$t('message.Add_Article')}}</h5>
+                        <h5 class="modal-title" id="ajouterArticle" v-if="edit">{{$t('message.Edit_Article')}}</h5>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="nom_article">Item Name</label>
+                            <label for="nom_article">{{$t('message.Article_Name')}}</label>
                             <input type="text" class="form-control" id="nom_article" v-model="formData.nom_article"
                                 name="nom_article">
                         </div>
                         <div class="form-group">
-                            <label for="nom_article">Commentaire</label>
+                            <label for="nom_article">{{$t('message.Comment')}}</label>
                             <input type="text" class="form-control" id="nom_article" v-model="formData.commentaire"
                                 name="commentaire">
                         </div>
                         <div class="form-group">
-                            <label for="prix_article">Price</label>
+                            <label for="prix_article">{{$t('message.Price')}}</label>
                             <input type="number" class="form-control" id="prix_article" v-model="formData.prix_article"
                                 name="prix_article">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" v-if="!edit"
-                            @click.prevent="addArticle(false)">Add Item</button>
+                            @click.prevent="addArticle(false)">{{$t('message.Create')}}</button>
                         <button type="button" class="btn btn-primary" v-if="edit"
-                            @click.prevent="updateArticle(formData.selected_article)">Edit Article</button>
+                            @click.prevent="updateArticle(formData.selected_article)">{{$t('message.Edit')}}</button>
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
                             data-bs-dismiss="modal">Annuler</button>
 
@@ -236,7 +236,7 @@ export default {
             this.$vs.loading({ color: '#22c16b' })
             await axios.post('/api/Article', this.formData).then((res) => {
                 this.$vs.notify({
-                                title:'La article a été enregistrée',
+                                title:this.$t('message.Article has been added'),
                                 color: 'success',
                                 position: "top-right",
                                 time: 4000,

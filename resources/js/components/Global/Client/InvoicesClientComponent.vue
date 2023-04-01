@@ -4,7 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span> List of invoices
+                </span> {{$t('message.Invoices')}}
             </h3>
         </div>
 
@@ -23,7 +23,7 @@
                             </vs-select>
                             
 
-                                <vs-input placeholder="Search" v-model="formDataCherche.valeur_recherche" />
+                                <vs-input :placeholder="$t('message.Search')" v-model="formDataCherche.valeur_recherche" />
                                 <button class="btn-chercher" @click="getFactures(formDataCherche3.selected_option3)"><i
                                         class="fa fa-search" aria-hidden="true"></i></button>
                             </div>
@@ -36,29 +36,29 @@
                         <vs-table stripe :data="factures.data">
                             <template slot="thead">
                                 <vs-th>
-                                    Num Invoice
-                                </vs-th>
-                                <vs-th>
-                                    Type Invoice
-                                </vs-th>
-                                <vs-th>
-                                    Number of orders
-                                </vs-th>
-                                <vs-th>
-                                    Tolal
-                                </vs-th>
-                                <vs-th>
-                                    Delivery price
-                                </vs-th>
-                                <vs-th>
-                                    Total net
-                                </vs-th>
-                                <vs-th>
-                                    Statut
-                                </vs-th>
-                                <vs-th>
-                                    Operation
-                                </vs-th>
+                    {{$t('message.Invoice_id')}}
+                  </vs-th>
+                  <vs-th>
+                    {{$t('message.Invoice_type')}}
+                  </vs-th>
+                  <vs-th>
+                    {{$t('message.Orders_Count')}}
+                  </vs-th>
+                  <vs-th>
+                    {{$t('message.Tolal')}}
+                  </vs-th>
+                  <vs-th>
+                    {{$t('message.Shipping_Fees')}}
+                  </vs-th>
+                  <vs-th>
+                    {{$t('message.Total_Net')}}
+                  </vs-th>
+                  <vs-th>
+                    {{$t('message.Status')}}
+                  </vs-th>
+                  <vs-th>
+                    {{$t('message.Operation')}}
+                  </vs-th>
                             </template>
 
                             <template slot-scope="{data}">
@@ -78,18 +78,18 @@
                                         {{ tr.nombre_commande }}
                                     </vs-td>
                                     <vs-td :data="tr.total_facture">
-                                        {{ tr.total_facture }} Dhs
+                                        {{ tr.total_facture }} {{$t('message.Dhs')}}
                                     </vs-td>
 
                                     <vs-td :data="tr.frais_livraison_facture" v-if="tr.frais_livraison_facture">
-                                        {{ tr.frais_livraison_facture }} Dhs
+                                        {{ tr.frais_livraison_facture }} {{$t('message.Dhs')}}
                                     </vs-td>
                                     <vs-td :data="tr.frais_livraison_facture" v-else-if="!tr.frais_livraison_facture">
-                                        0 Dhs
+                                        0 {{$t('message.Dhs')}}
                                     </vs-td>
 
                                     <vs-td :data="tr.frais_livraison_facture" >
-                                        {{ tr.total_facture - tr.frais_livraison_facture }} Dhs
+                                        {{ tr.total_facture - tr.frais_livraison_facture }} {{$t('message.Dhs')}}
                                     </vs-td>
                                    
 
@@ -132,7 +132,7 @@ import { TimeAgo } from 'vue2-timeago'
 import 'vue2-timeago/dist/vue2-timeago.css'
 export default {
     props: ['Client'],
-    name: 'TransactionClientComponent',
+    name: 'InvoicesClientComponent',
     components: { TimeAgo, },
     data() {
         return {

@@ -32,6 +32,7 @@
         "moment": "^2.29.4",
         "npm": "^9.2.0",
         "vue-apexcharts": "^1.6.2",
+        "vue-i18n": "^8.28.2",
         "vue-qrcode-reader": "^3.1.0",
         "vue-router": "^3.2.0",
         "vue-select": "^3.20.0",

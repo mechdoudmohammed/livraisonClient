@@ -47,7 +47,7 @@
                       <input type="email" class="form-control" placeholder="email" v-model="formData.email" required>
                     </div>
                     <div class="form-group mb-3">
-                      <label class="label" for="name">Telephone</label>
+                      <label class="label" for="name">Phone Number</label>
                       <input type="text" class="form-control" placeholder="Telephone" v-model="formData.telephone" required>
                     </div>
 

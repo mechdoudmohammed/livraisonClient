@@ -5,7 +5,7 @@
       <h3 class="page-title">
         <span class="page-title-icon bg-gradient-primary text-white me-2">
           <i class="mdi mdi-home"></i>
-        </span> Dashboard
+        </span> {{$t('message.Dashboard')}}
       </h3>
 
 
@@ -29,10 +29,10 @@
         <div class="card bg-gradient-secondary card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3">Delivered this month <i
+            <h4 class="font-weight-normal mb-3">{{$t('message.Delivered_this_month')}} <i
                 class="mdi mdi-chart-line mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ DELIVERED }} Commande</h2>
+            <h2 class="mb-5">{{ DELIVERED }} {{$t('message.Order')}}</h2>
             <!-- <h6 class="card-text">Increased by 60%</h6> -->
           </div>
         </div>
@@ -41,10 +41,10 @@
         <div class="card bg-gradient-info card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3">COD this month<i
+            <h4 class="font-weight-normal mb-3">{{$t('message.COD_this_month')}}<i
                 class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ REVENU }} Dhs</h2>
+            <h2 class="mb-5">{{ REVENU }} {{$t('message.Dhs')}}</h2>
             <!-- <h6 class="card-text">Decreased by 10%</h6> -->
           </div>
         </div>
@@ -53,9 +53,9 @@
         <div class="card bg-gradient-success card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3">Returned this month <i class="mdi mdi-diamond mdi-24px float-right"></i>
+            <h4 class="font-weight-normal mb-3">{{$t('message.Returned_this_month')}}<i class="mdi mdi-diamond mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ RETURNED }} Commande</h2>
+            <h2 class="mb-5">{{ RETURNED }} {{$t('message.Order')}}</h2>
             <!-- <h6 class="card-text">Increased by 5%</h6> -->
           </div>
         </div>
@@ -64,9 +64,9 @@
         <div class="card bg-gradient-danger card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3">Cancel this month <i class="mdi mdi-diamond mdi-24px float-right"></i>
+            <h4 class="font-weight-normal mb-3">{{$t('message.Cancel_this_month')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ CANCELED }} Commande</h2>
+            <h2 class="mb-5">{{ CANCELED }}{{$t('message.Order')}}</h2>
             <!-- <h6 class="card-text">Increased by 5%</h6> -->
           </div>
         </div>
@@ -76,33 +76,33 @@
       <div class="col-12 grid-margin">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Recent Payments</h4>
+            <h4 class="card-title"> {{$t('message.Recent_Payments')}}</h4>
             <div class="table-responsive">
               <vs-table stripe :data="factures.data">
                 <template slot="thead">
                   <vs-th>
-                    Num Invoice
+                    {{$t('message.Invoice_id')}}
                   </vs-th>
                   <vs-th>
-                    Type Invoice
+                    {{$t('message.Invoice_type')}}
                   </vs-th>
                   <vs-th>
-                    Number of orders
+                    {{$t('message.Orders_Count')}}
                   </vs-th>
                   <vs-th>
-                    Tolal
+                    {{$t('message.Tolal')}}
                   </vs-th>
                   <vs-th>
-                    Delivery price
+                    {{$t('message.Shipping_Fees')}}
                   </vs-th>
                   <vs-th>
-                    Total net
+                    {{$t('message.Total_Net')}}
                   </vs-th>
                   <vs-th>
-                    Statut
+                    {{$t('message.Status')}}
                   </vs-th>
                   <vs-th>
-                    Operation
+                    {{$t('message.Operation')}}
                   </vs-th>
                 </template>
 
@@ -121,18 +121,18 @@
                       {{ tr.nombre_commande }}
                     </vs-td>
                     <vs-td :data="tr.total_facture">
-                      {{ tr.total_facture }} Dhs
+                      {{ tr.total_facture }} {{$t('message.Dhs')}}
                     </vs-td>
 
                     <vs-td :data="tr.frais_livraison_facture" v-if="tr.frais_livraison_facture">
-                      {{ tr.frais_livraison_facture }} Dhs
+                      {{ tr.frais_livraison_facture }} {{$t('message.Dhs')}}
                     </vs-td>
                     <vs-td :data="tr.frais_livraison_facture" v-else-if="!tr.frais_livraison_facture">
-                      0 Dhs
+                      0 {{$t('message.Dhs')}}
                     </vs-td>
 
                     <vs-td :data="tr.frais_livraison_facture">
-                      {{ tr.total_facture - tr.frais_livraison_facture }} Dhs
+                      {{ tr.total_facture - tr.frais_livraison_facture }} {{$t('message.Dhs')}}
                     </vs-td>
 
 
@@ -264,7 +264,7 @@ export default {
           },
         },
           this.series = [{
-            name: 'Dhs',
+            name: $t('message.Dhs'),
             data: res.data.data
           }]
       })
