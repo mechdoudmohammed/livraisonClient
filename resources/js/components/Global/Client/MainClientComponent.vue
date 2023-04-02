@@ -66,7 +66,7 @@
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
             <h4 class="font-weight-normal mb-3">{{$t('message.Cancel_this_month')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ CANCELED }}{{$t('message.Order')}}</h2>
+            <h2 class="mb-5">{{ CANCELED }} {{$t('message.Order')}}</h2>
             <!-- <h6 class="card-text">Increased by 5%</h6> -->
           </div>
         </div>
@@ -110,7 +110,7 @@
                   <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                     <vs-td :data="tr.id_facture">
                       {{ tr.id_facture }}<br>
-                      <span><time-ago :datetime="tr.updated_at" long></time-ago> </span>
+                      <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago> </span>
                     </vs-td>
 
                     <vs-td :data="tr.type_facture">
@@ -206,6 +206,7 @@ export default {
         'current_page': 1,
         'last_page': 1
       },
+      locale: localStorage.getItem('locale'),
 
     }
   },

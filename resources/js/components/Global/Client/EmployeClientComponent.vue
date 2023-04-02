@@ -172,7 +172,7 @@
                         <button type="button" class="btn btn-primary" v-if="edit"
                             @click.prevent="updateEmploye(formData.selected_client)">{{$t('message.Edit_Employee')}}</button>
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Annuler</button>
+                            data-bs-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
                 </div>
             </div>

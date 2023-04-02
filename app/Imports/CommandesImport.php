@@ -46,7 +46,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                         ->where("villes.nom_ville",$row[1])
                         ->select('villes.id', 'prix_livraison')->first();
                     $ville = Ville::where('id', $ville->id)->first();
-                    $id_commande = $ville->pref_ville . strtoupper(Str::random(6)) . time();
+                    $id_commande =$ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
                     if ($user->role == 'EmployeClient') {
                         $id_client = $user->superviseur;
                         $id_employe_client = $user->id;

@@ -48,7 +48,7 @@
                                 <vs-tr :key="indextr" v-for="(tr, indextr) in data">
                                     <vs-td :data="tr.id_package">
                                         {{ tr.id_package }}
-                                        <p><time-ago :datetime="tr.updated_at" long></time-ago> </p>
+                                        <p><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago> </p>
                                     </vs-td>
                                     <vs-td :data="tr.id_article" v-if="Client.stock == 1">
                                         <b v-if="tr.type_commande == 'ramassage'"
@@ -89,7 +89,10 @@
                                 </vs-tr>
                             </template>
                         </vs-table>
-                        <vs-pagination @input="getPackages(0)" :max="9" :total="packagesClient.last_page"
+                        <vs-pagination v-if="locale=='ar'" @input="getPackages(0)" :max="9" :total="packagesClient.last_page"
+                            v-model="packagesClient.current_page"  prev-icon="arrow_forward"
+                            next-icon="arrow_back"></vs-pagination>
+                            <vs-pagination v-else @input="getPackages(0)" :max="9" :total="packagesClient.last_page"
                             v-model="packagesClient.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
                     </div>
@@ -114,6 +117,7 @@ export default {
     data() {
         return {
             token: localStorage.getItem('token'),
+            locale: localStorage.getItem("locale"),
             nom_err: '',
             test: 1,
             edit: false,
@@ -125,10 +129,10 @@ export default {
             },
             getpackageClient: {},
             options3: [
-                { text: '1-20 items', value: '20' },
-                { text: '1-50 items', value: '50' },
-                { text: '1-150 items', value: '150' },
-                { text: 'All', value: '9999' },
+            { text: '1-20 '+this.$t('message.Items'), value: '20' },
+                { text: '1-50 '+this.$t('message.Items'), value: '50' },
+                { text: '1-150 '+this.$t('message.Items'), value: '150' },
+                { text: '1-200 '+this.$t('message.Items'), value: '200' },
 
             ],
             formDataCherche3: {

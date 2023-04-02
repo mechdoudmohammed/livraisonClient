@@ -73,7 +73,7 @@
                                                 hometown</span>
 
                                         </div>
-                                        <span><time-ago :datetime="tr.updated_at" long></time-ago>
+                                        <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago>
                                         </span>
                                     </vs-td>
                                     <vs-td :data="tr.nom_store">
@@ -95,26 +95,116 @@
                                     <vs-td :data="tr.ville_client_commande">
                                         {{ tr.ville_client_commande }}
                                     </vs-td>
-                                    <vs-td :data="tr.ville_client_commande">
+                                    <vs-td :data="tr.prix_commande">
                                         {{ tr.prix_commande }}
                                     </vs-td>
                                     <vs-td :data="tr.etat_commande">
+                                        <b class="badge badge badge-gradient-secondary"
+                                            v-if="tr.etat_commande == 'CREATED'">{{ tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'CONFIRMED'">{{
+                                            tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-secondary"
+                                            v-if="tr.etat_commande == 'PICKUP'">{{ tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-secondary"
+                                            v-if="tr.etat_commande == 'PROCESSING'">{{ tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-info"
+                                            v-if="tr.etat_commande == 'HOME'">INHOUSE</b>
+                                        <b class="badge badge badge-gradient-info"
+                                            v-if="tr.etat_commande == 'CHANGERPRIX'">CHANGEPRICE</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'INHOUSE'">{{
+                                            tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-primary"
+                                            v-if="tr.etat_commande == 'ENROUTE'">{{ tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-primary"
+                                            v-if="tr.etat_commande == 'RAMASSER'">PICKUP</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'TRANSIT'">{{
+                                            tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'NOREPONSE'">NO REP + SMS</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'REPORTED'">{{
+                                            tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'RETURNEDLV'" data-toggle="tooltip"
+                                            title="Retours envoye vers agence">RETURNED</b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'RETURNEDAG'" data-toggle="tooltip"
+                                            title="Retours envoye vers agence">RETURNED</b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'RETURNEDEV'" data-toggle="tooltip"
+                                            title="Retours envoye vers agence">RETURNED</b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'RETURNEDRR'" data-toggle="tooltip"
+                                            title="Retours envoye vers agence">RETURNED</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'ASSIGN'">{{
+                                            tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-success"
+                                            v-if="tr.etat_commande == 'DELIVERED'">{{ tr.etat_commande }}</b>
+
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'RETURNED'">{{ tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-danger"
+                                            v-if="tr.etat_commande == 'CANCELED'">{{ tr.etat_commande }}</b>
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'DMSUIVIE'">{{
                                             tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-danger"
+                                            v-if="tr.etat_commande == 'ARCHIVED'">{{ tr.etat_commande }}</b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'ANNULER'">Annuler
+                                        </b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'ANNULER_CL'">Annuler
+                                        </b>
+                                        <b class="badge badge badge-gradient-warning"
+                                            v-if="tr.etat_commande == 'RELANCER'">RELAUNCH</b>
                                     </vs-td>
-                                    <vs-td :data="tr.etat_commande">
+                                    <vs-td v-if="Client.role == 'Client'">
+                                        <button class="badge badge badge-gradient-success"
+                                            v-if="tr.statut_facture == 'PAID'" @click="getFacture(tr)">
+                                            {{ $t('message.Paid') }}
+                                        </button>
+                                        <button class="badge badge badge-gradient-info"
+                                            v-else-if="tr.statut_facture == 'NOTPAID'" @click="getFacture(tr)">
+                                            {{ $t('message.Invoiced') }}
+                                        </button>
+                                        <b class="badge badge badge-gradient-danger"
+                                            v-else-if="tr.statut_facture == null">{{ $t('message.NotPaid') }}</b>
+                                    </vs-td>
+                                    <vs-td v-if="Client.role == 'EmployeClient'">
+                                        <button class="badge badge badge-gradient-success"
+                                            v-if="tr.statut_facture == 'PAID'">
+                                            {{ $t('message.Paid') }}
+                                        </button>
+                                        <button class="badge badge badge-gradient-info"
+                                            v-else-if="tr.statut_facture == 'NOTPAID' && tr.type_facture == 'client'">
+                                            {{ $t('message.Invoiced') }}
+                                        </button>
+                                        <b class="badge badge badge-gradient-danger"
+                                            v-else-if="tr.statut_facture == null">{{ $t('message.NotPaid') }}</b>
+                                    </vs-td>
+                                    <vs-td :data="tr.etat_commande" style="min-width: 156px;">
                                         <button type="button" class="btn btn-valide"
                                             @click.prevent="showDetails(tr.id_commande)">
                                             <i class="fa fa-eye"></i>
                                         </button>
 
-                                        <button type="button" class="btn btn-history" v-if="tr.etat_commande != 'CREATED'"
+                                        <button type="button" class="btn btn-history" data-bs-toggle="modal"
+                                            data-bs-target="#showCommande" v-if="tr.etat_commande != 'CREATED'"
                                             @click.prevent="getHistoriqueCommande(tr.id_commande)">
                                             <i class="fa fa-history"></i>
                                         </button>
 
+                                        <button type="button" class="btn btn-warning" v-if="tr.etat_commande == 'CREATED'"
+                                            @click.prevent="checkCommande(true, tr)">
+                                            <i class="fa fa-pen"></i>
+                                        </button>
                                         <button type="button" class="btn btn-danger"
-                                            v-if="tr.etat_commande != 'DELIVERED' && tr.etat_commande != 'ANNULER_CL' && tr.etat_commande != 'ANNULER' && tr.etat_commande != 'CANCELED' && tr.etat_commande != 'RETURNEDLV' && tr.etat_commande != 'RETURNEDAG' && tr.etat_commande != 'CREATED' && tr.etat_commande != 'CONFIRMED'"
+                                            @click.prevent="deleteCommande(tr.id_commande)"
+                                            v-if="tr.etat_commande == 'CREATED'">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger"
+                                            v-if="tr.etat_commande != 'DELIVERED' && tr.etat_commande != 'ANNULER_CL' && tr.etat_commande != 'ANNULER' && tr.etat_commande != 'CANCELED' && tr.etat_commande != 'RETURNEDLV'
+                                                && tr.etat_commande != 'RETURNED' && tr.etat_commande != 'RETURNEDEV' && tr.etat_commande != 'RETURNEDRR' && tr.etat_commande != 'RETURNEDAG' && tr.etat_commande != 'RETURNED' && tr.etat_commande != 'CREATED' && tr.etat_commande != 'CONFIRMED'"
                                             @click.prevent="reclamationCommande(tr)">
                                             <i class="fa fa-info"></i>
                                         </button>
@@ -122,7 +212,11 @@
                                 </vs-tr>
                             </template>
                         </vs-table>
-                        <vs-pagination @input="classifierCommande(formDataCherche3.selected_option3)" :max="9"
+                        <vs-pagination v-if="locale=='ar'" @input="classifierCommande(formDataCherche3.selected_option3)" :max="9"
+                            :total="commandes.last_page" v-model="commandes.current_page" prev-icon="arrow_forward"
+                            next-icon="arrow_back"></vs-pagination>
+
+                            <vs-pagination v-else @input="classifierCommande(formDataCherche3.selected_option3)" :max="9"
                             :total="commandes.last_page" v-model="commandes.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
                     </div>
@@ -700,7 +794,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Quit
+                            <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -772,7 +866,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Quit
+                            <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -801,6 +895,7 @@ export default {
     data() {
         return {
             token: localStorage.getItem("token"),
+            locale: localStorage.getItem("locale"),
             selected: [],
             edit: false,
             articles: {},
@@ -845,10 +940,10 @@ export default {
             },
             responsable: "",
             options3: [
-                { text: "1-20 items", value: "20" },
-                { text: "1-50 items", value: "50" },
-                { text: "1-150 items", value: "150" },
-                { text: "1-200 items", value: "200" },
+            { text: '1-20 '+this.$t('message.Items'), value: '20' },
+                { text: '1-50 '+this.$t('message.Items'), value: '50' },
+                { text: '1-150 '+this.$t('message.Items'), value: '150' },
+                { text: '1-200 '+this.$t('message.Items'), value: '200' },
             ],
             formDataCherche3: {
                 selected_option3: "20",

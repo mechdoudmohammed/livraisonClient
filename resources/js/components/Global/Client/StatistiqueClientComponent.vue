@@ -486,7 +486,7 @@ export default {
                         },
                     },
                         this.chartOptions.series = [{
-                            name: $t('message.Dhs'),
+                            name: this.$t('message.Dhs'),
                             data: res.data.data
                         }]
                 })
@@ -500,7 +500,7 @@ export default {
                         },
                     },
                         this.chartOptions2.series = [{
-                            name: $t('message.Colis'),
+                            name: this.$t('message.Colis'),
                             data: res.data.data
                         }]
                 })

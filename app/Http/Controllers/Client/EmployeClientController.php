@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CommandesImport;
-use App\Models\Client;
 use App\Models\DetailsCommandes;
 use App\Models\Store;
 use App\Models\Ville;
@@ -22,6 +21,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Throwable;
+use App\Models\Notification;
+use App\Models\Client;
 
 class EmployeClientController extends Controller
 {
@@ -93,6 +94,7 @@ class EmployeClientController extends Controller
 
                 if ($statut) {
                     event(new Registered($request));
+                    $statut->sendEmailVerificationNotification();
                     return response()->json([
                         'message' => 'Employe Created successfully'
                     ]);

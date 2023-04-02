@@ -137,7 +137,8 @@ class CommandeController extends Controller
                     ]);
 
                     $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                    $id_commande = $ville->pref_ville . strtoupper(Str::random(6)) . time();
+
+                    $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
 
                     if ($user->role == 'EmployeClient') {
                         $id_client = $user->superviseur;
@@ -227,7 +228,7 @@ class CommandeController extends Controller
                             $id_client = $user->id;
                         }
                         $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                        $id_commande = $ville->pref_ville . strtoupper(Str::random(6)) . time();
+                        $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
                         $statut = Commande::create([
                             "id_commande" => $id_commande,
                             "id_ville" => $request->ville_client_commande['id'],
@@ -283,7 +284,7 @@ class CommandeController extends Controller
                             $id_client = $user->id;
                         }
                         $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                        $id_commande = $ville->pref_ville . strtoupper(Str::random(6)) . time();
+                        $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
                         $statut = Commande::create([
                             "id_commande" => $id_commande,
                             "id_ville" => $request->ville_client_commande['id'],
@@ -776,7 +777,7 @@ class CommandeController extends Controller
                         $commande->etat_commande = $request->statut;
                     } else if ($request->statut == 'RELANCER') {
 
-                        $commentaire_commande = 'Relaunch request by ' . $user->username;
+                        $commentaire_commande = 'Relaunch request';
                         $commande->etat_commande = $request->statut;
                     }
                     $statut2 = HistoriqueCommande::create([

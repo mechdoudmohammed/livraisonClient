@@ -27,7 +27,7 @@ class NotificationController extends Controller
                     ->where('Affichage', 'notSeen')
                     ->leftjoin('clients', 'notifications.id_client', '=', 'clients.id')
                     ->leftJoin('commandes', 'notifications.id_commande', '=', 'commandes.id_commande')
-                    ->whereIn('notifications.titre', ['Demande Suivie'])
+                    ->Where('notifications.titre', 'LIKE', "Demande Suivie%")
                     ->where('notifications.Affichage', 'notSeen')
                     ->where('notifications.id_client', $user->id)
                     ->orderBy('notifications.updated_at', 'desc')

@@ -28,13 +28,15 @@
 
                                 <button style="margin: 0 13px" type="button" class="btn btn-secondary float-end"
                                     @click.prevent="pickupCommande()">
-                                    {{ $t('message.Pickup') }}
+                                  
                                     <i class="fa fa-phone" aria-hidden="true"></i>
+                                    {{ $t('message.Pickup') }}
                                 </button>
                                 <button style="margin: 0 13px" type="button" class="btn btn-primary float-end"
                                     @click.prevent="confirmeCommande" v-if="btn_confirme">
-                                    {{ $t('message.Confirme') }}
+                                  
                                     <i class="fa fa-check" aria-hidden="true"></i>
+                                    {{ $t('message.Confirme') }}
                                 </button>
                             </div>
                             <div class="chercher">
@@ -97,18 +99,13 @@
                                     <vs-td :data="tr.id_commande">
                                         {{ tr.id_commande }}
                                         <div class="additionalCommentaire">
-                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDLV'">Return sent
-                                                to agency</span>
-                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDAG'">Return
-                                                received by agency</span>
-                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDEV'">Return
-                                                send</span>
-                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDRR'">Return
-                                                received by Ramasseur</span>
-                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNED'">Return send to
-                                                hometown</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDLV'">{{$t('message.Return_sent_to_agency')}}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDAG'">{{$t('message.Return_received_by_agency')}}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDEV'">{{$t('message.Return_send')}}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDRR'">{{$t('message.Return_received_by_Ramasseur')}}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNED'">{{$t('message.Return_send_to_hometown')}}</span>
                                         </div>
-                                        <span><time-ago :datetime="tr.updated_at" long></time-ago>
+                                        <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago>
                                         </span>
                                     </vs-td>
                                     <vs-td :data="tr.nom_store">
@@ -130,7 +127,7 @@
                                     <vs-td :data="tr.ville_client_commande">
                                         {{ tr.ville_client_commande }}
                                     </vs-td>
-                                    <vs-td :data="tr.ville_client_commande">
+                                    <vs-td :data="tr.prix_commande">
                                         {{ tr.prix_commande }}
                                     </vs-td>
                                     <vs-td :data="tr.etat_commande">
@@ -247,7 +244,11 @@
                                 </vs-tr>
                             </template>
                         </vs-table>
-                        <vs-pagination @input="classifierCommande(formDataCherche3.selected_option3)" :max="9"
+                        <vs-pagination v-if="locale=='ar'" @input="classifierCommande(formDataCherche3.selected_option3)" :max="9"
+                            :total="commandes.last_page" v-model="commandes.current_page" prev-icon="arrow_forward"
+                            next-icon="arrow_back"></vs-pagination>
+
+                            <vs-pagination v-else @input="classifierCommande(formDataCherche3.selected_option3)" :max="9"
                             :total="commandes.last_page" v-model="commandes.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
                     </div>
@@ -372,7 +373,7 @@
                             {{ $t('message.Edit_Order') }}
                         </button>
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Cancel
+                            <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -423,7 +424,7 @@
                             {{ $t('message.Add_Order') }}
                         </button>
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Cancel
+                            <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -666,9 +667,7 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande == 'COMMENTAIRE'">
-                                                        <span class="commentaireCommande">{{
-                                                            hCommande.commentaire_commande
-                                                        }}</span>
+                                                        <span class="commentaireCommande">{{hCommande.commentaire_commande}}</span>
                                                         <br>
                                                         {{ $t('message.By') }}:
                                                         <b>{{ hCommande.username }}</b>
@@ -679,9 +678,11 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande != 'COMMENTAIRE'">
-                                                        <span class="commentaireCommande">{{
-                                                            hCommande.commentaire_commande
-                                                        }}</span>
+                                                      
+                                                        <span class="commentaireCommande" v-if="hCommande.commentaire_commande=='Request order tracking'">{{$t('message.Request_order_tracking')}}</span>
+                                                        <span class="commentaireCommande" v-if="hCommande.commentaire_commande=='Relaunch request'">{{$t('message.Relaunch_request')}}</span>
+
+                                                        <span class="commentaireCommande" v-else>{{hCommande.commentaire_commande}}</span>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'callLog'">
@@ -775,6 +776,9 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'DMSUIVIE'">
+                                                        {{ $t('message.By') }}
+                                                        <b>{{ hCommande.username }}</b>
+                                                        <br />
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
@@ -803,7 +807,7 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CONFIRMED'">
-                                                        {{ $t('message.Confirmer') }} {{ $t('message.By') }}:
+                                                        {{ $t('message.Confirmed') }} {{ $t('message.By') }}:
                                                         <b>{{ hCommande.clientUsername }}</b>
                                                         <br />
                                                         {{ $t('message.At') }}
@@ -833,7 +837,7 @@
 
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CREATED'">
-                                                        {{ $t('message.Create') }} {{ $t('message.By') }}:
+                                                        {{ $t('message.Created') }} {{ $t('message.By') }}:
                                                         <b>
                                                             {{ hCommande.clientUsername }} </b><br />{{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
@@ -859,6 +863,11 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RELANCER'">
+                                                         {{ $t('message.By') }}
+                                                         <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
+                                                        <br>
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
@@ -997,7 +1006,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Quit
+                            <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -1069,7 +1078,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Quit
+                            <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
@@ -1100,6 +1109,7 @@ export default {
         return {
             livreur: '',
             token: localStorage.getItem("token"),
+            locale: localStorage.getItem("locale"),
             selected: [],
             edit: false,
             articles: {},
@@ -1163,10 +1173,10 @@ export default {
             },
             responsable: "",
             options3: [
-                { text: "1-20 items", value: "20" },
-                { text: "1-50 items", value: "50" },
-                { text: "1-150 items", value: "150" },
-                { text: "1-200 items", value: "200" },
+            { text: '1-20 '+this.$t('message.Items'), value: '20' },
+                { text: '1-50 '+this.$t('message.Items'), value: '50' },
+                { text: '1-150 '+this.$t('message.Items'), value: '150' },
+                { text: '1-200 '+this.$t('message.Items'), value: '200' },
             ],
             formDataCherche3: {
                 selected_option3: "20",
@@ -1849,9 +1859,10 @@ export default {
                 }),
                 (this.historiqueCommande = {}),
                 (this.options = [
-                    { text:this.FirstLowerRestUper(this.$t('message.Order_Id')), value: "id_commande" },
+                  
+            { text:this.FirstLowerRestUper(this.$t('message.Order_id')), value: "id_commande" },
                     { text: this.FirstLowerRestUper(this.$t('message.Name')), value: "nom_client_commande" },
-                    { text: this.FirstLowerRestUper(this.$t('message.Phone_number')), value: "telephone_client_commande" },
+                    { text: this.FirstLowerRestUper(this.$t('message.Phone_Number')), value: "telephone_client_commande" },
                     { text: this.FirstLowerRestUper(this.$t('message.Price')), value: "prix_commande" },
                     { text: this.FirstLowerRestUper(this.$t('message.City')), value: "nom_ville" },
                 ]),

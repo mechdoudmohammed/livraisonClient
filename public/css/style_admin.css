@@ -19999,11 +19999,19 @@ dl li {
   box-shadow: 0px 3px 21px 0px rgba(0, 0, 0, 0.2);
 }
 
-.navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu.navbar-dropdown {
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown  {
+
   position: absolute;
   font-size: 0.9rem;
   margin-top: 0;
   padding: 0;
+  right: 576px;
+}
+.navbar .navbar-menu-wrapper .dropdown-menu.navbar-dropdown{
+   position: absolute;
+  font-size: 0.9rem;
+  margin-top: 0;
+  padding: 0; 
 }
 
 .rtl .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu.navbar-dropdown {
@@ -20055,8 +20063,8 @@ dl li {
   }
 
   .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .navbar-dropdown {
-    left: 73%;
-    width: 26%;
+    left: 69%;
+    width: 29%;
     overflow-y: scroll;
     max-height: 600px;
   }
@@ -20936,7 +20944,8 @@ dl li {
 }
 #profileDropdownplus{
     overflow: hidden !important;
-    width: 26% !important;
+    width: 22% !important;
+    right: 576px;
     height: inherit !important;
 }
 i#fullscreen-button{
@@ -21036,3 +21045,7 @@ ul.vs-pagination--array {
   border: none;
   margin-left: 10px;
 }
+button#btn_cancel {
+  min-width: 88px;
+}
+

@@ -65,7 +65,7 @@
                                 <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                                     <vs-td :data="tr.id_facture">
                                         {{ tr.id_facture }}<br>
-                                        <span><time-ago :datetime="tr.updated_at" long></time-ago> </span>
+                                        <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago> </span>
                                     </vs-td>
                                
                                     <vs-td :data="tr.type_facture">
@@ -146,9 +146,10 @@ export default {
             },
             nom_err: '',
             options3: [
-                { text: '1-20 items', value: '20' },
-                { text: '1-50 items', value: '50' },
-                { text: '1-150 items', value: '150' },
+            { text: '1-20 '+this.$t('message.Items'), value: '20' },
+                { text: '1-50 '+this.$t('message.Items'), value: '50' },
+                { text: '1-150 '+this.$t('message.Items'), value: '150' },
+                { text: '1-200 '+this.$t('message.Items'), value: '200' },
 
             ],
             formDataCherche3: {

@@ -48,7 +48,7 @@
                                 <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
                                     <vs-td :data="tr.id_bon_retour_client">
                                         {{ tr.id_bon_retour_client }}<br>
-                                        <span><time-ago :datetime="tr.updated_at" long></time-ago>
+                                        <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago>
                                         </span>
                                     </vs-td>
                                     <vs-td :data="tr.nbrColis_bonRetourClient">
@@ -72,7 +72,10 @@
                                 </vs-tr>
                             </template>
                         </vs-table>
-                        <vs-pagination @input="classifierBonRetour(formDataCherche3.selected_option3)" :max="9"
+                        <vs-pagination v-if="locale=='ar'" @input="classifierBonRetour(formDataCherche3.selected_option3)" :max="9"
+                            :total="bonRetour.last_page" v-model="bonRetour.current_page"  prev-icon="arrow_forward"
+                            next-icon="arrow_back"></vs-pagination>
+                            <vs-pagination v-else @input="classifierBonRetour(formDataCherche3.selected_option3)" :max="9"
                             :total="bonRetour.last_page" v-model="bonRetour.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
                     </div>
@@ -104,6 +107,7 @@ export default {
     data() {
         return {
             token: localStorage.getItem("token"),
+            locale: localStorage.getItem("locale"),
             selected: [],
             errors: {},
 
@@ -125,10 +129,10 @@ export default {
                 valeur_recherche: "",
             },
             options3: [
-                { text: "1-20 items", value: "20" },
-                { text: "1-50 items", value: "50" },
-                { text: "1-150 items", value: "150" },
-                { text: "1-200 items", value: "200" },
+            { text: '1-20 '+this.$t('message.Items'), value: '20' },
+                { text: '1-50 '+this.$t('message.Items'), value: '50' },
+                { text: '1-150 '+this.$t('message.Items'), value: '150' },
+                { text: '1-200 '+this.$t('message.Items'), value: '200' },
             ],
             formDataCherche3: {
                 selected_option3: "20",

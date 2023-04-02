@@ -32,7 +32,7 @@
             <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
           </a>
         </li>
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="mdi mdi-email-outline"></i>
@@ -44,7 +44,7 @@
             <div class="dropdown-divider"></div>
             <h6 class="p-3 mb-0 text-center">Afficher tous les messages</h6>
           </div>
-        </li>
+        </li> -->
         <li class="nav-item dropdown">
           <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
             data-bs-toggle="dropdown">
@@ -55,11 +55,12 @@
 
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
             aria-labelledby="notificationDropdown">
-            <h6 class="p-3 mb-0">Notifications</h6>
+            <h6 class="p-3 mb-0" v-if="locale=='ar'" style="float: right;">{{$t('message.Notifications')}}</h6>
+            <h6 class="p-3 mb-0" v-else>{{$t('message.Notifications')}}</h6>
             <div class="dropdown-divider"></div>
 
 
-            <a class="dropdown-item preview-item" v-if="notification.titre == 'Demande Suivie'"
+            <a class="dropdown-item preview-item"
               @click.prevent="getCommandeSuivie(notification.id_commande, notification.id)"
               v-for="notification in notifications">
               <div class="preview-thumbnail">
@@ -70,13 +71,14 @@
 
               <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
                 <h6 class="preview-subject font-weight-normal mb-1">{{ notification.titre }}</h6>
+                
                 <p class="text-gray ellipsis mb-0">{{ notification.description }}</p>
-                <span><time-ago :datetime="notification.updated_at" long></time-ago></span>
+                <span><time-ago :datetime="notification.updated_at" long :locale="locale"></time-ago></span>
               </div>
             </a>
 
             <div class="dropdown-divider"></div>
-            <h6 class="p-3 mb-0 text-center">Afficher toutes les notifications</h6>
+            <!-- <h6 class="p-3 mb-0 text-center">Afficher toutes les notifications</h6> -->
           </div>
 
         </li>

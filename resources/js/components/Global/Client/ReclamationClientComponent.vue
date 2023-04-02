@@ -4,7 +4,7 @@
             <section class="msger" id="chatBox2">
                 <header class="msger-header">
                     <div class="msger-header-title">
-                        <i class="fas fa-comment-alt"></i> {{$t('message.Claims')}} : <b>{{ this.formData2.id_reclamation }}</b>
+                        <i class="fas fa-comment-alt"></i> {{$t('message.Claim_Id')}} : <b>{{ this.formData2.id_reclamation }}</b>
                     </div>
                     <div class="msger-header-options" style="cursor: pointer;" @click.prevent="closeChatBox">
                         <span><i class="fa fa-window-close" style=" color: #dc3545; font-size: 23px; "></i></span>
@@ -22,7 +22,7 @@
                                 <div class="msg-info">
                                     <div class="msg-info-name">{{ Client.nom }} {{ Client.prenom }}</div>
                                     <div class="msg-info-time"> <span><time-ago :datetime="message.created_at"
-                                                style="color: white;" long></time-ago> </span></div>
+                                                style="color: white;" long :locale="locale"></time-ago> </span></div>
                                 </div>
 
                                 <div class="msg-text">
@@ -40,7 +40,7 @@
                                 <div class="msg-info">
                                     <div class="msg-info-name">{{ message.nom }} {{ message.prenom }}</div>
                                     <div class="msg-info-time"><span><time-ago :datetime="message.created_at"
-                                                long></time-ago> </span></div>
+                                                long :locale="locale"></time-ago> </span></div>
                                 </div>
 
                                 <div class="msg-text">
@@ -58,7 +58,7 @@
                                 <div class="msg-info">
                                     <div class="msg-info-name">Admin</div>
                                     <div class="msg-info-time"><span><time-ago :datetime="message.created_at"
-                                                long></time-ago> </span></div>
+                                                long :locale="locale"></time-ago> </span></div>
                                 </div>
 
                                 <div class="msg-text">
@@ -173,7 +173,7 @@
 
                                         {{ tr.id_reclamation }}<br>
 
-                                        <span><time-ago :datetime="tr.updated_at" long></time-ago> </span>
+                                        <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago> </span>
 
                                     </vs-td>
 
@@ -192,7 +192,7 @@
                                     <vs-td :data="tr.statut_reclamation">
                                         <b class="badge badge badge-gradient-danger"
                                             v-if="tr.statut_reclamation == 'En Traitement'">{{
-                                                tr.statut_reclamation
+                                                $t('message.Processing')
                                             }}</b>
                                         <b class="badge badge badge-gradient-danger"
                                             v-else-if="tr.statut_reclamation == 'Rejected'">{{
@@ -217,7 +217,10 @@
                                 </vs-tr>
                             </template>
                         </vs-table>
-                        <vs-pagination @input="getReclamations(0)" :max="9" :total="reclamations.last_page"
+                        <vs-pagination v-if="locale=='ar'"  @input="getReclamations(0)" :max="9" :total="reclamations.last_page"
+                            v-model="reclamations.current_page"  prev-icon="arrow_forward"
+                            next-icon="arrow_back"></vs-pagination>
+                            <vs-pagination v-else @input="getReclamations(0)" :max="9" :total="reclamations.last_page"
                             v-model="reclamations.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
                     </div>
@@ -275,7 +278,7 @@
                         <button type="button" class="btn btn-primary" @click.prevent="addReclamation">{{$t('message.Report')}}</button>
 
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Annuler</button>
+                            data-bs-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
 
                     </div>
                 </div>
@@ -462,6 +465,7 @@ export default {
     data() {
         return {
             token: localStorage.getItem('token'),
+            locale: localStorage.getItem("locale"),
             edit: false,
             errors: {},
             reclamations: {
@@ -482,9 +486,10 @@ export default {
 
             nom_err: '',
             options3: [
-                { text: '1-20 items', value: '20' },
-                { text: '1-50 items', value: '50' },
-                { text: '1-150 items', value: '150' },
+            { text: '1-20 '+this.$t('message.Items'), value: '20' },
+                { text: '1-50 '+this.$t('message.Items'), value: '50' },
+                { text: '1-150 '+this.$t('message.Items'), value: '150' },
+                { text: '1-200 '+this.$t('message.Items'), value: '200' },
 
             ],
             formDataCherche3: {

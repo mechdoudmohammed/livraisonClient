@@ -25,7 +25,7 @@
                         <vs-table stripe :data="articles.data">
                             <template slot="thead">
                                 <vs-th>
-                                    Id
+                                    {{$t('message.Id')}}
                                 </vs-th>
                                 <vs-th>
                                  {{$t('message.Article_Name')}}
@@ -84,7 +84,10 @@
                                 </vs-tr>
                             </template>
                         </vs-table>
-                        <vs-pagination @input="getArticles(0)" :max="9" :total="articles.last_page"
+                        <vs-pagination  v-if="locale=='ar'" @input="getArticles(0)" :max="9" :total="articles.last_page"
+                            v-model="articles.current_page" prev-icon="arrow_forward"
+                            next-icon="arrow_back"></vs-pagination>
+                            <vs-pagination v-else @input="getArticles(0)" :max="9" :total="articles.last_page"
                             v-model="articles.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
                     </div>
@@ -124,7 +127,7 @@
                         <button type="button" class="btn btn-primary" v-if="edit"
                             @click.prevent="updateArticle(formData.selected_article)">{{$t('message.Edit')}}</button>
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Annuler</button>
+                            data-bs-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
 
                     </div>
                 </div>
@@ -143,6 +146,7 @@ export default {
     data() {
         return {
             token: localStorage.getItem('token'),
+            locale: localStorage.getItem("locale"),
             edit: false,
             errors: {},
             articles: {
@@ -157,9 +161,9 @@ export default {
                 commentaire: '',
             },
             options3: [
-                { text: '1-20 items', value: '20' },
-                { text: '1-50 items', value: '50' },
-                { text: '1-150 items', value: '150' },
+                { text: '1-20 '+this.$t('message.Items'), value: '20' },
+                { text: '1-50 '+this.$t('message.Items'), value: '50' },
+                { text: '1-150 '+this.$t('message.Items'), value: '150' },
 
             ],
             formDataCherche3: {
@@ -236,7 +240,7 @@ export default {
             this.$vs.loading({ color: '#22c16b' })
             await axios.post('/api/Article', this.formData).then((res) => {
                 this.$vs.notify({
-                                title:this.$t('message.Article has been added'),
+                                title:this.$t('message.Article_has_been_added'),
                                 color: 'success',
                                 position: "top-right",
                                 time: 4000,

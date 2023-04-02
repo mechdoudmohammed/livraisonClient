@@ -57,7 +57,7 @@
                                     </vs-td>
                                     <vs-td :data="tr.id">
                                         {{ tr.id }}<br>
-                                        <span><time-ago :datetime="tr.updated_at" long></time-ago> </span>
+                                        <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago> </span>
                                     </vs-td>
                                     <vs-td :data="tr.nom_store">
                                         {{ tr.nom_store }}
@@ -94,7 +94,10 @@
                                 </vs-tr>
                             </template>
                         </vs-table>
-                        <vs-pagination @input="getStores(0)" :max="9" :total="stores.last_page"
+                        <vs-pagination v-if="locale=='ar'" @input="getStores(0)" :max="9" :total="stores.last_page"
+                            v-model="stores.current_page"  prev-icon="arrow_forward"
+                            next-icon="arrow_back"></vs-pagination>
+                            <vs-pagination v-else @input="getStores(0)" :max="9" :total="stores.last_page"
                             v-model="stores.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
                     </div>
@@ -151,12 +154,12 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addStore()">Create</button>
+                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addStore()">{{$t('message.Create')}}</button>
                         <button type="button" class="btn btn-primary" v-if="edit"
                             @click.prevent="updateStore()">{{$t('message.Edit')}}</button>
 
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Annuler</button>
+                            data-bs-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
 
                     </div>
                 </div>
@@ -200,6 +203,7 @@ export default {
     data() {
         return {
             token: localStorage.getItem('token'),
+            locale: localStorage.getItem("locale"),
             edit: false,
             errors: {},
             villes: [],
