@@ -38,14 +38,13 @@
         </div>
       </div>
       <div class="col-md-3 stretch-card grid-margin">
-        <div class="card bg-gradient-info card-img-holder text-white">
+        <div class="card bg-gradient-secondary card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3">{{$t('message.COD_this_month')}}<i
-                class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+            <h4 class="font-weight-normal mb-3">{{$t('message.Delivery_Rate')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ REVENU }} {{$t('message.Dhs')}}</h2>
-            <!-- <h6 class="card-text">Decreased by 10%</h6> -->
+            <h2 class="mb-5">{{ tauxLivraison }} %</h2>
+            <!-- <h6 class="card-text">Increased by 5%</h6> -->
           </div>
         </div>
       </div>
@@ -60,14 +59,16 @@
           </div>
         </div>
       </div>
+    
       <div class="col-md-3 stretch-card grid-margin">
-        <div class="card bg-gradient-danger card-img-holder text-white">
+        <div class="card bg-gradient-info card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3">{{$t('message.Cancel_this_month')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
+            <h4 class="font-weight-normal mb-3">{{$t('message.COD_this_month')}}<i
+                class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ CANCELED }} {{$t('message.Order')}}</h2>
-            <!-- <h6 class="card-text">Increased by 5%</h6> -->
+            <h2 class="mb-5">{{ REVENU }} {{$t('message.Dhs')}}</h2>
+            <!-- <h6 class="card-text">Decreased by 10%</h6> -->
           </div>
         </div>
       </div>
@@ -183,6 +184,7 @@ export default {
         DeliveredCommande: '',
         etat_commande: '',
       },
+      tauxLivraison:0,
       CANCELED: 0,
       DELIVERED: 0,
       RETURNED: 0,
@@ -221,7 +223,7 @@ export default {
     },
     async getDeliveredCommande() {
       await axios.post('/api/getDeliveredCommande')
-        .then(res => { this.DeliveredCommande = res.data.data; this.REVENU = res.data.data2['somme'] })
+        .then(res => { this.DeliveredCommande = res.data.data; this.REVENU = res.data.data2['somme'],this.tauxLivraison=res.data.tauxLivraison })
         .catch(error => console.log(res));
       for (var key in this.DeliveredCommande) {
         if (this.DeliveredCommande[key].etat_commande == 'CANCELED') {

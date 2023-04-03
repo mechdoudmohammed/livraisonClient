@@ -998,7 +998,7 @@ export default {
                     this.commande = res.data.data;
                     var text =
                         "<table class='table table-borderless' style='text-align: left;'>" +
-                        "<tr><td colspan='2'><b>Original</b></td></tr>";
+                        "<tr><td colspan='2'><b>"+this.$t('message.Original')+"</b></td></tr>";
 
                     if (res.data.data.nom_store != null) {
                         text +=

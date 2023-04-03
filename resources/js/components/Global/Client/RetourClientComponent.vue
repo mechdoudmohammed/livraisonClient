@@ -56,7 +56,7 @@
                                     </vs-td>
                                     <vs-td :data="tr.statut_bonRetourClient">
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.statut_bonRetourClient == 'Envoyer'">{{$t('message.Send')}}</b>
+                                            v-if="tr.statut_bonRetourClient == 'Envoyer'">{{$t('message.New')}}</b>
                                         <b class="badge badge badge-gradient-success"
                                             v-if="tr.statut_bonRetourClient == 'recu'">{{$t('message.Receipt')}}</b>
                                     </vs-td>

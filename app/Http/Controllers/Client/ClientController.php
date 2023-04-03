@@ -232,7 +232,7 @@ class ClientController extends Controller
                 ]
 
             );
-            return ;
+
       
     }
     public function logout(Request $request)

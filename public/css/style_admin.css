@@ -19834,8 +19834,8 @@ dl li {
   -moz-transition: width 0.25s ease;
   -ms-transition: width 0.25s ease;
   color: #9c9fa6;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 10px;
+    padding-right: 55px;
   width: calc(100% - 260px);
   height: 70px;
 }
@@ -20563,6 +20563,7 @@ dl li {
 .sidebar .nav .nav-item.nav-profile .nav-link .nav-profile-badge {
   font-size: 1.125rem;
   margin-left: auto;
+  margin-bottom: 14px;
 }
 
 .rtl .sidebar .nav .nav-item.nav-profile .nav-link .nav-profile-badge {

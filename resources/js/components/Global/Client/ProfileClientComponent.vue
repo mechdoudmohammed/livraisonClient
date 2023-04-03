@@ -29,14 +29,14 @@
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group focused">
-                        <label class="form-control-label" for="input-first-name">Old Password</label>
+                        <label class="form-control-label" for="input-first-name">{{$t('message.Old_Password')}}</label>
                         <input type="password" class="form-control form-control-alternative"
                           v-model="formData.old_password">
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group focused">
-                        <label class="form-control-label" for="input-last-name">New Password</label>
+                        <label class="form-control-label" for="input-last-name">{{$t('message.New_Password')}}</label>
                         <input type="password" class="form-control form-control-alternative"
                           v-model="formData.new_password">
                       </div>
@@ -45,7 +45,7 @@
                   <div class="row btn_modifier">
 
                     <button type="button" class="btn btn-primary float-end" @click.prevent='updatePassword'><i
-                        class="fa fa-check" aria-hidden="true"></i> Modifier
+                        class="fa fa-check" aria-hidden="true"></i>{{$t('message.Update')}}
                     </button>
                   </div>
                 </div>
@@ -58,11 +58,11 @@
               <div class="card-header bg-white border-0">
                 <div class="row align-items-center">
                   <div class="col-6">
-                    <h3 class="mb-0">My account</h3>
+                    <h3 class="mb-0">{{$t('message.My_account')}}</h3>
                   </div>
                   <div class="col-6 activer-stock" v-if="Client.stock == 0">
                     <vs-button color="success" type="filled" @click.prevent="demandeActiverStock">
-                      <i class="fa fa-check" aria-hidden="true"></i> Demande Activer Stock</vs-button>
+                      <i class="fa fa-check" aria-hidden="true"></i> {{$t('message.Activer_Stock')}}</vs-button>
                   </div>
                 </div>
               </div>
@@ -70,32 +70,32 @@
                 <form>
                   <vs-alert title="Les informations sont essentielles" active="true" color="danger"
                     v-if="showMsgInformation">
-                    Veuillez-vous completer vous information avant d'utiliser le system
+                    {{$t('message.Please_complete_your_information_before_using_the_system')}}
                   </vs-alert><br>
                   <div class="alert alert-danger" role="alert" v-if="nom_err">
                     {{ nom_err[0] }}
                   </div>
                   <div class="pl-lg-4">
                     <div class="row">
-                      <h6 class="heading-small text-muted mb-4 d-flex">Whatsapp Notification
+                      <h6 class="heading-small text-muted mb-4 d-flex">{{$t('message.Whatsapp_Notification')}}
                          <vs-switch style="margin-left: 10px;" color="success" v-model="Client.notification_statut" /></h6>
                       
                       </div>
                   </div>
                    
                  
-                  <h6 class="heading-small text-muted mb-4">User information</h6>
+                  <h6 class="heading-small text-muted mb-4">{{$t('message.User_information')}}</h6>
                   <div class="pl-lg-4">
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          <label class="form-control-label" for="input-email">Email address</label>
+                          <label class="form-control-label" for="input-email">{{$t('message.Email')}}</label>
                           <input type="email" class="form-control form-control-alternative" v-model="Client.email">
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-first-name">Phone Number</label>
+                          <label class="form-control-label" for="input-first-name">{{$t('message.Phone_Number')}}</label>
                           <input type="text" class="form-control form-control-alternative" v-model="Client.telephone">
                         </div>
                       </div>
@@ -103,14 +103,14 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-first-name">Last name</label>
+                          <label class="form-control-label" for="input-first-name">{{$t('message.Last_name')}}</label>
                           <input type="text" class="form-control form-control-alternative disableChamps"
                             v-model="Client.nom">
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-last-name">First Name</label>
+                          <label class="form-control-label" for="input-last-name">{{$t('message.First_name')}}</label>
                           <input type="text" class="form-control form-control-alternative disableChamps"
                             v-model="Client.prenom">
                         </div>
@@ -119,7 +119,7 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          <label class="form-control-label" for="input-email">CIN</label>
+                          <label class="form-control-label" for="input-email">{{$t('message.CIN')}}</label>
                           <input type="text" class="form-control form-control-alternative disableChamps"
                             v-model="Client.cin">
                         </div>
@@ -131,19 +131,19 @@
                   </div>
                   <hr class="my-4">
                   <!-- Address -->
-                  <h6 class="heading-small text-muted mb-4">Information Bank</h6>
+                  <h6 class="heading-small text-muted mb-4">{{$t('message.Bank_Information')}}</h6>
                   <div class="pl-lg-4">
                     <div class="row">
                       <div class="col-md-8">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-address">RIB</label>
+                          <label class="form-control-label" for="input-address">{{$t('message.RibBank')}}</label>
                           <input id="input-address" class="form-control form-control-alternative" type="text"
                             v-model="Client.ribBank">
                         </div>
                       </div>
                       <div class="col-lg-4" v-if="Client.role == 'Client'">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-city">ICE</label>
+                          <label class="form-control-label" for="input-city">{{$t('message.ICE')}}</label>
                           <input type="text" id="input-city" class="form-control form-control-alternative">
                         </div>
                       </div>
@@ -166,26 +166,26 @@
                   </div>
                   <hr class="my-4">
                   <!-- Address -->
-                  <h6 class="heading-small text-muted mb-4" v-if="Client.role == 'Client'">Information Company</h6>
+                  <h6 class="heading-small text-muted mb-4" v-if="Client.role == 'Client'">{{$t('message.Company_Information')}}</h6>
                   <div class="pl-lg-4" v-if="Client.role == 'Client'">
                     <div class="row">
                       <div class="col-lg-4">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-city">Company</label>
+                          <label class="form-control-label" for="input-city">{{$t('message.Company')}}</label>
                           <input type="text" id="input-city" class="form-control form-control-alternative"
                             v-model="Client.company">
                         </div>
                       </div>
                       <div class="col-lg-4">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-country">Web site</label>
+                          <label class="form-control-label" for="input-country">{{$t('message.WebSite')}}</label>
                           <input type="text" id="input-country" class="form-control form-control-alternative"
                             v-model="Client.website">
                         </div>
                       </div>
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label class="form-control-label" for="input-country">Adresse</label>
+                          <label class="form-control-label" for="input-country">{{$t('message.Address')}}</label>
                           <input type="text" id="input-postal-code" class="form-control form-control-alternative"
                             v-model="Client.adresse">
                         </div>
@@ -196,7 +196,7 @@
                 <div class="row btn_modifier">
 
                   <button type="button" class="btn btn-primary float-end" @click.prevent='updateProfile'><i
-                      class="fa fa-check" aria-hidden="true"></i> Update
+                      class="fa fa-check" aria-hidden="true"></i> {{$t('message.Update')}}
                   </button>
                 </div>
               </div>

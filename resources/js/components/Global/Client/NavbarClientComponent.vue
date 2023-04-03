@@ -55,8 +55,8 @@
 
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
             aria-labelledby="notificationDropdown">
-            <h6 class="p-3 mb-0" v-if="locale=='ar'" style="float: right;">{{$t('message.Notifications')}}</h6>
-            <h6 class="p-3 mb-0" v-else>{{$t('message.Notifications')}}</h6>
+            <h6 class="p-3 mb-0" v-if="locale == 'ar'" style="float: right;">{{ $t('message.Notifications') }}</h6>
+            <h6 class="p-3 mb-0" v-else>{{ $t('message.Notifications') }}</h6>
             <div class="dropdown-divider"></div>
 
 
@@ -70,9 +70,9 @@
               </div>
 
               <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                <h6 class="preview-subject font-weight-normal mb-1">{{ notification.titre }}</h6>
-                
-                <p class="text-gray ellipsis mb-0">{{ notification.description }}</p>
+                <h6 class="preview-subject font-weight-normal mb-1"> {{ notification.titre }} </h6>
+
+                <p class="text-gray ellipsis mb-0"> {{ notification.description }} </p>
                 <span><time-ago :datetime="notification.updated_at" long :locale="locale"></time-ago></span>
               </div>
             </a>
@@ -88,11 +88,6 @@
           </a>
         </li>
 
-        <li class="nav-item nav-settings d-none d-lg-block">
-          <a class="nav-link" href="#">
-            <i class="mdi mdi-format-line-spacing"></i>
-          </a>
-        </li>
 
         <li class="nav-item nav-profile dropdown">
           <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown"
@@ -116,7 +111,7 @@
               <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
           </div>
         </li>
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown" ref="myElement">
           <div class="lang-menu">
             <div class="selected-lang" v-if="locale == 'fr'" @click="displayDropdownLang">
               <img src="https://img.icons8.com/color/32/france.png" style="margin-right: 4px; width: 23px;">French
@@ -165,6 +160,7 @@ export default {
   },
   methods: {
     displayDropdownLang() {
+      document.addEventListener('click', this.handleClickOutside);
       document.getElementById('dropdownLang').style.display = 'block'
     },
     changeLanguage(lang) {
@@ -193,6 +189,7 @@ export default {
     },
     changeToRight() {
       if (localStorage.getItem('locale') == 'ar') {
+
         if (window.innerWidth <= 991) {
           if (document.getElementById("sidebar").style.right == "0px") {
             document.getElementById("sidebar").style.removeProperty('left');
@@ -223,14 +220,31 @@ export default {
       }).catch((errors) => {
         console.log(errors)
       })
+    },
+    async handleClickOutside(event) {
+    
+      if (!this.$refs.myElement.contains(event.target)) {
+        document.getElementById('dropdownLang').style.display = 'none';
+      }
     }
+
+
+
+
+
 
   },
   beforeMount() {
     this.getNotification();
 
   },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside);
+  },
   async mounted() {
+
+
+
     $(function () {
       $('[data-toggle="offcanvas"]').on("click", function () {
         $('.sidebar-offcanvas').toggleClass('active')
@@ -281,6 +295,7 @@ export default {
 <style scoped>
 .lang-menu {
   font-weight: bold;
+  display: flex;
 }
 
 .lang-menu .selected-lang {
@@ -298,20 +313,21 @@ export default {
 }
 
 .lang-menu ul {
-  margin-top: 110px;
-  padding: 0;
+  margin-top: 23px;
+  padding: 3px;
   display: none;
   background-color: #fff;
   border: 1px solid #f8f8f8;
-  width: 129px;
+  width: 139px;
   border-radius: 5px;
   box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.2);
+  position: absolute;
 }
 
 
 .lang-menu ul li {
   list-style: none;
-  text-align: left;
+
   display: flex;
   justify-content: space-between;
 }

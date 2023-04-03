@@ -51,7 +51,7 @@
           <router-link to="/suivie">
             <a class="nav-link" @click="hideMenu">
               <i class="mdi mdi-forum menu-icon"></i>
-              <span class="menu-title">{{ $t('message.Track_This_Order') }}</span><span style="padding-right: 7px;padding-left: 7px;border-radius: 9px;background: red;color: white;">{{ nbrColisDMsuivie }}</span>
+              <span class="menu-title">{{ $t('message.Track_This_Order') }}</span><span v-if="nbrColisDMsuivie>0" style="padding-right: 7px;padding-left: 7px;border-radius: 9px;background: red;color: white;">{{ nbrColisDMsuivie }}</span>
 
             </a>
           </router-link>
@@ -214,7 +214,8 @@ export default {
     hideMenu() {
       var active = document.querySelector(".sidebar-offcanvas");
       active.classList.remove("active");
-
+      document.getElementById("sidebar").style.removeProperty('left');
+            document.getElementById("sidebar").style.removeProperty('right');
     },
   },
   mounted(){

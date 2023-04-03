@@ -20,7 +20,7 @@
                         <vs-table stripe :data="employes.data">
                             <template slot="thead">
                                 <vs-th>
-                                    ID
+                                    {{$t('message.Id')}}
                                 </vs-th>
                                 <vs-th>
                                     {{$t('message.Name')}}
@@ -130,17 +130,17 @@
                                 name="telephone">
                         </div>
                         <div class="form-group">
-                            <label for="email">Email <span class="text-danger"> *</span></label>
+                            <label for="email">{{$t('message.Email')}}<span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="email" v-model="formData.email" name="email">
                         </div>
                         <div class="form-group">
-                            <label for="cin">CIN <span class="text-danger"> *</span></label>
+                            <label for="cin">{{$t('message.CIN')}} <span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="cin" v-model="formData.cin" name="cin">
                         </div>
                         <div class="form-group">
-                            <label for="ribBank">RibBank</label>
+                            <label for="ribBank">{{$t('message.RibBank')}}</label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="ribBank" v-model="formData.ribBank"
                                 name="ribBank">
@@ -154,7 +154,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="username">Username <span class="text-danger"> *</span></label>
+                            <label for="username">{{$t('message.Username')}}<span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="username" v-model="formData.username"
                                 name="username">
@@ -168,7 +168,7 @@
                 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addEmploye()">Add Employe</button>
+                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addEmploye()">{{$t('message.Add_Staff')}}</button>
                         <button type="button" class="btn btn-primary" v-if="edit"
                             @click.prevent="updateEmploye(formData.selected_client)">{{$t('message.Edit_Employee')}}</button>
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
