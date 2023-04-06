@@ -30,14 +30,14 @@ class DataClients implements FromQuery, WithHeadings, WithColumnWidths, WithStyl
     public function query()
     {
         return Commande::query()
-            ->selectRaw('commandes.nom_client_commande,commandes.adresse_client_commande,commandes.telephone_client_commande,villes.nom_ville,count(commandes.id_commande)')
+            ->selectRaw('commandes.nom_client_commande,commandes.adresse_client_commande,commandes.telephone_client_commande,villes.nom_ville,count(commandes.id_commande),commandes.etat_commande')
             ->join('villes', 'villes.id', 'commandes.id_ville')
             ->groupby('commandes.nom_client_commande')
             ->where('commandes.id_client', $this->id);
     }
     public function headings(): array
     {
-        return ["Nom complet", "Adresse", "Telephone", 'Ville', 'Nombre de commande'];
+        return ["Nom complet", "Adresse", "Telephone", 'Ville', 'Nombre de commande','Etat'];
     }
     public function columnWidths(): array
     {

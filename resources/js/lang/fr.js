@@ -39,7 +39,7 @@ let message = {
     Claim: "Réclamation",
     Invoices: "Factures",
     Total_Net: "Total Net",
-    Tolal: "Total",
+    ToTal: "Total",
     Orders_Count: "Nombre de commandes",
     Invoice_type: "Type de facture",
     Delivered_this_month: "Livré ce mois",
@@ -210,7 +210,12 @@ let message = {
     ICE: 'ICE',
     Company_Information: 'Informations sur l\'entreprise',
     Company: 'Entreprise',
-    New:'Nouveaux'
+    New:'Nouveaux',
+    Printed:'Imprimé',
+    Article_History:'Article Historique',
+    Model_Excel:'Model Excel',
+    With_Sms:'Avec Sms',
+    Receipt_id:'Id Bon de retour',
 };
 
 export default {

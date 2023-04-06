@@ -794,7 +794,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-sign-out-alt"></i>
+                            <i class="fa fa-times"></i>
                         </button>
                     </div>
                 </div>
@@ -866,7 +866,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-sign-out-alt"></i>
+                            <i class="fa fa-times"></i>
                         </button>
                     </div>
                 </div>

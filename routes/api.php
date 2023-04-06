@@ -60,7 +60,8 @@ Route::middleware(['auth:client'])
         Route::get('demandeActiverStock', 'Client\ClientController@demandeActiverStock');
         Route::get('receptionRetour/{id}', 'Client\CommandeController@receptionRetour');
         Route::get('checkBlackList/{telephone}', 'Client\ClientController@checkBlackList');
-
+        
+        Route::post('updateEmploye', 'Client\ClientController@updateEmploye');
         Route::post('FactureClient', 'Client\FactureController@index');
         Route::get('BlockStore/{id}', 'Client\StoreController@BlockStore');
         Route::post('modifierProfile', 'Client\ClientController@modifier');
@@ -86,7 +87,7 @@ Route::middleware(['auth:client'])
         Route::post('downloadStickerArticle', 'Client\ArticleController@downloadSticker');
         Route::get('historiqueCommande/{id}', 'Client\CommandeController@historiqueCommande');
         Route::post('downloadHistoriqueArticle', 'Client\ArticleController@downloadHistoriqueArticle');
-
+        Route::get('historiqueArticle/{id}', 'Client\ArticleController@historiqueArticle');
         Route::get('afficheArticleDisponible', 'Client\ArticleController@afficheArticleDisponible');
         Route::post('checkStock', 'Client\ArticleController@checkStock');
         Route::post('getDeliveredCommande', 'Client\StatistiqueController@getDeliveredCommande');
@@ -114,6 +115,8 @@ Route::middleware(['auth:client'])
         Route::get('verificationRelaunch/{id}', 'Client\CommandeController@verificationRelaunch');
         Route::get('getBonRetour/{id}', 'Client\CommandeController@getBonRetourClient');
         Route::get('getCountDMsuivie', 'Client\NotificationController@getCountDMsuivie');
+        Route::get('StatusToPrint/{id}', 'Client\CommandeController@changeStatusToPrint');
+        
     });
 
 

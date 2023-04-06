@@ -168,11 +168,12 @@
                 
                     </div>
                     <div class="modal-footer">
+                        <button type="button" id="btn_cancel" class="btn btn-secondary"
+                            data-bs-dismiss="modal"><i class="fa fa-times"></i></button>
                         <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addEmploye()">{{$t('message.Add_Staff')}}</button>
                         <button type="button" class="btn btn-primary" v-if="edit"
-                            @click.prevent="updateEmploye(formData.selected_client)">{{$t('message.Edit_Employee')}}</button>
-                        <button type="button" id="btn_cancel" class="btn btn-secondary"
-                            data-bs-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+                            @click.prevent="updateEmploye()">{{$t('message.Edit_Employee')}}</button>
+               
                     </div>
                 </div>
             </div>
@@ -220,7 +221,30 @@ export default {
         }
     },
     methods: {
-        
+        async updateEmploye() {
+            console.log(this.formData.selected_employe);
+            this.formData.id_ville = this.ville['id'];
+            let formData = new FormData()
+
+            _.each(this.formData, (value, key) => { formData.append(key, value) })
+            await axios.post('/api/updateEmploye', formData, { headers: { 'Content-Type': "multipart/form-data; charset=utf-8;boundary=" + Math.random().toString().substr(2) } }).then((res) => {
+    
+                this.$vs.notify({
+                        time: 5000,
+                        text:  'L\'employe a été enregistrée',
+                        color: 'success', position: 'top-right',
+
+                    })
+                // this.initialiserFormData();
+                this.getEmployes(0);
+                $("#ajouterClient").modal('hide')
+            }).catch(error => {
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                    this.nom_err = this.errors[Object.keys(this.errors)[0]];
+                }
+            })
+        },
         async getBanks() {
             await axios.get('/api/getBank')
                 .then(res => { this.banks = res.data.data; })
@@ -242,7 +266,7 @@ export default {
 
         },
         async addEmploye() {
-            console.log(this.formData)
+            this.$vs.loading({ color: '#22c16b' })
             this.formData.id_ville = this.ville['id'];
             await axios.post('/api/EmployeClient', this.formData).then((res) => {
                 if(res.data.message=='Employe Created successfully'){
@@ -261,7 +285,7 @@ export default {
                     this.errors = error.response.data.errors || {};
                     this.nom_err = this.errors[Object.keys(this.errors)[0]];
                 }
-            })
+            }).finally(() => this.$vs.loading.close());
         },
         async getVilles() {
             await axios.get('/api/Villes')
@@ -278,15 +302,16 @@ export default {
             };
         },
         async checkEmploye(btn_val, id_employe) {
-            this.initialiserFormData();
+           await this.initialiserFormData();
             await this.getVilles();
             this.edit = btn_val;
             if (btn_val) {
-                this.getEmploye(id_employe);
+                await this.getEmploye(id_employe);
                 this.formData.selected_employe = id_employe;
-              
+               
             }
             $("#ajouterEmploye").modal('show')
+
         },
         async BlockEmployeClient(id) {
             await axios.get('/api/BlockEmployeClient/'+id)

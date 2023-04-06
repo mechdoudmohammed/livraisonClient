@@ -14,6 +14,7 @@ use App\Models\HistoriqueCommande;
 use App\Models\HistoriqueRamassage;
 use App\Models\Message;
 use App\Models\Notification;
+use App\Models\Package;
 use App\Models\Reclamation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -53,7 +54,7 @@ class ClientController extends Controller
         try {
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
-             
+
 
                 if (!Hash::check($request->old_password, $user->password)) {
                     return response()->json([
@@ -90,55 +91,54 @@ class ClientController extends Controller
     public function modifier(Request $request)
     {
 
-            $user = auth('sanctum')->user();
-            if ($user->role == 'Client' && $user->statut == 'Active') {
-                $client = Client::find($request->id);
-                if ($client->prenom != null && $client->nom != null && $client->cin != null) {
-                    $this->validate($request, [
-                        'adresse' => 'required|String',
-                        'company' => 'required|String',
-                        'website' => 'required|String',
+        $user = auth('sanctum')->user();
+        if ($user->role == 'Client' && $user->statut == 'Active') {
+            $client = Client::find($request->id);
+            if ($client->prenom != null && $client->nom != null && $client->cin != null) {
+                $this->validate($request, [
+                    'adresse' => 'required|String',
+                    'company' => 'required|String',
+                    'website' => 'required|String',
 
-                        'ribBank' => 'required|String',
-                        'email' => 'required|max:150|unique:clients,email,' . $user->id,
-                        'telephone' => 'required|regex:/(0)[0-9]{9}/',
+                    'ribBank' => 'required|String',
+                    'email' => 'required|max:150|unique:clients,email,' . $user->id,
+                    'telephone' => 'required|regex:/(0)[0-9]{9}/',
 
-                    ]);
-                } else {
-                    $this->validate($request, [
-                        'nom' => 'required|String',
-                        'prenom' => 'required|String',
-                        'adresse' => 'required|String',
-                        'cin' => 'required|String',
-                        'company' => 'required|String',
-                        'website' => 'required|String',
-                        'ribBank' => 'required|String',
-                        'email' => 'required|max:150|unique:clients,email,' . $user->id,
-                        'telephone' => 'required|regex:/(0)[0-9]{9}/',
-
-                    ]);
-                    $client->nom = $request->nom;
-                    $client->prenom = $request->prenom;
-                    $client->cin = $request->cin;
-                }
-                $client->notification_statut = $request->notification_statut;
-
-                $client->adresse = $request->adresse;
-                $client->telephone = $request->telephone;
-                $client->email = $request->email;
-                $client->company = $request->company;
-                $client->website = $request->website;
-
-                $client->ribBank = $request->ribBank;
-                $client->id_bank = $request->id_bank;
-
-
-                $client->save();
-                return response()->json([
-                    'message' => 'Client update successfully'
                 ]);
+            } else {
+                $this->validate($request, [
+                    'nom' => 'required|String',
+                    'prenom' => 'required|String',
+                    'adresse' => 'required|String',
+                    'cin' => 'required|String',
+                    'company' => 'required|String',
+                    'website' => 'required|String',
+                    'ribBank' => 'required|String',
+                    'email' => 'required|max:150|unique:clients,email,' . $user->id,
+                    'telephone' => 'required|regex:/(0)[0-9]{9}/',
+
+                ]);
+                $client->nom = $request->nom;
+                $client->prenom = $request->prenom;
+                $client->cin = $request->cin;
             }
-     
+            $client->notification_statut = $request->notification_statut;
+
+            $client->adresse = $request->adresse;
+            $client->telephone = $request->telephone;
+            $client->email = $request->email;
+            $client->company = $request->company;
+            $client->website = $request->website;
+
+            $client->ribBank = $request->ribBank;
+            $client->id_bank = $request->id_bank;
+
+
+            $client->save();
+            return response()->json([
+                'message' => 'Client update successfully'
+            ]);
+        }
     }
     public function show($id)
     {
@@ -209,31 +209,29 @@ class ClientController extends Controller
             'device_name' => 'required',
         ]);
 
-            $client = Client::where('email', $request->email)->orWhere('username', $request->email)->first();
-           
-            if (!$client || !Hash::check($request->password, $client->password)) {
+        $client = Client::where('email', $request->email)->orWhere('username', $request->email)->first();
 
-                throw ValidationException::withMessages([
-                    'email' => ['Les informations d\'identification fournies sont incorrectes.'],
-                ]);
-            }
-            if ($client->statut == 'Inactive') {
-                return response()->json(
-                    [
-                        "data" => "bloque"
-                    ]
+        if (!$client || !Hash::check($request->password, $client->password)) {
 
-                );
-            }
+            throw ValidationException::withMessages([
+                'email' => ['Les informations d\'identification fournies sont incorrectes.'],
+            ]);
+        }
+        if ($client->statut == 'Inactive') {
             return response()->json(
                 [
-                    "data" => $client->createToken($request->device_name)->plainTextToken,
-                    'language'=>$client->language
+                    "data" => "bloque"
                 ]
 
             );
+        }
+        return response()->json(
+            [
+                "data" => $client->createToken($request->device_name)->plainTextToken,
+                'language' => $client->language
+            ]
 
-      
+        );
     }
     public function logout(Request $request)
     {
@@ -264,7 +262,7 @@ class ClientController extends Controller
     public function getVilles()
     {
         try {
-            $villes = DB::table('villes')->select('villes.id', 'villes.nom_ville as ville')->where('villes.statut','Active')->get();
+            $villes = DB::table('villes')->select('villes.id', 'villes.nom_ville as ville')->where('villes.statut', 'Active')->get();
             return response()->json([
                 'data' => $villes
             ]);
@@ -281,6 +279,7 @@ class ClientController extends Controller
             if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
                 $packagesClient = DB::table('commandes')
                     ->join('clients', 'commandes.id_client', '=', 'clients.id')
+                    ->join('packages','packages.id_package','commandes.id_package')
                     ->where(function ($query) use ($user) {
                         $query->where('commandes.id_client', $user->id)
                             ->orwhere('commandes.id_client', $user->superviseur);
@@ -289,7 +288,7 @@ class ClientController extends Controller
                     ->whereNotIn('commandes.etat_commande', ['CREATED', 'CONFIRMED'])
                     ->groupBy('commandes.id_package')
                     ->orderBy('commandes.updated_at', 'desc')
-                    ->selectRaw('commandes.id_package , count(commandes.id_package) as nombre_commande,commandes.id_commande,commandes.updated_at,commandes.type_commande')
+                    ->selectRaw('packages.statut_package,commandes.id_package , count(commandes.id_package) as nombre_commande,commandes.id_commande,commandes.updated_at,commandes.type_commande')
                     ->paginate($_GET['count_nbr']);
                 return response()->json([
                     'data' => $packagesClient
@@ -307,6 +306,7 @@ class ClientController extends Controller
     {
         try {
             $id_package = 'RM' . strtoupper(Str::random(6)) . time();
+            Package::create(["id_package" => $id_package]);
             $user = auth('sanctum')->user();
             $statut2 = 0;
             $statut = 0;
@@ -347,20 +347,20 @@ class ClientController extends Controller
                 }
             }
             if ($statut == 1 || $statut2 == 1) {
-                if($user->role=='Client'){
+                if ($user->role == 'Client') {
                     HistoriqueRamassage::create([
                         "id_ville" => $user->id_ville,
                         "statut_ramassage" => 'pas encour',
                         "id_client" => $user->id,
                     ]);
-                }elseif($user->role=='EmployeClient'){
+                } elseif ($user->role == 'EmployeClient') {
                     HistoriqueRamassage::create([
                         "id_ville" => $user->id_ville,
                         "statut_ramassage" => 'pas encour',
                         "id_client" => $user->superviseur,
                     ]);
                 }
-               
+
                 return response()->json([
                     'message' => 'commande created successfully'
                 ]);
@@ -557,14 +557,7 @@ class ClientController extends Controller
             ]);
         }
     }
-
-
-
-
-
-
     public function sendMessage(Request $request)
-
     {
         try {
             $user = auth('sanctum')->user();
@@ -603,7 +596,6 @@ class ClientController extends Controller
         }
     }
     public function getMessages($id)
-
     {
         try {
             $user = auth('sanctum')->user();
@@ -632,6 +624,61 @@ class ClientController extends Controller
             return response()->json([
                 'message' => 'Erreur'
             ]);
+        }
+    }
+    public function updateEmploye(Request $request)
+    {
+
+        $user = auth('sanctum')->user();
+        if ($user->role == 'Client' && $user->statut == 'Active') {
+            $this->validate($request, [
+                'nom' => 'required|String',
+                'prenom' => 'required|String',
+
+                'telephone' => 'required|String',
+                'cin' => 'String',
+                'company' => 'String',
+                'website' => 'String',
+                'ribBank' => 'String',
+                'username' => 'String',
+                'id_ville' => 'required',
+                'email' => 'required|unique:clients,email,' . $request->selected_employe,
+
+            ]);
+            $client = Client::where('id', $request->selected_employe)->where('superviseur',$user->id)->first();
+
+
+            $client->nom = $request->nom;
+            $client->prenom = $request->prenom;
+            $client->telephone = $request->telephone;
+            $client->id_bank = $request->id_bank;
+            $client->ribBank = $request->ribBank;
+            $client->id_ville = $request->id_ville;
+            $client->email = $request->username;
+            $client->username = $request->username;
+            $client->cin = $request->cin;
+            $client->email = $request->email;
+            $client->company = $request->company;
+            $client->website = $request->website;
+            $client->stock = $request->stock;
+            $client->username = $request->username;
+            $client->id_ville = $request->id_ville;
+
+            if ($request->password != '') {
+                $client->password = Hash::make($request->password);
+            }
+            $statut = $client->save();
+
+            if ($statut) {
+                event(new Registered($request));
+                return response()->json([
+                    'message' => 'Employe updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Erreur'
+                ]);
+            }
         }
     }
 }

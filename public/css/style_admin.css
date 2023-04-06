@@ -21050,3 +21050,10 @@ button#btn_cancel {
   min-width: 88px;
 }
 
+button#btn_cancel {
+  background: #dc3557;
+  border: red;
+}
+span.w-32.avatar.circle.gd-info {
+  background: white;
+}

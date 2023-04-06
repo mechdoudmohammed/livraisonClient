@@ -43,7 +43,7 @@
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
             <h4 class="font-weight-normal mb-3">{{$t('message.Delivery_Rate')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
             </h4>
-            <h2 class="mb-5">{{ tauxLivraison }} %</h2>
+            <h2 class="mb-5">{{ tauxLivraison.toFixed(2) }} %</h2>
             <!-- <h6 class="card-text">Increased by 5%</h6> -->
           </div>
         </div>
@@ -91,7 +91,7 @@
                     {{$t('message.Orders_Count')}}
                   </vs-th>
                   <vs-th>
-                    {{$t('message.Tolal')}}
+                    {{$t('message.ToTal')}}
                   </vs-th>
                   <vs-th>
                     {{$t('message.Shipping_Fees')}}

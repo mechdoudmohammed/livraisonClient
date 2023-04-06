@@ -39,7 +39,7 @@ let message = {
     Claim: "Claim",
     Invoices: "Invoices",
     Total_Net: "Total Net",
-    Tolal: "Tolal",
+    ToTal: "ToTal",
     Orders_Count: "Orders Count",
     Invoice_type: "Invoice Type",
     Delivered_this_month: "Delivered this month",
@@ -191,7 +191,7 @@ let message = {
     Return_send: "Return send",
     Return_received_by_Ramasseur: "Return received by Ramasseur",
     Return_send_to_hometown: "Return send to hometown",
-    //=========================================================================================
+
     Email:'Email',
     CIN:'CIN',
     RibBank:'RibBank',
@@ -211,6 +211,13 @@ let message = {
     Company_Information:'Company Information',
     Company:'Company',
     New:'New',
+    Article_History:'Article History',
+    Printed:'Printed',
+    //=========================================================================================
+    Model_Excel:'Model Excel',
+    With_Sms:'With_Sms',
+    Receipt_id:'Receipt Id',
+
 };
 
 export default {

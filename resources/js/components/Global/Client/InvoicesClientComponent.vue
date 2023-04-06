@@ -45,7 +45,7 @@
                     {{$t('message.Orders_Count')}}
                   </vs-th>
                   <vs-th>
-                    {{$t('message.Tolal')}}
+                    {{$t('message.ToTal')}}
                   </vs-th>
                   <vs-th>
                     {{$t('message.Shipping_Fees')}}
@@ -157,7 +157,7 @@ export default {
 
             },
             options2: [
-                { text: 'Invoice N°', value: 'id_facture' },
+                { text: this.$t('message.Invoice_id'), value: 'id_facture' },
 
             ],
 

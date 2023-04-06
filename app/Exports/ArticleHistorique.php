@@ -34,7 +34,8 @@ class ArticleHistorique implements FromQuery,WithHeadings,WithColumnWidths,WithS
         )
         ->join('detailscommandes','detailscommandes.id_article','=','articles.id')
         ->Join('commandes','detailscommandes.id_commande','=','commandes.id_commande')
-        ->where('articles.id', $this->id);
+        ->where('articles.id', $this->id)
+        ->where('commandes.etat_commande', 'DELIVERED');
     }
     public function headings(): array
     {

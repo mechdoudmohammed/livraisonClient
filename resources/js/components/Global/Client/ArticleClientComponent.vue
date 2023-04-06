@@ -80,6 +80,11 @@
                                  <button type="button" class="btn btn-success" 
                                                 v-if="tr.etat_article == 'En stock'"
                                     @click="downloadHistoriqueArticle(tr.id)"><i class="fa fa-file-excel"></i></button>
+                                    <button type="button" class="btn btn-history" data-bs-toggle="modal"
+                                            data-bs-target="#showArticleHistory" @click.prevent="getHistoriqueArticles(tr.id)">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+
                                     </vs-td>
                                 </vs-tr>
                             </template>
@@ -122,13 +127,67 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" id="btn_cancel" class="btn btn-secondary"
+                            data-bs-dismiss="modal"><i class="fa fa-times"></i></button>
                         <button type="button" class="btn btn-primary" v-if="!edit"
                             @click.prevent="addArticle(false)">{{$t('message.Create')}}</button>
                         <button type="button" class="btn btn-primary" v-if="edit"
                             @click.prevent="updateArticle(formData.selected_article)">{{$t('message.Edit')}}</button>
-                        <button type="button" id="btn_cancel" class="btn btn-secondary"
-                            data-bs-dismiss="modal"><i class="fas fa-sign-out-alt"></i></button>
+                      
 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="showArticleHistory" tabindex="-1" aria-labelledby="showArticleHistory" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="showArticleHistory">
+                            {{ $t('message.Article_History') }}
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="page-content page-container" id="page-content">
+                            <div class="padding">
+                                <div class="row">
+                                    <div class="col-lg-12">
+
+                                        <div class="timeline">
+                                            <div class="tl-item" v-for="HistoriqueArticle in HistoriqueArticles">
+                                                <div class="tl-dot">
+                                                    <a class="tl-author" href="#" data-abc="true"><span
+                                                            class="w-32 avatar circle gd-info">
+                                                            <b>{{ HistoriqueArticle.new_stock }}</b><br>
+
+                                                        </span></a>
+                                                </div>
+                                                <div class="tl-content">
+                                                    <div class="etat_commande">
+                                                        <b
+                                                            class="badge badge-gradient-info">{{ HistoriqueArticle.description }}</b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1">
+                                                        {{ $t('message.By') }}
+                                                        <b>{{ HistoriqueArticle.username }}</b><br>
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ moment(HistoriqueArticle.updated_at).format('YYYY-MM-DD HH:mm:ss') }}
+                                                        </b>
+                                                    </div>
+                                                </div>
+                                               
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-times"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -170,11 +229,19 @@ export default {
                 selected_option3: '20',
 
             },
+            HistoriqueArticles: {},
         }
     },
 
 
     methods: {
+        async getHistoriqueArticles(id) {
+            this.$vs.loading({ color: '#22c16b' })
+            await axios.get('/api/historiqueArticle/' + id)
+                .then(res => { this.HistoriqueArticles = res.data.data })
+                .catch(error => console.log(res))
+                .finally(() => this.$vs.loading.close());
+        },
         async downloadHistoriqueArticle(id){
             this.$vs.loading({ color: '#22c16b' })
             let formData = new FormData()

@@ -139,10 +139,10 @@ class EmployeClientController extends Controller
         try {
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
-                $client = Client::join('villes', 'clients.id_ville', '=', 'villes.id')
+                $client = Client::join('villes', 'clients.id_ville', 'villes.id')->leftjoin('banques','clients.id_bank','banques.id')
                     ->where('clients.id', $id)
                     ->where('clients.superviseur', $user->id)
-                    ->selectRaw('clients.nom,clients.prenom,clients.telephone,clients.email,clients.cin,clients.ribBank,clients.bankName,clients.username,villes.id as ville, villes.nom_ville')
+                    ->selectRaw('clients.nom,clients.prenom,clients.telephone,clients.email,clients.cin,clients.ribBank,banques.nomBank,clients.username,villes.id as ville, villes.nom_ville,banques.id as id_bank')
                     ->first();
                 return response()->json([
                     'data' => $client

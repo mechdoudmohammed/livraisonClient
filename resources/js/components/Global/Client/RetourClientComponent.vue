@@ -120,8 +120,8 @@ export default {
             nom_err: "",
 
             options: [
-                { text: "Num Bon", value: "id_bon_retour_client" },
-                { text: "Num Order", value: "id_commande" },
+                { text: this.$t('message.Receipt_id'), value: "id_bon_retour_client" },
+                { text: this.$t('message.Order_id'), value: "id_commande" },
 
             ],
             formDataCherche: {

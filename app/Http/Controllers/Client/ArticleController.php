@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Exports\ArticleHistorique;
 use App\Models\Commande;
 use App\Models\Article;
+use App\Models\HistoriqueArticle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
@@ -245,5 +246,23 @@ class ArticleController extends Controller
     public function downloadHistoriqueArticle(Request $request)
     {
         return Excel::download(new ArticleHistorique($request->id), 'ArticleHistorique.xlsx');
+    }
+    public function historiqueArticle($id)
+    {
+        $user = auth('sanctum')->user();
+        if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
+            $articles = HistoriqueArticle::join('employes', 'employes.id', 'historiquearticles.id_employe')
+                ->join('articles', 'articles.id', 'historiquearticles.id_article')
+                ->where(function ($query) use ($user) {
+                    $query->where('articles.id_client', $user->id)
+                        ->orWhere('articles.id_client', $user->superviseur);
+                })
+                ->where('id_article', $id)
+                ->selectRaw('historiquearticles.id,historiquearticles.description,historiquearticles.new_stock,historiquearticles.updated_at,employes.username')
+                ->get();
+            return response()->json([
+                'data' => $articles
+            ]);
+        }
     }
 }

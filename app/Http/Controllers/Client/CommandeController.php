@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CommandesImport;
 use App\Models\DetailsCommandes;
 use App\Models\Notification;
+use App\Models\Package;
 use App\Models\Store;
 use App\Models\Ville;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -116,7 +117,7 @@ class CommandeController extends Controller
             $import = new CommandesImport($id_store);
             Excel::import($import, request()->file('fichierCommande'));
             $array = $import->getArray();
-            
+
             return response()->json([
                 'message' => $array[0]
             ]);
@@ -145,7 +146,6 @@ class CommandeController extends Controller
                         $id_employe_client = $user->id;
                     } else if ($user->role == 'Client') {
                         $id_client = $user->id;
-                        
                     }
                     $statut = Commande::create([
                         "id_commande" =>  $id_commande,
@@ -561,6 +561,7 @@ class CommandeController extends Controller
             $user = auth('sanctum')->user();
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 if ($user->role == 'Client') {
+
                     $packageClient = DB::table('commandes')
                         ->join('clients', 'commandes.id_client', '=', 'clients.id')
                         ->join('villes', 'commandes.id_ville', '=', 'villes.id')
@@ -674,7 +675,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client','historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -693,8 +694,7 @@ class CommandeController extends Controller
                     'data2' => $historiquefactures,
                     'livreur' => $livreur
                 ]);
-            }
-            else if (($user->role == 'EmployeClient')  && $user->statut == 'Active') {
+            } else if (($user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 $commandes2 = DB::table('historiquecommandes')
                     ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
                     ->join('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
@@ -714,7 +714,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->superviseur)
-                    ->select('historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client','historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -749,7 +749,7 @@ class CommandeController extends Controller
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 if (in_array($request->statut, array('ANNULER', 'RELANCER', 'CHANGERPRIX'))) {
                     $statut = $commande = Commande::where('commandes.id_commande', $request->id_commande)
-                        ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER', 'INHOUSE', 'REPORTED', 'NOREPONSE', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
+                        ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER','CHANGERPRIX', 'INHOUSE', 'REPORTED', 'NOREPONSE', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
                         ->first();
                 }
                 if ($statut) {
@@ -760,7 +760,7 @@ class CommandeController extends Controller
                         $reported_date = Carbon::parse($request->dateReported);
                     }
                     if ($request->statut == 'ANNULER') {
-                        $commentaire_commande = 'Order Cancel by' . $user->username;
+                        $commentaire_commande = 'Order Cancel';
                         $commande->etat_commande = $request->statut;
                     } else if ($request->statut == 'CHANGERPRIX') {
                         if ($request->commentaire_commande < 0) {
@@ -773,7 +773,8 @@ class CommandeController extends Controller
                             ]);
                         }
 
-                        $commentaire_commande = 'Changement de prix (' . $request->commentaire_commande . 'Dhs) par ' . $user->username;
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                        $commande->prix_commande = $request->commentaire_commande;
                         $commande->etat_commande = $request->statut;
                     } else if ($request->statut == 'RELANCER') {
 
@@ -858,29 +859,27 @@ class CommandeController extends Controller
         try {
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
-                if ($request->selected_option == 'id_bon_retour_client' && $request->valeur_recherche != ''){
+                if ($request->selected_option == 'id_bon_retour_client' && $request->valeur_recherche != '') {
                     $commandes = DB::table('bonretourclients')
-                    ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
-                    ->where('id_client', $user->id)
-                    ->where('id_bon_retour_client','LIKE', "%$request->valeur_recherche%")
-                    ->paginate($_GET['count_nbr']);
-                }else if($request->selected_option == 'id_commande' && $request->valeur_recherche != ''){
+                        ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
+                        ->where('id_client', $user->id)
+                        ->where('id_bon_retour_client', 'LIKE', "%$request->valeur_recherche%")
+                        ->paginate($_GET['count_nbr']);
+                } else if ($request->selected_option == 'id_commande' && $request->valeur_recherche != '') {
 
                     $commandes = DB::table('bonretourclients')
-                    ->join('commandes','commandes.id_bon_retour_client','bonretourclients.id_bon_retour_client')
-                    ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
-                    ->where('id_client', $user->id)
-                   
-                    ->paginate($_GET['count_nbr']);
+                        ->join('commandes', 'commandes.id_bon_retour_client', 'bonretourclients.id_bon_retour_client')
+                        ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
+                        ->where('id_client', $user->id)
 
-
-                }else{
+                        ->paginate($_GET['count_nbr']);
+                } else {
                     $commandes = DB::table('bonretourclients')
-                    ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
-                    ->where('id_client', $user->id)
-                    ->paginate($_GET['count_nbr']);
+                        ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
+                        ->where('id_client', $user->id)
+                        ->paginate($_GET['count_nbr']);
                 }
-              
+
                 return response()->json([
                     'data' => $commandes
                 ]);
@@ -952,18 +951,17 @@ class CommandeController extends Controller
         try {
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
-                $statut =HistoriqueCommande::where('historiquecommandes.id_commande', $id)->where('historiquecommandes.id_client', $user->id)->where('historiquecommandes.etat_commande', 'RELANCER')->first();
+                $statut = HistoriqueCommande::where('historiquecommandes.id_commande', $id)->where('historiquecommandes.id_client', $user->id)->where('historiquecommandes.etat_commande', 'RELANCER')->first();
 
-                    if ($statut) {
-                        return response()->json([
-                            'message' => 'Order already relaunch'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'message' => 'Order not relaunched'
-                        ]);
-                    }
-              
+                if ($statut) {
+                    return response()->json([
+                        'message' => 'Order already relaunch'
+                    ]);
+                } else {
+                    return response()->json([
+                        'message' => 'Order not relaunched'
+                    ]);
+                }
             }
         } catch (Throwable $e) {
             return response()->json([
@@ -971,7 +969,16 @@ class CommandeController extends Controller
             ]);
         }
     }
-
-
-
+    public function changeStatusToPrint($id)
+    {
+        $user = auth('sanctum')->user();
+        if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
+            $Package = Package::join('commandes', 'commandes.id_package', 'packages.id_package')
+                ->where('commandes.id_client', $user->id)
+                ->where('packages.id_package', $id)
+                ->first();
+            $Package->statut_package = 'Printed';
+            $Package->save();
+        }
+    }
 }

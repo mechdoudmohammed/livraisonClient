@@ -57,7 +57,6 @@
             aria-labelledby="notificationDropdown">
             <h6 class="p-3 mb-0" v-if="locale == 'ar'" style="float: right;">{{ $t('message.Notifications') }}</h6>
             <h6 class="p-3 mb-0" v-else>{{ $t('message.Notifications') }}</h6>
-            <div class="dropdown-divider"></div>
 
 
             <a class="dropdown-item preview-item"
