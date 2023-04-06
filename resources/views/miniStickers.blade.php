@@ -19,7 +19,10 @@
             padding-right: 26px;
             margin-left: 50px;
         }
-
+        .facture_info {
+            text-align: start;
+            font-size: 12px;
+        }
 
     </style>
 </head>
@@ -29,24 +32,26 @@
 <section>
 
 
-        <div  style="border:2px solid ;width:100%;height:130mm" v-for="(item, index) in getpackageClient" :key="index">
+        <div  style="border:2px solid ;width:100%;height:137mm" v-for="(item, index) in getpackageClient" :key="index">
             <div class="row company" style="border-top: 1px solid;font-weight: 600;text-align: center;">
                 <table style="margin-left:10px">
                     <tr>
-                        <td style="width:130px ;margin-left:10px">
+                    <td style="width:120px ; padding:5px;">
                             <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
-                        <td>
-                        <span style="font-size: 12px;">ColiZone S.A.R.L</span><br>
-                            <span style="font-size: 12px;"> +212 767 09 13 77</span>
+                        <td style="width:350px;" class='facture_info'>
+               <b>ColiZone S.A.R.L</b><br />
+                            <b>CITE DHAR MEHREZ FES</b><br />
+                            <b>+212 767 09 13 77</b><br />
+                            <b>Contact@ColiZone.ma</b><br />
                         </td>
                     </tr>
-                    <tr>
+           
 
                 </table>
 
             </div>
-            <div class="row" style="border-top: 1px solid;display: flex;padding: 15px; text-align:center;justify-content: center;">
+            <div class="row" style="border-top: 1px solid;display: flex;padding: 8px; text-align:center;justify-content: center;">
                 <div class="col-8" style="width: 60% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
                     <b style="margin-right: 55px;">{{ $key->id_commande }}</b>
                     {!! DNS1D::getBarcodeHTML($key->id_commande, 'C128',1,23) !!}
@@ -57,38 +62,46 @@
 
             </div>
             <div class="row client" style="border-top: 1px solid;padding:4px;">
-                <span style="font-size: 15px;font-weight: 600;margin-left:20px">Destination:</span>
+                <span style="font-size: 13px;font-weight: 600;margin-left:20px">Destination:</span>
                 <table style="margin-left:20px">
                     <tr>
                         <td style="width:350px">
-                        <p style="font-size: 12px;margin-bottom: 2px;">
+                        <p style="font-size: 12px;margin-bottom: 1px;">
                                 {{$key->ville}}
                             </p>
                         </td>
                         <td>
-                        <p style="font-size: 12px;margin-bottom: 2px;">{{$key->nom_client_commande}}
+                        <p style="font-size: 12px;margin-bottom:1px;">{{$key->nom_client_commande}}
                             </p>
                           
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 2px;">
+                            <p style="font-size: 12px;margin-bottom: 1px;">
                                 {{$key->adresse_client_commande}}
                             </p>
                         </td>
                         <td>
-                        <p style="font-size: 12px;margin-bottom: 2px;">{{$key->telephone_client_commande}}</p>
+                        <p style="font-size: 12px;margin-bottom: 1px;">{{$key->telephone_client_commande}}</p>
                        
                         </td>
                     </tr>
                 </table>
 
             </div>
-            <div class="row price" style="border-top: 1px solid;padding-top: 10px;display: flex;justify-content: center;align-items: center;">
+            <div class="row price" style="border-top: 1px solid;padding-top: 5px;display: flex;justify-content: center;align-items: center;">
                 <div class="col-5" style="margin-left:10px;justify-content: center;align-items: center;align-content: center;text-align: center; position:absolute">
                        <table>
                         <tr>
+                       @if($key->type_autorisation =='allow')
+                        <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-ouverture.png') }}" width="25" height="25" /></td>
+                        @else
+                        <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-close.png') }}" width="25" height="25" /></td>
+                        @endif
+                        </tr>
+                        <tr>
+                            
                             <td style="font-size: 13px;">Paiment à la livraison</td>
                         </tr>
                         <tr>
@@ -138,13 +151,9 @@
                 </div>
                 <table style="margin-left:20px;width: 100%;">
                     <tr>
-                        @if($key->type_autorisation =='allow')
-                        <td><img src="{{ public_path('/images/colis-ouverture.png') }}" width="25" height="25" /></td>
-                        @else
-                        <td><img src="{{ public_path('/images/colis-close.png') }}" width="25" height="25" /></td>
-                        @endif
-                        <td style="text-align:center ;"><span style="font-size: 12px;font-weight: 600;">
-                                {{$key->additional_commentaire}}</span></td>
+                  
+                        <td style="text-align:center ;font-size: 11px;font-weight: 600">
+                                {{$key->additional_commentaire}}</td>
                     </tr>
                     @php
                     $detailscommandes=DB::table('detailscommandes')->join('articles','articles.id','detailscommandes.id_article')
@@ -152,7 +161,7 @@
                     @endphp
 
                     <tr>
-                        <td colspan="4">
+                        <td colspan="4" style="font-size: 13px;">
 
                             @for ($i = 0 ; $i <= count($detailscommandes)-1 ; $i++)
                             @if($i<4)
@@ -172,12 +181,12 @@
                 </table>
 
             </div>
-            <div class="row origine" style="border-top: 1px solid;padding:4px">
-                <span style="font-size: 15px;font-weight: 600;margin-left:20px">Origine:</span>
+            <div class="row origine" style="border-top: 1px solid;padding:2px">
+                <span style="font-size: 13px;font-weight: 600;margin-left:20px">Origine:</span>
                 <table style="margin-left:20px;width: 100%;">
                     <tr>
                         <td style="width:250px">
-                            <p style="font-size: 12px;margin-bottom: 2px;">
+                            <p style="font-size: 11px;margin-bottom: 1px;">
 
                             @if(isset($key->siteweb_store))
                             {{$key->siteweb_store}}
@@ -186,7 +195,7 @@
                             @endif</p>
                         </td>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 2px;">
+                            <p style="font-size: 11px;margin-bottom: 1px;">
                             @if($key->nom_store)
                             {{$key->nom_store}}
                             @else
@@ -197,7 +206,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 2px;">
+                            <p style="font-size: 11px;margin-bottom: 1px;">
                             @if($key->telephone_store)
                             {{$key->telephone_store}}
                             @else
@@ -206,7 +215,7 @@
                             </p>
                         </td>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 2px;">
+                            <p style="font-size: 11px;margin-bottom: 1px;">
                             @if($key->adresse_store)
                             {{$key->adresse_store}}
                             @else
@@ -216,7 +225,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align:center ;"><span style="font-size: 12px;font-weight: 600;text-align: center;">
+                        <td colspan="2" style="text-align:center ;"><span style="font-size: 11px;font-weight: 600;text-align: center;">
                         @if($key->nom_store)
                             {{$key->nom_store}}
                             @else

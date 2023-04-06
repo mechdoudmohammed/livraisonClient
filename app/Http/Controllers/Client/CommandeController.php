@@ -749,7 +749,7 @@ class CommandeController extends Controller
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 if (in_array($request->statut, array('ANNULER', 'RELANCER', 'CHANGERPRIX'))) {
                     $statut = $commande = Commande::where('commandes.id_commande', $request->id_commande)
-                        ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER','CHANGERPRIX', 'INHOUSE', 'REPORTED', 'NOREPONSE', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
+                        ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER','CHANGERPRIX', 'INHOUSE', 'REPORTED', 'NOREPONSE','PROCESSING', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
                         ->first();
                 }
                 if ($statut) {
@@ -763,6 +763,7 @@ class CommandeController extends Controller
                         $commentaire_commande = 'Order Cancel';
                         $commande->etat_commande = $request->statut;
                     } else if ($request->statut == 'CHANGERPRIX') {
+                   
                         if ($request->commentaire_commande < 0) {
                             return response()->json([
                                 'message' => 'Le prix doit etre superieur ou egale 0',
@@ -772,10 +773,25 @@ class CommandeController extends Controller
                                 'message' => 'Le prix doit être inférieur au prix précédent',
                             ]);
                         }
+                        if($commande->etat_commande=='PROCESSING'){
+                            $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                            $commande->prix_commande = $request->commentaire_commande;
+                            $commande->etat_commande = 'PROCESSING';
+                        }elseif($commande->etat_commande=='PICKUP'){
+             
+                                $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                                $commande->prix_commande = $request->commentaire_commande;
+                                $commande->etat_commande = 'PICKUP';
+                         
+                        }
+                        
+                        else{
+                            $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                            $commande->prix_commande = $request->commentaire_commande;
+                            $commande->etat_commande = $request->statut;
+                        }
 
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
-                        $commande->prix_commande = $request->commentaire_commande;
-                        $commande->etat_commande = $request->statut;
+                       
                     } else if ($request->statut == 'RELANCER') {
 
                         $commentaire_commande = 'Relaunch request';

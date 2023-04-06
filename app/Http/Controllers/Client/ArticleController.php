@@ -226,7 +226,8 @@ class ArticleController extends Controller
                         'articles.prix_article',
                         'clients.nom',
                         'clients.prenom',
-                        'villes.nom_ville'
+                        'villes.nom_ville',
+                        'articles.etat_article'
                     )
                     ->get();
 

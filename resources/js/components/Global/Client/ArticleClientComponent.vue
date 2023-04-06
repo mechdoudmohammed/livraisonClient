@@ -71,10 +71,8 @@
                                             v-if="tr.etat_article == 'En traitement'">{{$t('message.Processing')}}</b>
                                     </vs-td>
                                     <vs-td :data="tr.etat_article" v-if="Client.role == 'Client'">
-                                        <button type="button" class="btn btn-valide"
-                                            v-if="tr.etat_article == 'En stock'"><i class="fa fa-plus"></i></button>
+                                
                                         <button type="button" class="btn btn-danger"
-                                            v-if="tr.etat_article == 'En traitement'"
                                             @click.prevent="downloadSticker(tr.id)"><i
                                                 class="fa fa-download"></i></button>
                                  <button type="button" class="btn btn-success" 
@@ -269,12 +267,13 @@ export default {
             _.each(this.formData, (value, key) => { formData.append(key, value) })
                 await axios.post('/api/downloadStickerArticle', formData, { responseType: 'blob' })
                     .then(res => {
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(res.data);
-                        link.download = id+'.pdf';
-                        document.body.append(link);
-                        link.click();
-                        link.remove();
+                        window.open(URL.createObjectURL(res.data))
+                        // const link = document.createElement('a');
+                        // link.href = URL.createObjectURL(res.data);
+                        // link.download = id+'.pdf';
+                        // document.body.append(link);
+                        // link.click();
+                        // link.remove();
 
                     })
                     .catch(error => console.log(res)).finally(() => this.$vs.loading.close());

@@ -15,7 +15,10 @@
         .test {
             margin-left: 10px;
         }
-
+        .facture_info {
+            text-align: end;
+            font-size: 12px;
+        }
         .page-break {
             page-break-after: always;
         }
@@ -37,16 +40,19 @@
 <body class="A4">
 
     <div class="row test">
-    @foreach($data as $key)
+        @foreach($data as $key)
         <div class="col-6 sticker" style="margin:5px 1%" v-for="(item, index) in getpackageClient" :key="index">
             <div class="row company" style="border: 1px solid;font-weight: 600;text-align: center;">
                 <table style="margin-left:10px">
                     <tr>
-                        <td style="width:80px ; padding:10px">
-                            <img src="{{ public_path('/images/logo.png') }}" width="50" height="50" />
+                        <td style="width:80px">
+                            <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
-                        <td>
-                            <span style="font-size: 12px;">S.A.R.L Fes 19 returnjghjghjgfhhkjgjfkhjgfhlkgfjlkhjgf</span>
+                        <td style="width:350px;margin-left:50px" class='facture_info'>
+                            <b>ColiZone S.A.R.L</b><br />
+                            <b>CITE DHAR MEHREZ FES</b><br />
+                            <b>+212 767 09 13 77</b><br />
+                            <b>Contact@ColiZone.ma</b><br />
                         </td>
                     </tr>
                     <tr>
@@ -65,23 +71,43 @@
                 </div>
 
             </div>
-           
+
             <div class="row client" style="border: 1px solid;">
                 <span style="font-size: 15px;font-weight: 600;margin-left:10px">Information Article:</span>
                 <table style="margin-left:20px">
                     <tr>
                         <td style="width:250px">
-                       
-                            <p style="font-size: 12px;margin-bottom: 6px;">Nom: {{$key->nom_article}}
-                           
+
+                            <p style="font-size: 12px;margin-bottom: 6px;">Article Id: {{$key->id}}
+
                             </p>
                         </td>
                         <td style="width:250px">
-                       
-                       <p style="font-size: 12px;margin-bottom: 6px;">Prix: {{$key->prix_article}}
-                      
-                       </p>
-                   </td>
+
+                            <p style="font-size: 12px;margin-bottom: 6px;">Statut : @if($key->etat_article=='En stock')
+                            En stock
+                            @else if($key->etat_article=='Processing')
+                            Nouveaux
+                            @endif
+
+                            </p>
+                        </td>
+
+                    </tr>
+          
+                    <tr>
+                        <td style="width:250px">
+
+                            <p style="font-size: 12px;margin-bottom: 6px;">Nom: {{$key->nom_article}}
+
+                            </p>
+                        </td>
+                        <td style="width:250px">
+
+                            <p style="font-size: 12px;margin-bottom: 6px;">Prix: {{$key->prix_article}} Dhs
+
+                            </p>
+                        </td>
                     </tr>
                 </table>
 

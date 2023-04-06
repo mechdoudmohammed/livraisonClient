@@ -14,7 +14,7 @@
 
         .test {
             margin-left: 10px;
-            
+
         }
 
         .page-break {
@@ -28,9 +28,14 @@
         }
 
         .statut {
-            border: 1px solid black;
+            border: 1.5px solid black;
             padding-right: 26px;
             margin-left: 50px;
+        }
+
+        .facture_info {
+            text-align: start;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -41,23 +46,25 @@
 
         @foreach($data as $key)
         <div class="col-6 sticker" style="margin:3px 1%;border:1.5px solid" v-for="(item, index) in getpackageClient" :key="index">
-            <div class="row company" style="border: 1px solid;font-weight: 600;text-align: center;">
-                <table style="margin-left:10px">
+            <div class="row company" style="border: 1.5px solid;font-weight: 600;text-align: center;">
+                <table style="margin-left:6px">
                     <tr>
-                        <td style="width:130px ; padding:10px;">
+                        <td style="width:120px ; padding:5px;">
                             <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
-                        <td>
-                            <span style="font-size: 12px;">ColiZone S.A.R.L</span><br>
-                            <span style="font-size: 12px;"> +212 767 09 13 77</span>
+                        <td style="width:350px;" class='facture_info'>
+                            <b>ColiZone S.A.R.L</b><br />
+                            <b>CITE DHAR MEHREZ FES</b><br />
+                            <b>+212 767 09 13 77</b><br />
+                            <b>Contact@ColiZone.ma</b><br />
                         </td>
                     </tr>
-                    <tr>
+
 
                 </table>
 
             </div>
-            <div class="row" style="border: 1px solid;display: flex;padding: 16px; text-align:center;justify-content: center;">
+            <div class="row" style="border: 1.5px solid;display: flex;padding: 16px; text-align:center;justify-content: center;">
                 <div class="col-8" style="width: 70% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
                     <b style="margin-right: 55px;">{{ $key->id_commande }}</b>
                     {!! DNS1D::getBarcodeHTML($key->id_commande, 'C128',1,30) !!}
@@ -67,38 +74,45 @@
                 </div>
 
             </div>
-            <div class="row client" style="border: 1px solid;padding:16px;height:120px">
-                <span style="font-size: 15px;font-weight: 600;margin-left:10px">Destination:</span>
-                <table style="margin-left:20px">
+            <div class="row client" style="border: 1.5px solid;padding:16px;height:117px">
+                <span style="font-size: 16px;font-weight: 600;margin-left:6px">Destination:</span>
+                <table style="margin-left:10px;margin-right:10px;">
                     <tr>
-                        <td style="width:300px">
-                        <p style="font-size: 12px;margin-bottom: 2px;">
+                        <td style="width:250px">
+                            <b style="font-size: 12px;margin-bottom: 2px;">
                                 {{$key->ville}}
-                            </p>
+    </b>
                         </td>
                         <td>
-                        <p style="font-size: 12px;margin-bottom: 2px;">{{$key->nom_client_commande}}
-                            </p>
-                          
+                            <b style="font-size: 12px;margin-bottom: 2px;">{{$key->nom_client_commande}}
+    </b>
+
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 2px;">
+                            <b style="font-size: 12px;margin-bottom: 2px;">
                                 {{$key->adresse_client_commande}}
-                            </p>
+    </b>
                         </td>
                         <td>
-                        <p style="font-size: 12px;margin-bottom: 2px;">{{$key->telephone_client_commande}}</p>
-                       
+                            <b style="font-size: 12px;margin-bottom: 2px;">{{$key->telephone_client_commande}}</b>
+
                         </td>
                     </tr>
                 </table>
 
             </div>
-            <div class="row price" style="border: 1px solid;padding: 15px;display: flex;justify-content: center;align-items: center;height:200px">
+            <div class="row price" style="border: 1.5px solid;padding: 15px;display: flex;justify-content: center;align-items: center;height:220px">
                 <div class="col-6" style='margin-bottom: 24px;'>
                     <table>
+                         <tr>
+                    @if($key->type_autorisation =='allow')
+                        <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-ouverture.png') }}" width="25" height="25" /></td>
+                        @else
+                        <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-close.png') }}" width="25" height="25" /></td>
+                        @endif
+  </tr>
                         <tr>
                             <td style="font-size: 13px;">Paiment à la livraison</td>
                         </tr>
@@ -146,15 +160,12 @@
                     </table>
 
                 </div>
-                <table style="margin-left:20px;width: 100%;">
+                <table style="width: 100%;">
                     <tr>
-                        @if($key->type_autorisation =='allow')
-                        <td><img src="{{ public_path('/images/colis-ouverture.png') }}" width="25" height="25" /></td>
-                        @else
-                        <td><img src="{{ public_path('/images/colis-close.png') }}" width="25" height="25" /></td>
-                        @endif
-                        <td style="text-align:center ;"><span style="font-size: 12px;font-weight: 600;text-align: center;">
-                                {{$key->additional_commentaire}}</span></td>
+                       
+                        <td style="text-align:center ;font-size: 12px;font-weight: 600;">
+                            {{$key->additional_commentaire}}
+                        </td>
                     </tr>
                     @php
                     $detailscommandes=DB::table('detailscommandes')->join('articles','articles.id','detailscommandes.id_article')
@@ -164,75 +175,66 @@
                     <tr>
                         <td colspan="4">
 
-                            @for ($i = 0 ; $i <= count($detailscommandes)-1 ; $i++)
-                            @if($i<4)
-                            {{$detailscommandes[$i]->nom_article}} <b>{{$detailscommandes[$i]->quantite_article}}</b>
-                             @if($i<count($detailscommandes)-1)
-                             |
-                             @endif
-                            @endif
-                       
-                                @endfor
-                             
-
-                        </td>
+                            @for ($i = 0 ; $i <= count($detailscommandes)-1 ; $i++) @if($i<4) {{$detailscommandes[$i]->nom_article}} <b>{{$detailscommandes[$i]->quantite_article}}</b>
+                                @if($i<count($detailscommandes)-1) | @endif @endif @endfor </td>
                     </tr>
 
 
                 </table>
 
             </div>
-            <div class="row origine" style="border: 1px solid;padding:10px;height:150px">
-                <span style="font-size: 15px;font-weight: 600;margin-left:10px">Origine:</span>
-                <table style="margin-left:20px;width: 100%;">
+            <div class="row origine" style="border: 1.5px solid;padding:10px;height:130px">
+                <span style="font-size: 16px;font-weight: 600;margin-left:6px">Origine:</span>
+                <table style="margin-left:10px;margin-right:10px;width: 100%;">
                     <tr>
                         <td style="width:250px">
-                            <p style="font-size: 12px;margin-bottom: 6px;">
+                            <b style="font-size: 12px;margin-bottom: 6px;">
 
-                            @if(isset($key->siteweb_store))
-                            {{$key->siteweb_store}}
-                            @else
-                            {{$key->website}}
-                            @endif</p>
+                                @if(isset($key->siteweb_store))
+                                {{$key->siteweb_store}}
+                                @else
+                                {{$key->website}}
+                                @endif
+    </b>
                         </td>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 6px;">
-                            @if($key->nom_store)
-                            {{$key->nom_store}}
-                            @else
-                            {{$key->company}}
-                            @endif
-                            </p>
+                            <b style="font-size: 12px;margin-bottom: 6px;">
+                                @if($key->nom_store)
+                                {{$key->nom_store}}
+                                @else
+                                {{$key->company}}
+                                @endif
+    </b>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 6px;">
-                            @if($key->telephone_store)
-                            {{$key->telephone_store}}
-                            @else
-                            {{$key->telephone_client}}
-                            @endif
-                            </p>
+                            <b style="font-size: 12px;margin-bottom: 6px;">
+                                @if($key->telephone_store)
+                                {{$key->telephone_store}}
+                                @else
+                                {{$key->telephone_client}}
+                                @endif
+    </b>
                         </td>
                         <td>
-                            <p style="font-size: 12px;margin-bottom: 6px;">
-                            @if($key->adresse_store)
-                            {{$key->adresse_store}}
-                            @else
-                            {{$key->adresse}}
-                            @endif
-                            </p>
+                            <b style="font-size: 12px;margin-bottom: 6px;">
+                                @if($key->adresse_store)
+                                {{$key->adresse_store}}
+                                @else
+                                {{$key->adresse}}
+                                @endif
+    </b>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center ;"><span style="font-size: 12px;font-weight: 600;text-align: center;">
-                        @if($key->nom_store)
-                            {{$key->nom_store}}
-                            @else
-                            {{$key->company}}
-                            @endif
-                        vous remercie pour votre commande</span></td>
+                                @if($key->nom_store)
+                                {{$key->nom_store}}
+                                @else
+                                {{$key->company}}
+                                @endif
+                                vous remercie pour votre commande</span></td>
                     </tr>
                 </table>
 

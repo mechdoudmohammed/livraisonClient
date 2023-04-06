@@ -1089,7 +1089,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row"
-                                    v-if="formData.etat_commande == 'RELANCER' || formData.etat_commande == 'REPORTED' || formData.etat_commande == 'RAMASSER' || formData.etat_commande == 'PICKUP' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'ENROUTE' || formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'INHOUSE' || formData.etat_commande == 'HOME' || formData.etat_commande == 'ASSIGN'">
+                                    v-if="formData.etat_commande == 'PROCESSING' || formData.etat_commande == 'RELANCER' || formData.etat_commande == 'REPORTED' || formData.etat_commande == 'RAMASSER' || formData.etat_commande == 'PICKUP' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'ENROUTE' || formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'INHOUSE' || formData.etat_commande == 'HOME' || formData.etat_commande == 'ASSIGN'">
                                     <div class="col-5">
                                         <button type="button" class="btn btn-danger" @click.prevent="
                                             editStatut('ANNULER')
@@ -1646,6 +1646,7 @@ export default {
                     });
                     this.initialiserFormData();
                     this.getArticles();
+
                 })
                 .catch((error) => {
                     if (error.response.status === 422) {
@@ -1885,7 +1886,6 @@ export default {
                     last_page: 1,
                 }),
                 (this.articles = []),
-                (this.selected_type = false),
                 (this.nomFile = ""),
                 (this.stock_quantite = ""),
                 (this.formData = {

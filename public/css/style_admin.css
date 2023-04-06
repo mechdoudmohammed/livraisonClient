@@ -20055,6 +20055,11 @@ dl li {
     overflow-y: scroll;
     max-height: 600px;
   }
+  #profileDropdownplus
+  { overflow: hidden !important;
+     width: 22% !important;
+      right: 76px !important;
+       height: inherit !important; }
 }
 
 @media (min-width: 991px) {
@@ -20944,10 +20949,10 @@ dl li {
   flex-direction: row-reverse;
 }
 #profileDropdownplus{
-    overflow: hidden !important;
-    width: 22% !important;
+    overflow: hidden;
+    width: 22% ;
     right: 576px;
-    height: inherit !important;
+    height: inherit ;
 }
 i#fullscreen-button{
     CURSOR: pointer;
