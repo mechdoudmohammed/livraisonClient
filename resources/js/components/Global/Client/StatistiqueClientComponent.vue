@@ -4,7 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span>{{$t('message.Statistics')}}
+                </span>{{ $t('message.Statistics') }}
             </h3>
         </div>
 
@@ -16,25 +16,26 @@
 
                             <div class="col-xxl-6 col-md-4" style="margin-top: 12px;">
                                 <div class="date_time_picker">
-                            <date-picker v-model="formData" range :placeholder="showDateHolder"></date-picker>
-                        </div>
+                                    <date-picker v-model="formData" range :placeholder="showDateHolder"></date-picker>
+                                </div>
                             </div>
                             <div class="col-xxl-6 col-md-4">
                                 <div class="dowload_model">
-                                <vs-button color="danger" @click.prevent="getClientsData" type="filled"><i
-                                        class="fa fa-download" aria-hidden="true"></i> {{$t('message.Customer_Data')}}</vs-button>
-                            </div>
+                                    <vs-button color="danger" @click.prevent="getClientsData" type="filled"><i
+                                            class="fa fa-download" aria-hidden="true"></i>
+                                        {{ $t('message.Customer_Data') }}</vs-button>
+                                </div>
                             </div>
                         </div>
- 
-                    
+
+
                         <div class="row">
 
                             <div class="col-xxl-2 col-md-4">
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Orders_Count')}}<span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Orders_Count') }}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -42,7 +43,7 @@
                                                 <i class="mdi mdi-cube"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ totalColis }} {{$t('message.Colis')}}</h6>
+                                                <h6>{{ totalColis }} {{ $t('message.Colis') }}</h6>
                                                 <!--  <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -58,7 +59,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Delivred')}} <span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Delivred') }} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -66,7 +67,7 @@
                                                 <i class="mdi mdi-check"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ DELIVERED }} {{$t('message.Colis')}}</h6>
+                                                <h6>{{ DELIVERED }} {{ $t('message.Colis') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -82,7 +83,7 @@
                                 <div class="card info-card customers-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Returned')}} <span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Returned') }} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -90,7 +91,7 @@
                                                 <i class="mdi mdi-redo"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ RETURNED }} {{$t('message.Colis')}}</h6>
+                                                <h6>{{ RETURNED }} {{ $t('message.Colis') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -105,7 +106,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Total_COD')}}<span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Total_COD') }}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -113,8 +114,8 @@
                                                 <i class="mdi mdi-currency-usd"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6 v-if="REVENU != null">{{ REVENU }} {{$t('message.Dhs')}}</h6>
-                                                <h6 v-if="REVENU == null">0 {{$t('message.Dhs')}}</h6>
+                                                <h6 v-if="REVENU != null">{{ REVENU }} {{ $t('message.Dhs') }}</h6>
+                                                <h6 v-if="REVENU == null">0 {{ $t('message.Dhs') }}</h6>
 
                                             </div>
                                         </div>
@@ -127,7 +128,7 @@
                                 <div class="card info-card sales-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Shipping_Fees')}} <span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Shipping_Fees') }} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -135,8 +136,9 @@
                                                 <i class="mdi mdi-van-utility"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6 v-if="total_livraison != null">{{ total_livraison }} {{$t('message.Dhs')}}</h6>
-                                                <h6 v-if="total_livraison == null">0 {{$t('message.Dhs')}}</h6>
+                                                <h6 v-if="total_livraison != null">{{ total_livraison }}
+                                                    {{ $t('message.Dhs') }}</h6>
+                                                <h6 v-if="total_livraison == null">0 {{ $t('message.Dhs') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -151,23 +153,23 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Revenu_NET')}}<span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Revenu_NET') }}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
-                                           
-        
-                                             <div
+
+
+                                            <div
                                                 class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                                 <i class="mdi mdi-coin"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ REVENU - total_livraison }} {{$t('message.Dhs')}} </h6>
+                                                <h6>{{ REVENU - total_livraison }} {{ $t('message.Dhs') }} </h6>
 
 
                                             </div>
                                         </div>
-                                        </div>
-                                     
+                                    </div>
+
 
 
                                 </div>
@@ -179,7 +181,7 @@
                                 <div class="card info-card en-cours-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Package_In_Progress')}} <span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Package_In_Progress') }} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -187,7 +189,7 @@
                                                 <i class="mdi mdi-package"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisEnCour }} {{$t('message.Colis')}}</h6>
+                                                <h6>{{ colisEnCour }} {{ $t('message.Colis') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -203,7 +205,7 @@
                                 <div class="card info-card customers-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Package_To_Track')}}<span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Package_To_Track') }}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -211,7 +213,7 @@
                                                 <i class="mdi mdi-phone"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisSuivie }} {{$t('message.Colis')}}</h6>
+                                                <h6>{{ colisSuivie }} {{ $t('message.Colis') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -227,7 +229,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Paid_Delivered_Orders')}} <span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Paid_Delivered_Orders') }} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -235,7 +237,7 @@
                                                 <i class="mdi mdi-calendar-check"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisFacture }} {{$t('message.Colis')}}</h6>
+                                                <h6>{{ colisFacture }} {{ $t('message.Colis') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -250,7 +252,7 @@
                                 <div class="card info-card cancel-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.UnPaid_Delivered_Orders')}}<span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.UnPaid_Delivered_Orders') }}<span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -258,7 +260,7 @@
                                                 <i class="mdi mdi-calendar-remove"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ colisNonFacture }} {{$t('message.Colis')}}</h6>
+                                                <h6>{{ colisNonFacture }} {{ $t('message.Colis') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -273,7 +275,7 @@
                                 <div class="card info-card sales-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Invoices_Count')}} <span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Invoices_Count') }} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -281,7 +283,7 @@
                                                 <i class="mdi mdi-file"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ nbrFacture }} {{$t('message.Invoices')}}</h6>
+                                                <h6>{{ nbrFacture }} {{ $t('message.Invoices') }}</h6>
                                                 <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                     class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -296,7 +298,7 @@
                                 <div class="card info-card revenue-card">
 
                                     <div class="card-body">
-                                        <h5 class="card-title">{{$t('message.Delivery_Rate')}} <span></span></h5>
+                                        <h5 class="card-title">{{ $t('message.Delivery_Rate') }} <span></span></h5>
 
                                         <div class="d-flex align-items-center">
                                             <div
@@ -304,7 +306,7 @@
                                                 <i class="mdi mdi-coin"></i>
                                             </div>
                                             <div class="ps-3">
-                                                <h6>{{ (tauxLivraison).toFixed(2)  }} %</h6>
+                                                <h6>{{ (tauxLivraison).toFixed(2) }} %</h6>
 
 
                                             </div>
@@ -317,15 +319,14 @@
                         </div>
                         <div class="row statistiqueRow">
                             <div class="statistique">
-                                <h3>{{$t('message.Income_per_day')}}</h3>
-                                <apexchart type="bar"  :options="chartOptions" :series="chartOptions.series">
+                                <h3>{{ $t('message.Income_per_day') }}</h3>
+                                <apexchart type="bar" :options="chartOptions" :series="chartOptions.series">
                                 </apexchart>
                             </div>
 
                             <div class="statistique">
-                                <h3>{{$t('message.Top_10_Cities')}}</h3>
-                                <apexchart type="bar"  :options="chartOptions2"
-                                    :series="chartOptions2.series"></apexchart>
+                                <h3>{{ $t('message.Top_10_Cities') }}</h3>
+                                <apexchart type="bar" :options="chartOptions2" :series="chartOptions2.series"></apexchart>
                             </div>
 
                         </div>
@@ -351,16 +352,19 @@
     color: #012970;
     font-family: "Poppins", sans-serif;
 }
-.statistique{
+
+.statistique {
     width: 50%;
 }
-.statistiqueRow{
+
+.statistiqueRow {
     display: flex;
 }
+
 @media only screen and (max-width: 1400px) {
-    .statistique{
-    width: 100%;
-}
+    .statistique {
+        width: 100%;
+    }
 
 }
 </style>
@@ -389,10 +393,10 @@ export default {
             nbrFacture: 0,
             colisNonFacture: 0,
             colisFacture: 0,
-            tauxLivraison:0,
+            tauxLivraison: 0,
 
             formData: [],
-            showDateHolder:'',
+            showDateHolder: '',
 
             token: localStorage.getItem('token'),
             chartOptions: {
@@ -462,20 +466,20 @@ export default {
     },
 
     methods: {
-        async getClientsData(){
-   
-                await axios.get('/api/getClientsData',{ responseType: 'blob' })
-                    .then(res => {
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(res.data);
-                        link.download = 'CustomerData.xlsx';
-                        document.body.append(link);
-                        link.click();
-                        link.remove();
-                    })
-                    .catch(error => console.log(res));
+        async getClientsData() {
 
-       
+            await axios.get('/api/getClientsData', { responseType: 'blob' })
+                .then(res => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(res.data);
+                    link.download = 'CustomerData.xlsx';
+                    document.body.append(link);
+                    link.click();
+                    link.remove();
+                })
+                .catch(error => console.log(res));
+
+
         },
         async getStatistique() {
             await axios.post('/api/commandeStatistiquesRevenue', this.formData)
@@ -509,26 +513,18 @@ export default {
             this.$vs.loading({ color: "#22c16b" });
             await axios.post('/api/getDeliveredCommande', this.formData)
                 .then(res => {
-                    this.DeliveredCommande = res.data.data; this.REVENU = res.data.data2['somme'];  this.total_livraison = res.data.fraisLivraison;
+                    this.DeliveredCommande = res.data.data; this.REVENU = res.data.data2['somme']; this.total_livraison = res.data.fraisLivraison;
                     this.totalColis = res.data.totalColis['nbrColis']; this.colisEnCour = res.data.colisEnCours['nbrColis']; this.colisNonFacture = res.data.colisNonFacture['nbrColis']
-                        ; this.colisFacture = res.data.colisFacture['nbrColis']; this.nbrFacture = res.data.nbrFacture['nbrFacture'];this.tauxLivraison = res.data.tauxLivraison;
-                        this.showDateHolder=res.data.dateRange
+                        ; this.colisFacture = res.data.colisFacture['nbrColis']; this.nbrFacture = res.data.nbrFacture['nbrFacture']; this.tauxLivraison = res.data.tauxLivraison;
+                    this.showDateHolder = res.data.dateRange;
+                    this.DELIVERED = res.data.deliverdCommande.nbrColis
+                    this.CANCELED = res.data.canceledCommande.nbrColis
+                    this.RETURNED = res.data.returnedCommande.nbrColis
+                    this.colisSuivie = res.data.suivieCommande.nbrColis
 
                 })
-                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());;
-            for (var key in this.DeliveredCommande) {
-                if (this.DeliveredCommande[key].etat_commande == 'CANCELED') {
-                    this.CANCELED = this.DeliveredCommande[key].nbrCommande
-                } else if (this.DeliveredCommande[key].etat_commande == 'DELIVERED') {
-                    this.DELIVERED = this.DeliveredCommande[key].nbrCommande
-                } else if (this.DeliveredCommande[key].etat_commande == 'RETURNEDAG' || this.DeliveredCommande[key].etat_commande == 'RETURNEDLV' || this.DeliveredCommande[key].etat_commande == 'RETURNEDEV' || this.DeliveredCommande[key].etat_commande == 'RETURNED' || this.DeliveredCommande[key].etat_commande == 'RETURNEDRR') {
-                    this.RETURNED += this.DeliveredCommande[key].nbrCommande
-                }
-                else if (this.DeliveredCommande[key].etat_commande == 'DMSUIVIE') {
-                    this.colisSuivie = this.DeliveredCommande[key].nbrCommande
-                }
+                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
 
-            }
 
 
         },

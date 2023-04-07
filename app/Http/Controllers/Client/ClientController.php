@@ -102,7 +102,7 @@ class ClientController extends Controller
 
                     'ribBank' => 'required|String',
                     'email' => 'required|max:150|unique:clients,email,' . $user->id,
-                    'telephone' => 'required|regex:/(0)[0-9]{9}/',
+                    'telephone' => 'required|regex:/(0)[0-9]{9}$/',
 
                 ]);
             } else {
@@ -115,7 +115,7 @@ class ClientController extends Controller
                     'website' => 'required|String',
                     'ribBank' => 'required|String',
                     'email' => 'required|max:150|unique:clients,email,' . $user->id,
-                    'telephone' => 'required|regex:/(0)[0-9]{9}/',
+                    'telephone' => 'required|regex:/(0)[0-9]{9}$/',
 
                 ]);
                 $client->nom = $request->nom;
@@ -174,7 +174,7 @@ class ClientController extends Controller
             'ville' => 'required',
             'username' => 'required|String|unique:clients,username|max:55',
             'email' => 'required|unique:clients,email|email|max:150',
-            'telephone' => 'required|regex:/(0)[0-9]{9}/',
+            'telephone' => 'required|regex:/(0)[0-9]{9}$/',
             'password' => 'required|String|min:8',
         ]);
         try {

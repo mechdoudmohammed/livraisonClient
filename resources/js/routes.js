@@ -20,29 +20,35 @@ let routes = [
         path: "/",
         component: login,
         beforeEnter: async (to, from, next) => {
-            if (localStorage.getItem('token') != null) {
-                axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
-                await axios.get('api/client')
-                    .then(response => {
+            if (localStorage.getItem("token") != null) {
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${localStorage.getItem("token")}`;
+                await axios
+                    .get("api/client")
+                    .then((response) => {
                         store.state.loginClient = true;
-                        if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
-           next({path: '/dashboardClient',});
-                          } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
-                       
-                            next({path: '/waitVerification',})
-                       
-                          } 
+                        if (
+                            response.data.statut == "Active" &&
+                            response.data.email_verified_at != null
+                        ) {
+                            next({ path: "/dashboardClient" });
+                        } else if (
+                            (response.data.statut == "Inactive" ||
+                                response.data.statut == "Active") &&
+                            response.data.email_verified_at == null
+                        ) {
+                            next({ path: "/waitVerification" });
+                        }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.response.status === 401) {
                             next();
-                           }
-                    })
-
+                        }
+                    });
             } else {
                 next();
             }
-
         },
     },
     {
@@ -50,30 +56,38 @@ let routes = [
         path: "/waitVerification",
         component: waitVerification,
         beforeEnter: async (to, from, next) => {
-            if (localStorage.getItem('token') != null) {
-                axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
-                await axios.get('api/client')
-                    .then(response => {
+            if (localStorage.getItem("token") != null) {
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${localStorage.getItem("token")}`;
+                await axios
+                    .get("api/client")
+                    .then((response) => {
                         store.state.loginClient = true;
-                        if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
-                            next({path: '/dashboardClient',})
-                          } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
+                        if (
+                            response.data.statut == "Active" &&
+                            response.data.email_verified_at != null
+                        ) {
+                            next({ path: "/dashboardClient" });
+                        } else if (
+                            (response.data.statut == "Inactive" ||
+                                response.data.statut == "Active") &&
+                            response.data.email_verified_at == null
+                        ) {
                             next();
-                          } 
+                        }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.response.status === 401) {
                             next();
-                           }
-                    })
-
+                        }
+                    });
             } else {
                 next({
-                    path: '/login',
-                    query: { redirect: to.fullPath }
-                  })
+                    path: "/login",
+                    query: { redirect: to.fullPath },
+                });
             }
-
         },
     },
     {
@@ -81,29 +95,37 @@ let routes = [
         path: "/login",
         component: login,
         beforeEnter: async (to, from, next) => {
-            if (localStorage.getItem('token') != null) {
-                axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
-                await axios.get('api/client')
-                    .then(response => {
+            if (localStorage.getItem("token") != null) {
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${localStorage.getItem("token")}`;
+                await axios
+                    .get("api/client")
+                    .then((response) => {
                         store.state.loginClient = true;
-                        if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
-           next({path: '/dashboardClient',});
-                          } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
-                     
-                            next({path: '/waitVerification',})
-                       
-                          } 
+                        if (
+                            response.data.statut == "Active" &&
+                            response.data.email_verified_at != null
+                        ) {
+                            next({ path: "/dashboardClient" });
+                        } else if (
+                            (response.data.statut == "Inactive" ||
+                                response.data.statut == "Active") &&
+                            response.data.email_verified_at == null
+                        ) {
+                            next({ path: "/waitVerification" });
+                        }else{
+                            localStorage.removeItem('token');
+                        }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.response.status === 401) {
                             next();
-                           }
-                    })
-
+                        }
+                    });
             } else {
                 next();
             }
-
         },
     },
     {
@@ -111,26 +133,35 @@ let routes = [
         path: "/inscription",
         component: inscription,
         beforeEnter: async (to, from, next) => {
-            if (localStorage.getItem('token') != null) {
-                axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
-                await axios.get('api/client')
-                    .then(response => {
+            if (localStorage.getItem("token") != null) {
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${localStorage.getItem("token")}`;
+                await axios
+                    .get("api/client")
+                    .then((response) => {
                         store.state.loginClient = true;
-                        if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
-                            next({path: '/dashboardClient',})
-                          } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
-                            next({path: '/waitVerification',})
-                          } 
+                        if (
+                            response.data.statut == "Active" &&
+                            response.data.email_verified_at != null
+                        ) {
+                            next({ path: "/dashboardClient" });
+                        } else if (
+                            (response.data.statut == "Inactive" ||
+                                response.data.statut == "Active") &&
+                            response.data.email_verified_at == null
+                        ) {
+                            next({ path: "/waitVerification" });
+                        }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.response.status === 401) {
                             next();
-                           }
-                    })
+                        }
+                    });
             } else {
-                next()
+                next();
             }
-
         },
     },
     {
@@ -138,30 +169,36 @@ let routes = [
         path: "/dashboardClient",
         component: dashboardClient,
         beforeEnter: async (to, from, next) => {
-            if (localStorage.getItem('token') != null) {
-                axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
-                
-                await axios.get('api/client')
-                    .then(response => {
+            if (localStorage.getItem("token") != null) {
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${localStorage.getItem("token")}`;
+
+                await axios
+                    .get("api/client")
+                    .then((response) => {
                         store.state.loginClient = true;
-                        if (response.data.statut == 'Active' && response.data.email_verified_at != null) {
+                        if (
+                            response.data.statut == "Active" &&
+                            response.data.email_verified_at != null
+                        ) {
                             next();
-                          } else if ((response.data.statut == 'Inactive' || response.data.statut == 'Active') && response.data.email_verified_at == null) {
-                            next({path: '/waitVerification',})
-                       
-                          } 
+                        } else if (
+                            (response.data.statut == "Inactive" ||
+                                response.data.statut == "Active") &&
+                            response.data.email_verified_at == null
+                        ) {
+                            next({ path: "/waitVerification" });
+                        }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.response.status === 401) {
-                            localStorage.removeItem('token');
+                            localStorage.removeItem("token");
                             next();
-                           }
-                    })
-
+                        }
+                    });
             } else {
-              
             }
-
         },
     },
     {
@@ -237,13 +274,12 @@ let routes = [
         component: successVerification,
     },
     //========Fin Client routes===============//
-
-]
+];
 /* fin admin importaion */
 export default {
     hashbang: false,
-    mode: 'history',
+    mode: "history",
     historyApiFallback: true,
 
-    routes
+    routes,
 };

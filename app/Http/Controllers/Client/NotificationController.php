@@ -29,7 +29,10 @@ class NotificationController extends Controller
                     ->leftJoin('commandes', 'notifications.id_commande', '=', 'commandes.id_commande')
                     ->Where('notifications.titre', 'LIKE', "Demande Suivie%")
                     ->where('notifications.Affichage', 'notSeen')
-                    ->where('notifications.id_client', $user->id)
+                    ->where(function ($query) use ($user) {
+                        $query->where('notifications.id_client', $user->id)
+                            ->orwhere('notifications.id_client', $user->superviseur);
+                    })
                     ->orderBy('notifications.updated_at', 'desc')
                     ->selectRaw('notifications.updated_at,notifications.titre,notifications.id as id,notifications.description,notifications.Affichage,notifications.id_reclamation,notifications.id_commande,notifications.id_facture,notifications.id_client')
                     ->get();
@@ -49,7 +52,10 @@ class NotificationController extends Controller
         if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
             $CountDMsuivie = DB::table('commandes')
             ->where('commandes.etat_commande', 'DMSUIVIE')
-            ->where('commandes.id_client', $user->id)
+            ->where(function ($query) use ($user) {
+                $query->where('commandes.id_client', $user->id)
+                    ->orwhere('commandes.id_client', $user->superviseur);
+            })
             ->selectRaw('count(commandes.id_commande) as nbrColis')
             ->first();
             return response()->json(['data' => $CountDMsuivie]);
@@ -119,7 +125,10 @@ class NotificationController extends Controller
                     ->leftJoin('commandes', 'notifications.id_commande', '=', 'commandes.id_commande')
                     ->whereIn('notifications.titre', ['Demande Suivie'])
                     ->where('notifications.Affichage', 'notSeen')
-                    ->where('notifications.id_client', $user->id)
+                    ->where(function ($query) use ($user) {
+                        $query->where('notifications.id_client', $user->id)
+                            ->orwhere('notifications.id_client', $user->superviseur);
+                    })
                     ->selectRaw('count(notifications.id) as nbrNotification')
                     ->first();
 

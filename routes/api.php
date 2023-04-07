@@ -77,6 +77,8 @@ Route::middleware(['auth:client'])
 
 
         Route::post('updateCommande', 'Client\CommandeController@updateCommande');
+        Route::post('updateCommandeInfo', 'Client\CommandeController@updateCommandeInfo');
+
         Route::post('suivieCommande', 'Client\CommandeController@getCommandeSuivie');
         Route::post('bonRetour', 'Client\CommandeController@getBonRetour');
 

@@ -223,18 +223,16 @@ export default {
     },
     async getDeliveredCommande() {
       await axios.post('/api/getDeliveredCommande')
-        .then(res => { this.DeliveredCommande = res.data.data; this.REVENU = res.data.data2['somme'],this.tauxLivraison=res.data.tauxLivraison })
-        .catch(error => console.log(res));
-      for (var key in this.DeliveredCommande) {
-        if (this.DeliveredCommande[key].etat_commande == 'CANCELED') {
-          this.CANCELED = this.DeliveredCommande[key].nbrCommande
-        } else if (this.DeliveredCommande[key].etat_commande == 'DELIVERED') {
-          this.DELIVERED = this.DeliveredCommande[key].nbrCommande
-        } else if (this.DeliveredCommande[key].etat_commande == 'RETURNEDAG' || this.DeliveredCommande[key].etat_commande == 'RETURNEDLV' || this.DeliveredCommande[key].etat_commande == 'RETURNEDEV' || this.DeliveredCommande[key].etat_commande == 'RETURNED' || this.DeliveredCommande[key].etat_commande == 'RETURNEDRR') {
-          this.RETURNED += this.DeliveredCommande[key].nbrCommande
-        }
+        .then(res => { 
+          this.DeliveredCommande = res.data.data;
+           this.REVENU = res.data.data2['somme'],
+           this.tauxLivraison=res.data.tauxLivraison 
+           this.DELIVERED =res.data.deliverdCommande.nbrColis
+           this.CANCELED =res.data.canceledCommande.nbrColis
+           this.RETURNED =res.data.returnedCommande.nbrColis
 
-      }
+          })
+        .catch(error => console.log(res));
 
     },
     async getFactures() {
@@ -259,20 +257,8 @@ export default {
 
 
   async beforeCreate() {
-    await axios.get('/api/commandeStatistiquesRevenue')
-      .then((res) => {
-        this.chartOptions = {
-          xaxis: {
-            categories: res.data.data2
-          },
-        },
-          this.series = [{
-            name: $t('message.Dhs'),
-            data: res.data.data
-          }]
-      })
-      .catch(error => console.log(res));
 
+      
     await axios.get('/api/getAnnonces')
       .then((res) => {
         this.annonces = res.data.data;

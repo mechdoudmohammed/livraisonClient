@@ -68,13 +68,19 @@
               </div>
               <div class="card-body">
                 <form>
+                  
                   <vs-alert title="Les informations sont essentielles" active="true" color="danger"
                     v-if="showMsgInformation">
                     {{$t('message.Please_complete_your_information_before_using_the_system')}}
                   </vs-alert><br>
+
+
+
+                  
                   <div class="alert alert-danger" role="alert" v-if="nom_err">
                     {{ nom_err[0] }}
                   </div>
+
                   <div class="pl-lg-4">
                     <div class="row">
                       <h6 class="heading-small text-muted mb-4 d-flex">{{$t('message.Whatsapp_Notification')}}
@@ -171,8 +177,8 @@
                     <div class="row">
                       <div class="col-lg-4">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-city">{{$t('message.Company')}}</label>
-                          <input type="text" id="input-city" class="form-control form-control-alternative"
+                          <label class="form-control-label" for="input-city2">{{$t('message.Company')}}</label>
+                          <input type="text" id="input-city2" class="form-control form-control-alternative"
                             v-model="Client.company">
                         </div>
                       </div>
@@ -192,7 +198,11 @@
                       </div>
                     </div>
                   </div>
+
+
+
                 </form>
+
                 <div class="row btn_modifier">
 
                   <button type="button" class="btn btn-primary float-end" @click.prevent='updateProfile'><i
@@ -207,6 +217,143 @@
     </div>
   </div>
 </template>
+
+<script>
+import axios from 'axios'
+export default {
+  name: 'ProfileClientComponent',
+  props: ['Client'],
+  data() {
+    return {
+      token: localStorage.getItem('token'),
+      nom_err: '',
+      nom_err_pass: '',
+      showMsgInformation: true,
+      errors: {},
+      formData: {
+        old_password: '',
+        new_password: '',
+
+      },
+      banks: '',
+      switch_notification:true,
+    }
+  },
+  methods: {
+    async updateProfile() {
+      this.nom_err = '';
+      await axios.post('/api/modifierProfile', this.Client)
+        .then(res => {
+          if (res.data.message == 'Client update successfully') {
+            this.$vs.notify({
+              time: 5000,
+              title: `Votre information Modifier`,
+              color: 'success', position: 'top-right',
+
+            })
+          }
+          setTimeout(() => {
+            location.reload();
+          }, 800);
+        })
+        .catch(error => {
+          if (error.response.status === 422) {
+            this.errors = error.response.data.errors || {};
+            this.nom_err = this.errors[Object.keys(this.errors)[0]];
+          }
+        });
+    },
+    async updatePassword() {
+      this.nom_err_pass = '';
+      await axios.post('/api/updatePassword', this.formData)
+        .then(res => {
+          if (res.data.message == 'password update successfully') {
+            this.$vs.notify({
+              time: 5000,
+              title: `Votre mot de pass Modifier`,
+              color: 'success', position: 'top-right',
+
+            })
+            this.formData = {
+              old_password: '',
+              new_password: '',
+
+            }
+          } else if (res.data.message == 'old password incorrect') {
+            this.$vs.notify({
+              time: 5000,
+              title: `Votre mot de pass est incorrect`,
+              color: 'danger', position: 'top-right',
+
+            })
+          }
+          else if (res.data.message == 'old password and new password can\'t be same') {
+            this.$vs.notify({
+              time: 5000,
+              title: `old password and new password can\'t be same`,
+              color: 'danger', position: 'top-right',
+
+            })
+          }
+        })
+        .catch(error => {
+          if (error.response.status === 422) {
+            this.errors = error.response.data.errors || {};
+            this.nom_err_pass = this.errors[Object.keys(this.errors)[0]];
+          }
+        });
+    },
+    async getBanks() {
+      await axios.get('/api/getBank')
+        .then(res => { this.banks = res.data.data; })
+        .catch(error => console.log(res));
+    },
+    async demandeActiverStock() {
+      this.$vs.loading({ color: "#22c16b" });
+      await axios.get('/api/demandeActiverStock')
+        .then(res => {
+          if (res.data.message == 'Demande envoyer successfully') {
+            this.$vs.notify({
+              time: 5000,
+              title: `Demande envoyer successfully`,
+              color: 'success', position: 'top-right',
+
+            })
+          } else if (res.data.message == 'Demande déja envoyé') {
+            this.$vs.notify({
+              time: 5000,
+              title: `Demande déja envoyé`,
+              color: 'warning', position: 'top-right',
+
+            })
+          }
+        })
+        .catch(error => { console.log(error) }).finally(() => this.$vs.loading.close());
+    }
+
+  },
+  async beforeMount() {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+    this.getBanks();
+    if (this.Client.nom != null && this.Client.prenom != null & this.Client.cin != null) {
+      this.showMsgInformation = false;
+      var list;
+      list = document.querySelectorAll(".disableChamps");
+      for (var i = 0; i < list.length; ++i) {
+        list[i].style.pointerEvents = 'none';
+      }
+    }
+  },
+  mounted() {
+   
+  },
+
+}
+
+
+
+
+</script>
 <style scoped>
 .card.card-profile.shadow {
   height: 97.5%;
@@ -361,138 +508,3 @@ hr {
   box-shadow: none;
 }
 </style>
-<script>
-import axios from 'axios'
-export default {
-  name: 'ProfileClientComponent',
-  props: ['Client'],
-  data() {
-    return {
-      token: localStorage.getItem('token'),
-      nom_err: '',
-      nom_err_pass: '',
-      showMsgInformation: true,
-      errors: {},
-      formData: {
-        old_password: '',
-        new_password: '',
-
-      },
-      banks: '',
-      switch_notification:true,
-    }
-  },
-  methods: {
-    async updateProfile() {
-      this.nom_err = '';
-      await axios.post('/api/modifierProfile', this.Client)
-        .then(res => {
-          if (res.data.message == 'Client update successfully') {
-            this.$vs.notify({
-              time: 5000,
-              title: `Votre information Modifier`,
-              color: 'success', position: 'top-right',
-
-            })
-          }
-          setTimeout(() => {
-            location.reload();
-          }, 800);
-        })
-        .catch(error => {
-          if (error.response.status === 422) {
-            this.errors = error.response.data.errors || {};
-            this.nom_err = this.errors[Object.keys(this.errors)[0]];
-          }
-        });
-    },
-    async updatePassword() {
-      this.nom_err_pass = '';
-      await axios.post('/api/updatePassword', this.formData)
-        .then(res => {
-          if (res.data.message == 'password update successfully') {
-            this.$vs.notify({
-              time: 5000,
-              title: `Votre mot de pass Modifier`,
-              color: 'success', position: 'top-right',
-
-            })
-            this.formData = {
-              old_password: '',
-              new_password: '',
-
-            }
-          } else if (res.data.message == 'old password incorrect') {
-            this.$vs.notify({
-              time: 5000,
-              title: `Votre mot de pass est incorrect`,
-              color: 'danger', position: 'top-right',
-
-            })
-          }
-          else if (res.data.message == 'old password and new password can\'t be same') {
-            this.$vs.notify({
-              time: 5000,
-              title: `old password and new password can\'t be same`,
-              color: 'danger', position: 'top-right',
-
-            })
-          }
-        })
-        .catch(error => {
-          if (error.response.status === 422) {
-            this.errors = error.response.data.errors || {};
-            this.nom_err_pass = this.errors[Object.keys(this.errors)[0]];
-          }
-        });
-    },
-    async getBanks() {
-      await axios.get('/api/getBank')
-        .then(res => { this.banks = res.data.data; })
-        .catch(error => console.log(res));
-    },
-    async demandeActiverStock() {
-      this.$vs.loading({ color: "#22c16b" });
-      await axios.get('/api/demandeActiverStock')
-        .then(res => {
-          if (res.data.message == 'Demande envoyer successfully') {
-            this.$vs.notify({
-              time: 5000,
-              title: `Demande envoyer successfully`,
-              color: 'success', position: 'top-right',
-
-            })
-          } else if (res.data.message == 'Demande déja envoyé') {
-            this.$vs.notify({
-              time: 5000,
-              title: `Demande déja envoyé`,
-              color: 'warning', position: 'top-right',
-
-            })
-          }
-        })
-        .catch(error => { console.log(error) }).finally(() => this.$vs.loading.close());
-    }
-
-  },
-  async beforeMount() {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-    this.getBanks();
-  },
-  mounted() {
-    if (this.Client.nom != null && this.Client.prenom != null & this.Client.cin != null) {
-      this.showMsgInformation = false;
-      var list;
-      list = document.querySelectorAll(".disableChamps");
-      for (var i = 0; i < list.length; ++i) {
-        list[i].style.pointerEvents = 'none';
-      }
-    }
-  },
-
-}
-
-
-
-
-</script>

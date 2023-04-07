@@ -17,7 +17,7 @@ class StatistiqueController extends Controller
     public function commandeStatistiquesRevenue(Request $request)
     {
 
-        if (count($request->all()) > 1 && $request[0] !=null && $request[1]!=null) {
+        if (count($request->all()) > 1 && $request[0] != null && $request[1] != null) {
             $date_debut = Carbon::parse($request[0])->addDays(-1);
             $date_fin = Carbon::parse($request[1])->addDays(1);
         } else {
@@ -37,6 +37,7 @@ class StatistiqueController extends Controller
             ->selectRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') as date,sum(prix_commande) as somme")
             ->get();
 
+
         if (count($commandeRevenu) > 0) {
             for ($i = 0; $i < sizeof($commandeRevenu); $i++) {
                 $res_array[$i] = $commandeRevenu[$i]->somme;
@@ -52,7 +53,7 @@ class StatistiqueController extends Controller
     {
         $user = auth('sanctum')->user();
 
-        if (count($request->all()) > 1 && $request[0] !=null && $request[1]!=null) {
+        if (count($request->all()) > 1 && $request[0] != null && $request[1] != null) {
             $date_debut = Carbon::parse($request[0])->addDays(-1);
             $date_fin = Carbon::parse($request[1])->addDays(1);
         } else {
@@ -88,7 +89,7 @@ class StatistiqueController extends Controller
 
     public function getDeliveredCommande(Request $request)
     {
-        if (count($request->all()) > 1 && $request[0] !=null && $request[1]!=null) {
+        if (count($request->all()) > 1 && $request[0] != null && $request[1] != null) {
             $date_debut = Carbon::parse($request[0]);
             $date_fin = Carbon::parse($request[1]);
         } else {
@@ -98,70 +99,84 @@ class StatistiqueController extends Controller
 
 
         $user = auth('sanctum')->user();
-            $RevenuOfMonth = DB::table("commandes")
-            ->whereIn('etat_commande', ['DELIVERED'])
-            ->where('updated_at', '>', $date_debut)
-            ->where('updated_at', '<', $date_fin)
-            ->where('id_client', $user->id)
-            ->selectRaw("sum(prix_commande) as somme")
-            ->first();
-
-        $Livraison = DB::table("commandes")
-            ->join('villes', 'villes.id', 'commandes.id_ville')
-            ->whereIn('etat_commande', ['DELIVERED', 'CANCELED', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDEV', 'RETURNED', 'RETURNEDRR'])
-            ->where('commandes.updated_at', '>', $date_debut)
-            ->where('commandes.updated_at', '<', $date_fin)
-            ->where('id_client', $user->id)
-            ->selectRaw('commandes.etat_commande,villes.prix_retour,villes.prix_refus,commandes.prix_livraison_final')
-            ->get();
-
-        $fraisLivraison = 0;
-        foreach ($Livraison as $commande) {
-            if ($commande->etat_commande == 'DELIVERED') {
-                $fraisLivraison += $commande->prix_livraison_final;
-            } elseif ($commande->etat_commande == 'RETURNEDAG'  || $commande->etat_commande == 'RETURNEDEV' || $commande->etat_commande == 'RETURNEDRR' || $commande->etat_commande == 'RETURNED') {
-                $fraisLivraison += $commande->prix_retour;
-            } elseif ($commande->etat_commande == 'CANCELED') {
-                $fraisLivraison += $commande->prix_refus;
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $user = auth('sanctum')->user();
         if ($user->role == 'Client') {
-            $commande = DB::table("commandes")
-                ->where('id_client', $user->id)
-                ->whereIn('etat_commande', ['DELIVERED', 'CANCELED', 'RETURNEDAG','RETURNEDLV','RETURNEDEV','RETURNEDRR','RETURNED', 'DMSUIVIE'])
-                ->where('updated_at', '>', $date_debut)
-                ->where('updated_at', '<', $date_fin)
-                ->groupBy('etat_commande')
-                ->selectRaw("count(id_commande) as nbrCommande,etat_commande")
-                ->get();
 
-            $colisEnCours = DB::table("commandes")
-                ->where('id_client', $user->id)
-                ->whereIn('etat_commande', ['CANCELED', 'RELANCER', 'DMSUIVIE', 'ENROUTE', 'TRANSIT', 'REPORTED', 'ANNULER_CL', 'ANNULER', 'INHOUSE', 'HOME', 'ASSIGN', 'NOREPONSE', 'RETURNEDLV','RETURNEDEV','RETURNEDRR',])
-                ->where('updated_at', '>', $date_debut)
-                ->where('updated_at', '<', $date_fin)
-                ->selectRaw("count(id_commande) as nbrColis")
+
+            $RevenuOfMonth = DB::table("historiquecommandes")
+                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
+                ->where('historiquecommandes.updated_at', '>', $date_debut)
+                ->where('historiquecommandes.updated_at', '<', $date_fin)
+                ->whereIn('historiquecommandes.etat_commande', ['DELIVERED'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("coalesce(sum(commandes.prix_commande),0) as somme")
                 ->first();
 
+            $Livraison = DB::table("historiquecommandes")
+            ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
+                ->join('villes', 'villes.id', 'commandes.id_ville')
+                ->whereIn('historiquecommandes.etat_commande', ['DELIVERED', 'CANCELED', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDEV', 'RETURNED', 'RETURNEDRR'])
+                ->where('historiquecommandes.updated_at', '>', $date_debut)
+                ->where('historiquecommandes.updated_at', '<', $date_fin)
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw('commandes.etat_commande,villes.prix_retour,villes.prix_refus,commandes.prix_livraison_final')
+                ->get();
 
-            $colisDelivred = DB::table("commandes")
+                $colisNonFacture =DB::table("historiquecommandes") 
+                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
+                ->where('commandes.id_client', $user->id)
+                ->whereIn('historiquecommandes.etat_commande', ['DELIVERED'])
+                ->where('commandes.paid', 0)
+                ->where('historiquecommandes.updated_at', '>', $date_debut)
+                ->where('historiquecommandes.updated_at', '<', $date_fin)
+                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
+                ->first();
+
+            $fraisLivraison = 0;
+            foreach ($Livraison as $commande) {
+                if ($commande->etat_commande == 'DELIVERED') {
+                    $fraisLivraison += $commande->prix_livraison_final;
+                } elseif ($commande->etat_commande == 'RETURNEDAG'  || $commande->etat_commande == 'RETURNEDEV' || $commande->etat_commande == 'RETURNEDRR' || $commande->etat_commande == 'RETURNED') {
+                    $fraisLivraison += $commande->prix_retour;
+                } elseif ($commande->etat_commande == 'CANCELED') {
+                    $fraisLivraison += $commande->prix_refus;
+                }
+            }
+
+            $deliverdCommande = DB::table("historiquecommandes")
+                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
+                ->where('historiquecommandes.updated_at', '>', $date_debut)
+                ->where('historiquecommandes.updated_at', '<', $date_fin)
+                ->whereIn('historiquecommandes.etat_commande', ['DELIVERED'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
+                ->first();
+            $returnedCommande = DB::table("historiquecommandes")
+                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
+                ->where('historiquecommandes.updated_at', '>', $date_debut)
+                ->where('historiquecommandes.updated_at', '<', $date_fin)
+                ->whereIn('historiquecommandes.etat_commande', ['RETURNEDAG', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR', 'RETURNED'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
+                ->first();
+            $canceledCommande = DB::table("historiquecommandes")
+                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
+                ->where('historiquecommandes.updated_at', '>', $date_debut)
+                ->where('historiquecommandes.updated_at', '<', $date_fin)
+                ->whereIn('historiquecommandes.etat_commande', ['CANCELED'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
+                ->first();
+            $suivieCommande = DB::table("historiquecommandes")
+                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
+                ->where('historiquecommandes.updated_at', '>', $date_debut)
+                ->where('historiquecommandes.updated_at', '<', $date_fin)
+                ->whereIn('historiquecommandes.etat_commande', ['DMSUIVIE'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
+                ->first();
+            $colisEnCours = DB::table("commandes")
                 ->where('id_client', $user->id)
-                ->whereIn('etat_commande', ['DELIVERED'])
+                ->whereIn('etat_commande', ['CANCELED', 'RELANCER', 'DMSUIVIE', 'ENROUTE', 'TRANSIT', 'REPORTED', 'ANNULER_CL', 'ANNULER', 'INHOUSE', 'HOME', 'ASSIGN', 'NOREPONSE', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR',])
                 ->where('updated_at', '>', $date_debut)
                 ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
@@ -176,20 +191,11 @@ class StatistiqueController extends Controller
                 ->first();
             $tauxLivraison = 0;
             if ($colisTauxLivraison->nbrColis != 0) {
-                $tauxLivraison = ($colisDelivred->nbrColis * 100) / $colisTauxLivraison->nbrColis;
+                $tauxLivraison = ($deliverdCommande->nbrColis * 100) / $colisTauxLivraison->nbrColis;
             }
 
+          
 
-
-
-            $colisNonFacture = DB::table("commandes")
-                ->where('id_client', $user->id)
-                ->whereIn('etat_commande', ['DELIVERED'])
-                ->where('paid', 0)
-                ->where('updated_at', '>', $date_debut)
-                ->where('updated_at', '<', $date_fin)
-                ->selectRaw("count(id_commande) as nbrColis")
-                ->first();
             $colisFacture = DB::table("commandes")
                 ->where('id_client', $user->id)
                 ->whereIn('etat_commande', ['DELIVERED'])
@@ -210,18 +216,21 @@ class StatistiqueController extends Controller
             if (!$nbrFacture) {
                 $nbrFacture['nbrFacture'] = 0;
             }
-
             $totalColis = DB::table("commandes")
                 ->where('id_client', $user->id)
-                ->where('updated_at', '>', $date_debut)
-                ->where('updated_at', '<', $date_fin)
+                ->where('created_at', '>', $date_debut)
+                ->where('created_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
 
 
 
             return response()->json([
-                'data' => $commande,
+                'deliverdCommande' => $deliverdCommande,
+                'returnedCommande' => $returnedCommande,
+                'canceledCommande' => $canceledCommande,
+                'suivieCommande' => $suivieCommande,
+
                 'data2' => $RevenuOfMonth,
                 'totalColis' => $totalColis,
                 'colisEnCours' => $colisEnCours,
@@ -229,7 +238,7 @@ class StatistiqueController extends Controller
                 'colisFacture' => $colisFacture,
                 'nbrFacture' => $nbrFacture,
                 'tauxLivraison' => $tauxLivraison,
-                'dateRange' => $date_debut->format('Y-m-d').' ~ '.$date_fin->format('Y-m-d'),
+                'dateRange' => $date_debut->format('Y-m-d') . ' ~ ' . $date_fin->format('Y-m-d'),
                 'fraisLivraison' => $fraisLivraison,
             ]);
         }

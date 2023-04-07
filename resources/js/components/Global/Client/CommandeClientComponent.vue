@@ -99,16 +99,16 @@
                                     <vs-td :data="tr.id_commande">
                                         {{ tr.id_commande }}
                                         <div class="additionalCommentaire">
-                                            <span class="noreponse"
-                                                v-if="tr.etat_commande == 'RETURNEDLV'">{{ $t('message.Return_sent_to_agency') }}</span>
-                                            <span class="noreponse"
-                                                v-if="tr.etat_commande == 'RETURNEDAG'">{{ $t('message.Return_received_by_agency') }}</span>
-                                            <span class="noreponse"
-                                                v-if="tr.etat_commande == 'RETURNEDEV'">{{ $t('message.Return_send') }}</span>
-                                            <span class="noreponse"
-                                                v-if="tr.etat_commande == 'RETURNEDRR'">{{ $t('message.Return_received_by_Ramasseur') }}</span>
-                                            <span class="noreponse"
-                                                v-if="tr.etat_commande == 'RETURNED'">{{ $t('message.Return_send_to_hometown') }}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDLV'">{{
+                                                $t('message.Return_sent_to_agency') }}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDAG'">{{
+                                                $t('message.Return_received_by_agency') }}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDEV'">{{
+                                                $t('message.Return_send') }}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNEDRR'">{{
+                                                $t('message.Return_received_by_Ramasseur') }}</span>
+                                            <span class="noreponse" v-if="tr.etat_commande == 'RETURNED'">{{
+                                                $t('message.Return_send_to_hometown') }}</span>
                                         </div>
                                         <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago>
                                         </span>
@@ -172,7 +172,7 @@
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDRR'" data-toggle="tooltip"
                                             title="Retours envoye vers agence">RETURNED</b>
-                                            <b class="badge badge badge-gradient-warning"
+                                        <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNED'">RETURNED</b>
 
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'ASSIGN'">{{
@@ -180,7 +180,7 @@
                                         <b class="badge badge badge-gradient-success"
                                             v-if="tr.etat_commande == 'DELIVERED'">{{ tr.etat_commande }}</b>
 
-                                        
+
                                         <b class="badge badge badge-gradient-danger"
                                             v-if="tr.etat_commande == 'CANCELED'">{{ tr.etat_commande }}</b>
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'DMSUIVIE'">{{
@@ -423,7 +423,7 @@
                             <div class="dowload_model">
                                 <vs-button color="danger" href="model/Model.xlsx" type="filled"><i class="fa fa-download"
                                         aria-hidden="true"></i>
-                                        {{$t('message.Model_Excel')}}</vs-button>
+                                    {{ $t('message.Model_Excel') }}</vs-button>
                             </div>
                         </div>
                     </div>
@@ -676,11 +676,13 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande == 'COMMENTAIRE'">
-                                                        <span
-                                                            class="commentaireCommande">{{ hCommande.commentaire_commande }}</span>
+                                                        <span class="commentaireCommande">{{ hCommande.commentaire_commande
+                                                        }}</span>
                                                         <br>
                                                         {{ $t('message.By') }}:
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
                                                         <br />
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
@@ -690,14 +692,17 @@
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande != 'COMMENTAIRE'">
 
                                                         <span class="commentaireCommande"
-                                                            v-if="hCommande.commentaire_commande == 'Request order tracking'">{{ $t('message.Request_order_tracking') }}</span>
+                                                            v-if="hCommande.commentaire_commande == 'Request order tracking'">{{
+                                                                $t('message.Request_order_tracking') }}</span>
                                                         <span class="commentaireCommande"
-                                                            v-else-if="hCommande.commentaire_commande == 'Relaunch request'">{{ $t('message.Relaunch_request') }}</span>
-                                                            <span class="commentaireCommande"
-                                                            v-else-if="hCommande.commentaire_commande == 'Avec Sms'">{{ $t('message.With_Sms') }}</span>
+                                                            v-else-if="hCommande.commentaire_commande == 'Relaunch request'">{{
+                                                                $t('message.Relaunch_request') }}</span>
+                                                        <span class="commentaireCommande"
+                                                            v-else-if="hCommande.commentaire_commande == 'Avec Sms'">{{
+                                                                $t('message.With_Sms') }}</span>
 
-                                                        <span class="commentaireCommande"
-                                                            v-else>{{ hCommande.commentaire_commande }}</span>
+                                                        <span class="commentaireCommande" v-else>{{
+                                                            hCommande.commentaire_commande }}</span>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'callLog'">
@@ -869,7 +874,8 @@
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'ANNULER_CL'">{{ $t('message.By') }}:
+                                                        v-if="hCommande.etat_commande == 'ANNULER_CL'">{{ $t('message.By')
+                                                        }}:
                                                         <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
                                                         }}</b>
                                                         <b v-else>{{ hCommande.username }}</b>
@@ -961,9 +967,12 @@
                                                         {{ $t('message.By') }}
 
                                                         <b>{{ hCommande.username }}</b><br>
-                                                        <span v-if="hCommande.id_bon_retour_client!=null">{{$t('message.Return_receipt')}} :</span>
-                                                        <b v-if="hCommande.id_bon_retour_client!=null">{{ hCommande.id_bon_retour_client }}</b>
-                                                        <br v-if="hCommande.id_bon_retour_client!=null" />
+                                                        <span v-if="hCommande.id_bon_retour_client != null">{{
+                                                            $t('message.Return_receipt') }}
+                                                            :</span>
+                                                        <b v-if="hCommande.id_bon_retour_client != null">{{
+                                                            hCommande.id_bon_retour_client }}</b>
+                                                        <br v-if="hCommande.id_bon_retour_client != null" />
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
@@ -1063,61 +1072,111 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="reclamationCommande">
-                            Change Status
+                            {{ $t('message.Order_id') }}: <b>{{ formDataUpdate.id_commande }}</b>
                         </h5>
                     </div>
                     <div class="modal-body">
                         <div class="page-content page-container" id="page-content">
                             <div class="p-3">
-                                <div class="form-group row">
-                                    <div class="col-8">
-                                        <b><i class="fas fa-box-open"></i>
-                                            {{ formData.id_commande }}</b>
-                                    </div>
-                                    <div class="col-3">
-                                        <b><i class="fas fa-dollar-sign"></i>
-                                            {{ formData.prix_commande }} {{ $t('message.Dhs') }}</b>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <b><i class="fas fa-user-alt"></i>
-                                        {{ formData.nom_client_commande }}</b>
-                                </div>
+
+
                                 <div class="form-group row">
                                     <div class="alert alert-danger" role="alert" v-if="nom_err">
                                         {{ nom_err[0] }}
                                     </div>
                                 </div>
-                                <div class="form-group row"
-                                    v-if="formData.etat_commande == 'PROCESSING' || formData.etat_commande == 'RELANCER' || formData.etat_commande == 'REPORTED' || formData.etat_commande == 'RAMASSER' || formData.etat_commande == 'PICKUP' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'ENROUTE' || formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'INHOUSE' || formData.etat_commande == 'HOME' || formData.etat_commande == 'ASSIGN'">
-                                    <div class="col-5">
-                                        <button type="button" class="btn btn-danger" @click.prevent="
-                                            editStatut('ANNULER')
-                                        ">
-                                            <i class="fas fa-check"></i> Annuler
-                                        </button>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="nom_client">{{ $t('message.Name') }}</label>
+
+                                        <input type="text" class="form-control" id="nom_client"
+                                            v-model="formDataUpdate.nom_client_commande" name="nom_client" />
                                     </div>
-                                    <div class="col-7">
+                                    <!-- <div class="col-3">
                                         <button type="button" class="btn btn-info" @click.prevent="
-                                            editStatut('CHANGERPRIX')
-                                        ">
-                                            <i class="fas fa-truck"></i> {{ $t('message.Change_Price') }}
+                                            updateCommandeInfo('nom_client_commande', formData.nom_client_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
                                         </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="telephone_client">{{ $t('message.Phone_Number') }}</label>
+
+                                        <input type="text" class="form-control" id="telephone_client"
+                                            v-model="formDataUpdate.telephone_client_commande" name="telephone_client" />
+                                    </div>
+                                    <!-- <div class="col-3">
+                                        <button type="button" class="btn btn-info" @click.prevent="
+                                            updateCommandeInfo('telephone_client_commande', formData.telephone_client_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="adresse_client">{{ $t('message.Address') }}</label>
+
+                                        <input type="text" class="form-control" id="adresse_client"
+                                            v-model="formDataUpdate.adresse_client_commande" name="adresse_client" />
+                                    </div>
+                                    <!-- <div class="col-3">
+                                        <button type="button" class="btn btn-info" @click.prevent="
+                                            updateCommandeInfo('adresse_client_commande', formData.adresse_client_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="prix_commande">{{ $t('message.Price') }}</label>
+
+                                        <input type="text" class="form-control" id="prix_commande"
+                                            v-model="formDataUpdate.prix_commande" name="prix_commande" />
+                                    </div>
+                                    <!-- <div class="col-3">
+                                        <button type="button" class="btn btn-info" @click.prevent="
+                                            updateCommandeInfo('prix_commande', formData.prix_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-info" style="min-width: 200px;" @click.prevent="
+                                            updateCommandeInfo()
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="relaunch">
-                                    <div class="col-6" v-if="formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'NOREPONSE' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'REPORTED'
-                                        || formData.etat_commande == 'HOME'|| formData.etat_commande == 'CHANGERPRIX'
-                                    ">
-                                        <button type="button" class="btn btn-warning" @click.prevent="
-                                            editStatut('RELANCER')
-                                        ">
+                                <div class="form-group row"
+                                    v-if="formDataUpdate.etat_commande == 'PROCESSING' || formDataUpdate.etat_commande == 'CHANGERPRIX' || formDataUpdate.etat_commande == 'RELANCER' || formDataUpdate.etat_commande == 'REPORTED' || formDataUpdate.etat_commande == 'RAMASSER' || formDataUpdate.etat_commande == 'PICKUP' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'ENROUTE' || formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'INHOUSE' || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'ASSIGN'">
+                                    <div class="col-6" style="display: flex;justify-content: center;">
+                                        <button type="button" class="btn btn-danger" @click.prevent="editStatut('ANNULER')"
+                                            style="min-width: 160px;">
+                                            <i class="fas fa-check"></i> Annuler
+                                        </button>
+                                    </div>
+                                    <div class="col-6" style="display: flex;justify-content: center;"
+                                        v-if="(formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'NOREPONSE' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'REPORTED'
+                                            || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'CHANGERPRIX') && relaunch">
+                                        <button type="button" class="btn btn-info" @click.prevent="editStatut('RELANCER')"
+                                            style="min-width: 160px;">
                                             <i class="fas fa-clock"></i>
                                             {{ $t('message.Relaunch') }}
                                         </button>
                                     </div>
+
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -1139,6 +1198,13 @@ input[type="number"] {
     padding: 0px 7px;
     width: 40%;
     margin-left: 23px;
+
+}
+
+.form-group.row {
+    align-items: flex-end;
+    justify-content: center;
+
 }
 </style>
 <script>
@@ -1169,6 +1235,7 @@ export default {
             nomFile: "",
             nom_err: "",
             formData: {
+                id_commande: '',
                 ville_client_commande: "",
                 nom_client_commande: "",
                 adresse_client_commande: "",
@@ -1181,6 +1248,13 @@ export default {
                 type_autorisation: "",
                 prix_livraison_final: "",
                 store: "",
+            },
+            formDataUpdate: {
+                id_commande: '',
+                nom_client_commande: "",
+                adresse_client_commande: "",
+                telephone_client_commande: "",
+                prix_commande: "",
             },
             nbrCommande: 0,
             villes: [],
@@ -1782,6 +1856,60 @@ export default {
             this.classifierCommande(this.formDataCherche3.selected_option3)
             this.selected = [];
         },
+        async updateCommandeInfo() {
+            let formData = new FormData();
+            formData.append("id_commande", this.formDataUpdate.id_commande);
+            formData.append("adresse_client_commande", this.formDataUpdate.adresse_client_commande);
+            formData.append("prix_commande", this.formDataUpdate.prix_commande);
+            formData.append("telephone_client_commande", this.formDataUpdate.telephone_client_commande);
+            formData.append("nom_client_commande", this.formDataUpdate.nom_client_commande);
+            await axios
+                .post("/api/updateCommandeInfo", formData)
+                .then((res) => {
+
+                    if (res.data.message == 'commande update successfully') {
+                        this.$vs.notify({
+                            title: res.data.message,
+                            color: 'success',
+                            position: "top-right",
+                            time: 4000,
+                        });
+                        $("#reclamationCommande").modal("hide");
+                        this.classifierCommande(this.formDataCherche3.selected_option3);
+
+                    } else if (res.data.message == 'Erreur') {
+                        this.$vs.notify({
+                            title: this.$t('message.Error'),
+                            color: 'danger',
+                            position: "top-right",
+                            time: 8000,
+                        });
+                    }
+                    else if (res.data.message == 'Le prix doit etre superieur ou egale 0') {
+                        this.$vs.notify({
+                            title: 'Le prix doit etre superieur ou egale 0',
+                            color: 'danger',
+                            position: "top-right",
+                            time: 8000,
+                        });
+                    }
+                    else if (res.data.message == 'Le prix doit être inférieur au prix précédent') {
+                        this.$vs.notify({
+                            title: 'Le prix doit être inférieur au prix précédent',
+                            color: 'danger',
+                            position: "top-right",
+                            time: 8000,
+                        });
+                    }
+
+                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                        this.nom_err = this.errors[Object.keys(this.errors)[0]];
+                    }
+                });
+        },
         async updateCommande() {
             document.getElementById('stockButton').style.display = 'none';
             this.formData.selected_type = this.selected_type;
@@ -1976,6 +2104,12 @@ export default {
             }
         },
         async reclamationCommande(tr) {
+            this.formDataUpdate.prix_commande = tr.prix_commande;
+            this.formDataUpdate.adresse_client_commande = tr.adresse_client_commande;
+            this.formDataUpdate.id_commande = tr.id_commande;
+            this.formDataUpdate.telephone_client_commande = tr.telephone_client_commande;
+            this.formDataUpdate.nom_client_commande = tr.nom_client_commande;
+            this.formDataUpdate.etat_commande = tr.etat_commande;
             this.formData = tr;
             this.nom_err = '';
             await axios
@@ -2009,7 +2143,6 @@ export default {
                 });
             } else if (button == "RELANCER") {
                 this.formData.statut = button;
-
                 Swal.fire({
                     title: this.$t('message.Are_you_sure'),
                     text: this.$t('message.The_command_will_Relaunch'),

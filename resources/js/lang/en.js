@@ -82,7 +82,7 @@ let message = {
     Package_To_Track: "Package To Track",
     Returned: "Returned",
     Package_In_Progress: "Package In Progress",
-    Total_COD: "Total_COD",
+    Total_COD: "Total COD",
     Invoices_Count: "Invoices Count",
     Revenu_NET: "Revenu NET",
     Paid_Delivered_Orders: "Paid Delivered Orders",

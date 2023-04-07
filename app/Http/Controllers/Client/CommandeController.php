@@ -132,7 +132,7 @@ class CommandeController extends Controller
                         "ville_client_commande" => 'required',
                         "nom_client_commande" => "required|string",
                         "adresse_client_commande" => 'required|string',
-                        "telephone_client_commande" => "required|regex:/(0)[0-9]{9}/",
+                        "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
                         "prix_commande" => "required|numeric",
                         "additional_commentaire" => "nullable|string",
                     ]);
@@ -183,7 +183,7 @@ class CommandeController extends Controller
                             "ville_client_commande" => 'required',
                             "nom_client_commande" => "required|string",
                             "adresse_client_commande" => 'required|string',
-                            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}/",
+                            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
                             "prix_commande" => "required|numeric",
                             "additional_commentaire" => "nullable|string",
                         ]);
@@ -272,7 +272,7 @@ class CommandeController extends Controller
                             "ville_client_commande" => 'required',
                             "nom_client_commande" => "required|string",
                             "adresse_client_commande" => 'required|string',
-                            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}/",
+                            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
                             "prix_commande" => "required|numeric",
                             "additional_commentaire" => "nullable|string",
 
@@ -394,7 +394,7 @@ class CommandeController extends Controller
             "ville_client_commande" => 'required',
             "nom_client_commande" => "required|string",
             "adresse_client_commande" => 'required|string',
-            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}/",
+            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
             "prix_commande" => "required|numeric",
             "additional_commentaire" => "nullable|string",
         ]);
@@ -512,7 +512,12 @@ class CommandeController extends Controller
                 } else {
 
                     $commande = Commande::where('commandes.id_client', $user->id)->where('etat_commande', 'CREATED')->where('id_commande', $request->id_commande)->first();
+                   if($commande->id_ville!=$ville->id){
                     $commande->id_ville =  $ville->id;
+                    $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
+                    $commande->id_commande=$id_commande;
+                }
+                    
                     $commande->nom_client_commande = $request->nom_client_commande;
                     $commande->adresse_client_commande = $request->adresse_client_commande;
                     $commande->telephone_client_commande = $request->telephone_client_commande;
@@ -534,7 +539,7 @@ class CommandeController extends Controller
             }
         } catch (Throwable $e) {
             return response()->json([
-                'message' => 'Erreur'
+                'message' => 'Erreur'.$e
             ]);
         }
     }
@@ -675,7 +680,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('commandes.id_bon_retour_client','historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -714,7 +719,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->superviseur)
-                    ->select('commandes.id_bon_retour_client','historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -749,7 +754,7 @@ class CommandeController extends Controller
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 if (in_array($request->statut, array('ANNULER', 'RELANCER', 'CHANGERPRIX'))) {
                     $statut = $commande = Commande::where('commandes.id_commande', $request->id_commande)
-                        ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER','CHANGERPRIX', 'INHOUSE', 'REPORTED', 'NOREPONSE','PROCESSING', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
+                        ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER', 'CHANGERPRIX', 'INHOUSE', 'REPORTED', 'NOREPONSE', 'PROCESSING', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
                         ->first();
                 }
                 if ($statut) {
@@ -762,36 +767,6 @@ class CommandeController extends Controller
                     if ($request->statut == 'ANNULER') {
                         $commentaire_commande = 'Order Cancel';
                         $commande->etat_commande = $request->statut;
-                    } else if ($request->statut == 'CHANGERPRIX') {
-                   
-                        if ($request->commentaire_commande < 0) {
-                            return response()->json([
-                                'message' => 'Le prix doit etre superieur ou egale 0',
-                            ]);
-                        } else if ($request->commentaire_commande >= $commande->prix_commande) {
-                            return response()->json([
-                                'message' => 'Le prix doit être inférieur au prix précédent',
-                            ]);
-                        }
-                        if($commande->etat_commande=='PROCESSING'){
-                            $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
-                            $commande->prix_commande = $request->commentaire_commande;
-                            $commande->etat_commande = 'PROCESSING';
-                        }elseif($commande->etat_commande=='PICKUP'){
-             
-                                $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
-                                $commande->prix_commande = $request->commentaire_commande;
-                                $commande->etat_commande = 'PICKUP';
-                         
-                        }
-                        
-                        else{
-                            $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
-                            $commande->prix_commande = $request->commentaire_commande;
-                            $commande->etat_commande = $request->statut;
-                        }
-
-                       
                     } else if ($request->statut == 'RELANCER') {
 
                         $commentaire_commande = 'Relaunch request';
@@ -835,7 +810,6 @@ class CommandeController extends Controller
             ]);
         }
     }
-
     public function getCommandeSuivie(Request $request)
     {
         try {
@@ -966,8 +940,13 @@ class CommandeController extends Controller
     {
         try {
             $user = auth('sanctum')->user();
-            if ($user->role == 'Client' && $user->statut == 'Active') {
-                $statut = HistoriqueCommande::where('historiquecommandes.id_commande', $id)->where('historiquecommandes.id_client', $user->id)->where('historiquecommandes.etat_commande', 'RELANCER')->first();
+            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
+                $statut = HistoriqueCommande::where('historiquecommandes.id_commande', $id)
+                ->where(function ($query) use ($user) {
+                    $query->where('historiquecommandes.id_client', $user->id)
+                        ->orwhere('historiquecommandes.id_client', $user->superviseur);
+                })
+                ->where('historiquecommandes.etat_commande', 'RELANCER')->first();
 
                 if ($statut) {
                     return response()->json([
@@ -995,6 +974,90 @@ class CommandeController extends Controller
                 ->first();
             $Package->statut_package = 'Printed';
             $Package->save();
+        }
+    }
+
+    public function updateCommandeInfo(Request $request)
+    {
+       
+        $this->validate($request, [
+            "adresse_client_commande" => 'required|string',
+            "nom_client_commande" => 'required|string',
+            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
+            "prix_commande" => "required|numeric",
+        ]);
+
+
+        $user = auth('sanctum')->user();
+        try {
+            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
+
+                $commande = Commande::where(function ($query) use ($user) {
+                    $query->where('commandes.id_client', $user->id)
+                        ->orwhere('commandes.id_client', $user->superviseur);
+                })->whereNotIn('etat_commande', ['DELIVERED', 'CANCEL', 'ANNULER', 'RETURNED', 'RETURNEDEV', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDRR'])->where('id_commande', $request->id_commande)->first();
+                $etat_commande="COMMENTAIRE";
+                $commentaire_commande="Changement de destination";
+                if ($request->nom_client_commande!=$commande->nom_client_commande) {
+                    $commande->nom_client_commande = $request->nom_client_commande;
+
+                } else if ($request->prix_commande != $commande->prix_commande) {
+                    $etat_commande="CHANGERPRIX";
+                    if ($request->prix_commande < 0) {
+                        return response()->json([
+                            'message' => 'Le prix doit etre superieur ou egale 0',
+                        ]);
+                    } else if ($request->prix_commande >= $commande->prix_commande) {
+                        return response()->json([
+                            'message' => 'Le prix doit être inférieur au prix précédent',
+                        ]);
+                    }
+                    if ($commande->etat_commande == 'PROCESSING') {
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                        $commande->prix_commande = $request->commentaire_commande;
+                        $commande->etat_commande = 'PROCESSING';
+                    } else if ($commande->etat_commande == 'PICKUP') {
+
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                        $commande->prix_commande = $request->commentaire_commande;
+                        $commande->etat_commande = 'PICKUP';
+                    } else {
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                        $commande->prix_commande = $request->prix_commande;
+                        $commande->etat_commande = $etat_commande;
+                    }
+                    $statut = $commande->save();
+                } else if ($request->adresse_client_commande != $commande->adresse_client_commande) {
+                    $commande->adresse_client_commande = $request->adresse_client_commande;
+                } else if ($request->telephone_client_commande!=$commande->telephone_client_commande) {
+                    $commande->telephone_client_commande = $request->telephone_client_commande;
+                }else{
+                    return response()->json([
+                        'message' => 'No Change'
+                    ]);
+                }
+
+                $statut = $commande->save();
+                if ($statut) {
+                    HistoriqueCommande::create([
+                        "id_commande" => $commande->id_commande,
+                        "etat_commande" => $etat_commande,
+                        "commentaire_commande" => $commentaire_commande,
+                        "id_client" => $user->id,
+                    ]);
+                    return response()->json([
+                        'message' => 'commande update successfully'
+                    ]);
+                } else {
+                    return response()->json([
+                        'message' => 'Erreur'
+                    ]);
+                }
+            }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
         }
     }
 }
