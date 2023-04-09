@@ -102,12 +102,12 @@
           <div id='profileDropdownplus' class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
             <router-link to="/profile">
               <a class="dropdown-item">
-                <i class="mdi mdi-cached me-2 text-success"></i> Profile </a>
+                <i class="mdi mdi-cached me-2 text-success"></i> {{$t('message.Profile')}} </a>
             </router-link>
             <div class="dropdown-divider"></div>
 
             <a class="dropdown-item" @click="logout">
-              <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
+              <i class="mdi mdi-logout me-2 text-primary"></i> {{$t('message.Signout')}} </a>
           </div>
         </li>
         <li class="nav-item dropdown" ref="myElement">
@@ -162,9 +162,29 @@ export default {
       document.addEventListener('click', this.handleClickOutside);
       document.getElementById('dropdownLang').style.display = 'block'
     },
-    changeLanguage(lang) {
-      localStorage.setItem('locale', lang);
-      window.location.reload();
+    async changeLanguage(lang) {
+      await axios.get('api/changeLanguage/' + lang).then((res) => {
+        if (res.data.message == 'Language changed successfully') {
+          this.$vs.notify({
+            title: this.$t('message.Successfully'),
+            color: "success",
+            position: "top-right",
+          });
+          localStorage.setItem('locale', lang);
+      location.reload();
+        } else {
+          this.$vs.notify({
+            title: this.$t('message.error'),
+            color: "danger",
+            position: "top-right",
+          });
+        }
+
+      }).catch((errors) => {
+        console.log(errors)
+      })
+
+ 
     },
     async getNotification() {
       await axios.get('api/Notification').then((response) => {

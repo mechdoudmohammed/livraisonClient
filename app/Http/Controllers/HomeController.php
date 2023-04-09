@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Commande;
 use App\Models\HistoriqueCommande;
 use Carbon\Carbon;
@@ -102,5 +103,23 @@ class HomeController extends Controller
 
         return 'goood';
 
+    }
+    public function changeLanguage($language)
+    {
+        $user = auth('sanctum')->user();
+        if ($user->statut == 'Active') {
+            if ($language == 'ar' || $language == 'en' || $language == 'fr') {
+                $client = Client::where('clients.id', $user->id)->first();
+                $client->language = $language;
+                $client->save();
+                return response()->json([
+                    'message' => 'Language changed successfully',
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Erreur',
+                ]);
+            }
+        }
     }
 }

@@ -137,64 +137,61 @@
                                     </vs-td>
                                     <vs-td :data="tr.etat_commande">
                                         <b class="badge badge badge-gradient-secondary"
-                                            v-if="tr.etat_commande == 'CREATED'">{{ tr.etat_commande }}</b>
-                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'CONFIRMED'">{{
-                                            tr.etat_commande }}</b>
+                                            v-if="tr.etat_commande == 'CREATED'">{{ $t('message.CREATED')}}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'CONFIRMED'">{{ $t('message.CONFIRMED')}}</b>
                                         <b class="badge badge badge-gradient-secondary"
-                                            v-if="tr.etat_commande == 'PICKUP'">{{ tr.etat_commande }}</b>
+                                            v-if="tr.etat_commande == 'PICKUP'">{{ $t('message.PICKUP')}}</b>
                                         <b class="badge badge badge-gradient-secondary"
-                                            v-if="tr.etat_commande == 'PROCESSING'">{{ tr.etat_commande }}</b>
+                                            v-if="tr.etat_commande == 'PROCESSING'">{{ $t('message.PROCESSING')}}</b>
                                         <b class="badge badge badge-gradient-info"
-                                            v-if="tr.etat_commande == 'HOME'">INHOUSE</b>
+                                            v-if="tr.etat_commande == 'HOME'">{{ $t('message.HOME')}}</b>
                                         <b class="badge badge badge-gradient-info"
-                                            v-if="tr.etat_commande == 'CHANGERPRIX'">CHANGEPRICE</b>
-                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'INHOUSE'">{{
-                                            tr.etat_commande }}</b>
+                                            v-if="tr.etat_commande == 'CHANGERPRIX'">{{ $t('message.CHANGEPRIX')}}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'INHOUSE'">{{ $t('message.INHOUSE')}}</b>
                                         <b class="badge badge badge-gradient-primary"
-                                            v-if="tr.etat_commande == 'ENROUTE'">{{ tr.etat_commande }}</b>
+                                            v-if="tr.etat_commande == 'ENROUTE'">{{ $t('message.ENROUTE')}}</b>
                                         <b class="badge badge badge-gradient-primary"
-                                            v-if="tr.etat_commande == 'RAMASSER'">PICKUP</b>
+                                            v-if="tr.etat_commande == 'RAMASSER'">{{ $t('message.RAMASSER')}}</b>
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'TRANSIT'">{{
                                             tr.etat_commande }}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'NOREPONSE'">NO REP + SMS</b>
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'REPORTED'">{{
                                             tr.etat_commande }}</b>
-                                        <b class="badge badge badge-gradient-warning"
+              <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDLV'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">RETURNED</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDLV')}}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDAG'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">RETURNED</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDAG')}}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDEV'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">RETURNED</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDEV')}}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDRR'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">RETURNED</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDRR')}}</b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'RETURNED'">RETURNED</b>
+                                            v-if="tr.etat_commande == 'RETURNED'">{{ $t('message.RETURNED')}}</b>
 
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'ASSIGN'">{{
                                             tr.etat_commande }}</b>
                                         <b class="badge badge badge-gradient-success"
-                                            v-if="tr.etat_commande == 'DELIVERED'">{{ tr.etat_commande }}</b>
+                                            v-if="tr.etat_commande == 'DELIVERED'">{{ $t('message.DELIVERED')}}</b>
 
 
                                         <b class="badge badge badge-gradient-danger"
-                                            v-if="tr.etat_commande == 'CANCELED'">{{ tr.etat_commande }}</b>
-                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'DMSUIVIE'">{{
-                                            tr.etat_commande }}</b>
+                                            v-if="tr.etat_commande == 'CANCELED'">{{ $t('message.CANCELED')}}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'DMSUIVIE'">{{ $t('message.DMSUIVIE')}}</b>
                                         <b class="badge badge badge-gradient-danger"
                                             v-if="tr.etat_commande == 'ARCHIVED'">{{ tr.etat_commande }}</b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'ANNULER'">Annuler
+                                            v-if="tr.etat_commande == 'ANNULER'">{{ $t('message.ANNULER')}}
                                         </b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'ANNULER_CL'">Annuler
+                                            v-if="tr.etat_commande == 'ANNULER_CL'">{{ $t('message.ANNULER')}}
                                         </b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'RELANCER'">RELAUNCH</b>
+                                            v-if="tr.etat_commande == 'RELANCER'">{{ $t('message.RELANCER')}}</b>
                                     </vs-td>
                                     <vs-td v-if="Client.role == 'Client'">
                                         <button class="badge badge badge-gradient-success"
@@ -1348,9 +1345,10 @@ export default {
                 text: this.$t('message.You_want_delete_Order'),
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "I Confirme",
+                confirmButtonColor: '#08ab5f',
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: this.$t('message.Yes_I_Confirme'),
+                    cancelButtonText: this.$t('message.Cancel')
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     this.$vs.loading({ color: "#22c22b" });
@@ -2132,9 +2130,10 @@ export default {
                     text: this.$t('message.Do_you_want_to_cancel_the_order'),
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
+                    confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
+                    cancelButtonText: this.$t('message.Cancel')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -2148,9 +2147,10 @@ export default {
                     text: this.$t('message.The_command_will_Relaunch'),
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
+                    confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
+                    cancelButtonText: this.$t('message.Cancel')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -2165,9 +2165,10 @@ export default {
                     input: "number",
                     icon: "info",
                     showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
+                    confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
+                    cancelButtonText: this.$t('message.Cancel')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.formData.statut = button;

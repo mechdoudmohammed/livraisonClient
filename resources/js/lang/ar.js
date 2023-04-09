@@ -3,7 +3,8 @@ let message = {
     Order: "الطلبية",
     MultiOrders: "عدة طلبات",
     New_Order: "طلب جديد",
-    Pickup: "الاستلام",
+    Pickup: "الإلتقاط",
+
     Confirme: "تأكيد",
     Type: "النوع",
     Store: "المتجر",
@@ -213,6 +214,12 @@ let message = {
     Model_Excel:'ملف الاكسيل',
     With_Sms:"مع رسالة",
     Receipt_id:'رقم توصيل الارجاع',
+    Cancel:'إلغاء',
+    Yes_I_Confirme:'نعم,أكد ذلك',
+    Traking:'تتبع',
+    Signout:'تسجيل الخروج',
+    Profile:'الملف الشخصي',
+
 };
 
 export default {

@@ -43,6 +43,7 @@ Route::post('loginClient', 'Client\ClientController@login');
 Route::get('Villes', 'Client\ClientController@getVilles');
 Route::middleware(['auth:client'])
     ->group(function () {
+        Route::get('changeLanguage/{language}', 'HomeController@changeLanguage');
         Route::apiResource('Client', 'Client\ClientController');
         Route::apiResource('Commande', 'Client\CommandeController');
         Route::apiResource('Article', 'Client\ArticleController');

@@ -216,6 +216,11 @@ let message = {
     Model_Excel:'Model Excel',
     With_Sms:'Avec Sms',
     Receipt_id:'Id Bon de retour',
+    Cancel:'Annuler',
+    Yes_I_Confirme: "Oui, je confirme",
+    Traking:'Suivie',
+Signout:'Déconnecter',
+Profile:'Profile',
 };
 
 export default {

@@ -680,7 +680,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -689,7 +689,7 @@ class CommandeController extends Controller
                     ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
                     ->where('commandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('historiquefactures.statut_facture', 'employes.username', 'historiquefactures.updated_at',)
+                    ->select('historiquefactures.statut_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
                     ->orderBy('historiquefactures.updated_at', 'asc')
                     ->get();
 
@@ -719,7 +719,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->superviseur)
-                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.username as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -728,7 +728,7 @@ class CommandeController extends Controller
                     ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
                     ->where('commandes.id_commande', $id)
                     ->where('commandes.id_client', $user->superviseur)
-                    ->select('historiquefactures.statut_facture', 'employes.username', 'historiquefactures.updated_at',)
+                    ->select('historiquefactures.statut_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
                     ->orderBy('historiquefactures.updated_at', 'asc')
                     ->get();
 
@@ -1013,16 +1013,16 @@ class CommandeController extends Controller
                         ]);
                     }
                     if ($commande->etat_commande == 'PROCESSING') {
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
                         $commande->prix_commande = $request->commentaire_commande;
                         $commande->etat_commande = 'PROCESSING';
                     } else if ($commande->etat_commande == 'PICKUP') {
 
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
                         $commande->prix_commande = $request->commentaire_commande;
                         $commande->etat_commande = 'PICKUP';
                     } else {
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->commentaire_commande . ' Dhs)';
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
                         $commande->prix_commande = $request->prix_commande;
                         $commande->etat_commande = $etat_commande;
                     }

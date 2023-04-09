@@ -39,6 +39,8 @@ let routes = [
                             response.data.email_verified_at == null
                         ) {
                             next({ path: "/waitVerification" });
+                        }else{
+                            localStorage.removeItem('token');
                         }
                     })
                     .catch((error) => {
@@ -95,6 +97,7 @@ let routes = [
         path: "/login",
         component: login,
         beforeEnter: async (to, from, next) => {
+           
             if (localStorage.getItem("token") != null) {
                 axios.defaults.headers.common[
                     "Authorization"
