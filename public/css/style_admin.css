@@ -20664,6 +20664,7 @@ dl li {
 
   .sidebar-offcanvas.active {
     left: 0;
+    z-index: 99999;
   }
 
 
@@ -21057,4 +21058,9 @@ button#btn_cancel {
 }
 span.w-32.avatar.circle.gd-info {
   background: white;
+}
+.swal2-styled.swal2-confirm {
+  
+  background-color: #198ae3 !important;
+
 }

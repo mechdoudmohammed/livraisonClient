@@ -221,6 +221,7 @@ Profile:'Profile',
 Successfully:'Successfully',
 Successfully:'Succès',
 Successfully:'تمت العملية بنجاح',
+RELANCER:'RELAUNCH',
     //=========================================================================================
     Model_Excel:'Model Excel',
     With_Sms:'With_Sms',

@@ -227,7 +227,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="showCommande">
-                            Order History
+                            {{ $t('message.Order_History') }}
                         </h5>
                     </div>
                     <div class="modal-body">
@@ -360,127 +360,115 @@
                                                 </div>
                                                 <div class="tl-content">
                                                     <div class="etat_commande">
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'CREATED'">{{
-                                                                hCommande.etat_commande
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'CREATED'">{{
+                                                                $t('message.CREATED') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'CONFIRMED'">{{
+                                                                $t('message.CONFIRMED') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'DMSUIVIE'">{{
+                                                                $t('message.DMSUIVIE') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'PROCESSING'">{{
+                                                                $t('message.PROCESSING') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'PICKUP'">{{
+                                                                $t('message.PICKUP') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'INHOUSE'">{{
+                                                                $t('message.INHOUSE') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'HOME'">{{ $t('message.HOME')
                                                             }}</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'CONFIRMED'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'DMSUIVIE'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'PROCESSING'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'PICKUP'">Pending Pickup</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'HOME'">INHOUSE</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'INHOUSE'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
+                                                        <b class="badge badge-gradient-primary"
+                                                            v-if="hCommande.etat_commande === 'ENROUTE'">{{
+                                                                $t('message.ENROUTE') }}</b>
+                                                        <b class="badge badge-gradient-primary"
+                                                            v-if="hCommande.etat_commande === 'RAMASSER'">{{
+                                                                $t('message.RAMASSER') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'TRANSIT'">{{
+                                                                $t('message.TRANSIT') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'REPORTED'">{{
+                                                                $t('message.REPORTED') }}</b>
+                                                        <b class="badge badge-gradient-success"
+                                                            v-if="hCommande.etat_commande === 'DELIVERED'">{{
+                                                                $t('message.DELIVERED') }}</b>
+                                                        <b class="badge badge-gradient-info"
+                                                            v-if="hCommande.etat_commande === 'ASSIGN'">{{
+                                                                $t('message.ASSIGN') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'RETURNED'">{{
+                                                                $t('message.RETURNED') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'RETURNEDLV'">{{
+                                                                $t('message.RETURNEDLV') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'RETURNEDAG'">{{
+                                                                $t('message.RETURNEDAG') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'RETURNEDEV'">{{
+                                                                $t('message.RETURNEDEV') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'RETURNEDRR'">{{
+                                                                $t('message.RETURNEDRR') }}</b>
+                                                        <b class="badge badge-gradient-danger"
+                                                            v-if="hCommande.etat_commande === 'CANCELED'">{{
+                                                                $t('message.CANCELED') }}</b>
+                                                        <b class="badge badge-gradient-danger"
+                                                            v-if="hCommande.etat_commande === 'ARCHIVED'">{{
+                                                                $t('message.ARCHIVED') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'NOREPONSE'">{{
+                                                                $t('message.NOREPONSE') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'ANNULER'">{{
+                                                                $t('message.ANNULER') }}</b>
+                                                        <b class="badge badge-gradient-warning"
+                                                            v-if="hCommande.etat_commande === 'ANNULER_CL'">{{
+                                                                $t('message.ANNULER_CL') }}</b>
 
-                                                        <b class="badge badge badge-gradient-primary"
-                                                            v-if="hCommande.etat_commande == 'ENROUTE'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-primary"
-                                                            v-if="hCommande.etat_commande == 'RAMASSER'">PICKUP</b>
-
                                                         <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'TRANSIT'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
+                                                            v-if="hCommande.etat_commande == 'RELANCER'">{{
+                                                                $t('message.RELANCE') }}</b>
                                                         <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'REPORTED'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-success"
-                                                            v-if="hCommande.etat_commande == 'DELIVERED'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'ASSIGN'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'RETURNED'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'RETURNEDLV'">RETURNED</b>
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'RETURNEDAG'">RETURNED</b>
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'RETURNEDEV'">RETURNED</b>
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'RETURNEDRR'">RETURNED</b>
-                                                        <b class="badge badge badge-gradient-danger"
-                                                            v-if="hCommande.etat_commande == 'CANCELED'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-                                                        <b class="badge badge badge-gradient-danger"
-                                                            v-if="hCommande.etat_commande == 'ARCHIVED'">{{
-                                                                hCommande.etat_commande
-                                                            }}</b>
-
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'NOREPONSE'">Sans
-                                                            Reponse</b>
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'ANNULER'">Annuler
-                                                        </b>
-                                                        <b class="badge badge badge-gradient-warning"
-                                                            v-if="hCommande.etat_commande == 'ANNULER_CL'">Annuler
-                                                        </b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'RELANCER'">Relaunch</b>
-                                                        <b class="badge badge badge-gradient-info"
-                                                            v-if="hCommande.etat_commande == 'CHANGERPRIX'">Price change
+                                                            v-if="hCommande.etat_commande == 'CHANGERPRIX'">{{
+                                                                $t('message.CHANGERPRIX') }}
                                                         </b>
                                                     </div>
 
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'NOREPONSE'">
-                                                        Colis sans reponse By:
-                                                        <b>{{ hCommande.username }}</b>
-                                                        <br />
-                                                        At
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CANCELED'">
-                                                        Commande annuler By:
-                                                        <b>{{ hCommande.username }}</b>
-                                                        <br />
-                                                        At
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
+                 
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande == 'COMMENTAIRE'">
-                                                        <span class="commentaireCommande">{{
-                                                            hCommande.commentaire_commande
+                                                        <span class="commentaireCommande">{{ hCommande.commentaire_commande
                                                         }}</span>
                                                         <br>
-                                                        By:
-                                                        <b>{{ hCommande.username }}</b>
+                                                        {{ $t('message.By') }}:
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande != 'COMMENTAIRE'">
-                                                        <span class="commentaireCommande">{{
-                                                            hCommande.commentaire_commande
-                                                        }}</span>
+
+                                                        <span class="commentaireCommande"
+                                                            v-if="hCommande.commentaire_commande == 'Request order tracking'">{{
+                                                                $t('message.Request_order_tracking') }}</span>
+                                                        <span class="commentaireCommande"
+                                                            v-else-if="hCommande.commentaire_commande == 'Relaunch request'">{{
+                                                                $t('message.Relaunch_request') }}</span>
+                                                        <span class="commentaireCommande"
+                                                            v-else-if="hCommande.commentaire_commande == 'Avec Sms'">{{
+                                                                $t('message.With_Sms') }}</span>
+
+                                                        <span class="commentaireCommande" v-else>{{
+                                                            hCommande.commentaire_commande }}</span>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'callLog'">
@@ -488,40 +476,43 @@
                                                         <span class="commentaireCommande"
                                                             v-if="hCommande.typeCall == 'CallType.outgoing' && hCommande.durationCall != '0'"
                                                             style="background: #198754;">
-                                                            Outgoing Call
+                                                            {{ $t('message.Outgoing_Call') }}
                                                         </span>
                                                         <span class="commentaireCommande"
                                                             v-else-if="hCommande.typeCall == 'CallType.outgoing' && hCommande.durationCall == '0'"
                                                             style="background: #dc3545;">
-                                                            Missed Call
+                                                            {{ $t('message.Missed_Call') }}
                                                         </span>
 
                                                         <span class="commentaireCommande"
                                                             v-else-if="hCommande.typeCall == 'CallType.missed'"
                                                             style="background: #dc3545;">
-                                                            Missed Call
+                                                            {{ $t('message.Missed_Call') }}
                                                         </span>
 
                                                         <span class="commentaireCommande"
                                                             v-else-if="hCommande.typeCall == 'CallType.incoming'">
-                                                            Incoming Call
+                                                            {{ $t('message.Incoming_Call') }}
                                                         </span>
                                                         <br>
 
                                                         <b
                                                             v-if="hCommande.typeCall == 'CallType.outgoing' && hCommande.durationCall != '0'">{{
-                                                                hCommande.username }} Call {{ hCommande.nom_client_commande }}
+                                                                hCommande.username }} {{ $t('message.Call') }} {{
+        hCommande.nom_client_commande }}
                                                             ({{ moment.utc(hCommande.durationCall * 1000).format('mm:ss')
                                                             }})</b>
 
 
                                                         <b
                                                             v-if="hCommande.typeCall == 'CallType.missed' || (hCommande.typeCall == 'CallType.outgoing' && hCommande.durationCall == '0')">
-                                                            {{ hCommande.nom_client_commande }} Missed call from {{
+                                                            {{ hCommande.nom_client_commande }}
+                                                            {{ $t('message.Missed_call_from') }} {{
                                                                 hCommande.username }}
                                                         </b>
                                                         <b v-if="hCommande.typeCall == 'CallType.incoming'">
-                                                            {{ hCommande.nom_client_commande }} Call {{ hCommande.username
+                                                            {{ hCommande.nom_client_commande }} {{ $t('message.Call') }} {{
+                                                                hCommande.username
                                                             }}
                                                             ({{ moment.utc(hCommande.durationCall * 1000).format('mm:ss')
                                                             }})</b>
@@ -530,7 +521,7 @@
 
 
                                                         <br>
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ moment(hCommande.dateCall, 'x').format("MM/DD/YYYY hh:mm:ss")
                                                         }}
                                                         </b>
@@ -539,30 +530,45 @@
 
 
                                                     </div>
-
-
-
-
-
-
+                                                    
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'NOREPONSE'">
+                                                        {{ $t('message.Package_without_response') }} {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br />
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'CANCELED'">
+                                                        {{ $t('message.Order_canceled') }} {{ $t('message.By') }}:
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br />
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'ENROUTE'">
-                                                        Package sent to
+                                                        {{ $t('message.Package_sent_to') }}
                                                         <b>{{ hCommande.nom_ville }}</b>
-                                                        By
+                                                        {{ $t('message.By') }}
                                                         <b>{{ hCommande.username }}</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RAMASSER'">
-                                                        Package PickUp
-                                                        By
+                                                        {{ $t('message.Package_PickUp') }}
+                                                        {{ $t('message.By') }}
                                                         <b>{{ hCommande.username }}</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
@@ -570,164 +576,217 @@
 
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'ASSIGN'">
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'DMSUIVIE'">
-                                                        At
+                                                        {{ $t('message.By') }}
+                                                        <b>{{ hCommande.username }}</b>
+                                                        <br />
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'INHOUSE'">
-                                                        Package is ready to send
-                                                        By
+                                                        {{ $t('message.Package_is_ready_to_send') }}
+                                                        {{ $t('message.By') }}
                                                         <b>{{ hCommande.username }}</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
 
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'HOME'">
-                                                        package is in Hub
+                                                        {{ $t('message.Package_is_in_Hub') }}
                                                         <b>{{ hCommande.nom_ville }}</b>
                                                         <!-- with
                                                         <b>{{ hCommande.username }}</b> -->
                                                         <br />
-                                                        At
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'PROCESSING'">
-                                                        processe By:
-
-                                                        <b>{{ hCommande.clientUsername }}</b>
-                                                        <br />
-                                                        At
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'PICKUP'">
-                                                        Request Pickup By:
-
-                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
-                                                        }}</b>
-                                                        <b v-else>{{ hCommande.username }}</b>
-                                                        <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CONFIRMED'">
-                                                        Confirmer By:
+                                                        {{ $t('message.Confirmed') }} {{ $t('message.By') }}:
                                                         <b>{{ hCommande.clientUsername }}</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'PROCESSING'">
+                                                        {{ $t('message.Processe') }} {{ $t('message.By') }}:
+                                                        <b>{{ hCommande.clientUsername }}</b>
+                                                        <br />
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'PICKUP'">
+                                                        {{ $t('message.PICKUP') }} {{ $t('message.By') }}:
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
+                                                        <br />
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CREATED'">
-                                                        Create By:
+                                                        {{ $t('message.Created') }} {{ $t('message.By') }}:
                                                         <b>
-                                                            {{ hCommande.clientUsername }} </b><br />At
+                                                            {{ hCommande.clientUsername }} </b><br />{{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'ANNULER'">
-                                                        At
+                                                        v-if="hCommande.etat_commande == 'ANNULER'">{{ $t('message.By') }}:
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
+                                                        <br />
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'ANNULER_CL'">
-                                                        At
+                                                        v-if="hCommande.etat_commande == 'ANNULER_CL'">{{ $t('message.By')
+                                                        }}:
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
+                                                        <br />
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CHANGERPRIX'">
-                                                        At
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b><br>
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RELANCER'">
-                                                        At
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
+                                                        }}</b>
+                                                        <b v-else>{{ hCommande.username }}</b>
+                                                        <br>
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
 
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'REPORTED'">
-                                                        Reporter By
-                                                        <b>{{ hCommande.username }}</b>
-                                                        To
+                                                        {{ $t('message.Reporter') }} {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        {{ $t('message.To') }}
                                                         <b>{{ hCommande.reported_date }}
                                                         </b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         {{ hCommande.updated_at }}
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'TRANSIT'">
-                                                        Colis Prêt To Delivered By
-                                                        <b>{{ hCommande.username }}</b>
-
+                                                        {{ $t('message.Package_Ready_for_Delivery') }} {{ $t('message.By')
+                                                        }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
                                                         <b>{{ hCommande.reported_date }}
                                                         </b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         {{ hCommande.updated_at }}
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'DELIVERED'">
-                                                        Delivered By
-                                                        <b>{{ hCommande.username }}</b>
+                                                        {{ $t('message.Delivered') }}
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
 
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDLV'">
-                                                        By
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <span class="commentaireCommande">Retours envoye vers
+                                                            agence</span><br>
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDAG'">
-                                                        At
+                                                        <span class="commentaireCommande">Retours reçu par agence</span><br>
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDEV'">
-                                                        At
+                                                        <span class="commentaireCommande">Return send to hometown</span><br>
+
+                                                        {{ $t('message.By') }}
+
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        <span v-if="hCommande.id_bon_retour_client != null">{{
+                                                            $t('message.Return_receipt') }}
+                                                            :</span>
+                                                        <b v-if="hCommande.id_bon_retour_client != null">{{
+                                                            hCommande.id_bon_retour_client }}</b>
+                                                        <br v-if="hCommande.id_bon_retour_client != null" />
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDRR'">
-                                                        At
+                                                        <span class="commentaireCommande">Return send to hometown</span><br>
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNED'">
-                                                        At
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
@@ -748,36 +807,40 @@
                                                 </div>
                                                 <div class="tl-content">
                                                     <div class="etat_commande">
-                                                        <b class="badge badge badge-gradient-danger" v-if="
-                                                            hCommande.statut_facture == 'NOTPAID'"> Invoiced
+                                                        <b class="badge badge badge-gradient-danger"
+                                                            v-if="
+                                                                hCommande.statut_facture == 'NOTPAID' && hCommande.type_facture == 'client'">
+                                                            {{ $t('message.Invoiced') }}
                                                         </b>
-                                                        <b class="badge badge badge-gradient-success" v-if="
-                                                            hCommande.statut_facture == 'PAID'">{{
+                                                        <b class="badge badge badge-gradient-success"
+                                                            v-if="
+                                                                hCommande.statut_facture == 'PAID' && hCommande.type_facture == 'client'">{{
         hCommande.statut_facture }}</b>
                                                     </div>
 
                                                     <div class="tl-date text-muted mt-1" v-if="
                                                         hCommande.statut_facture == 'NOTPAID'">
-                                                        Invoiced By:
+                                                        {{ $t('message.Invoiced') }} {{ $t('message.By') }}:
                                                         <b v-if="
                                                             hCommande.username ==
                                                             null
-                                                        ">Admin</b>
+                                                        ">Service Facturation</b>
                                                         <b v-else-if="
                                                             hCommande.username !=
                                                             null">{{ hCommande.username }}</b>
-                                                        <br />At
+                                                        <br />{{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.statut_facture == 'PAID'">Payé By:
-                                                        <b v-if="hCommande.username == null">Admin</b>
+                                                        v-if="hCommande.statut_facture == 'PAID'">{{ $t('message.Paid') }}
+                                                        {{ $t('message.By') }}:
+                                                        <b v-if="hCommande.username == null">Service Facturation</b>
                                                         <b v-else-if="hCommande.username != null">{{
                                                             hCommande.username
                                                         }}</b>
                                                         <br />
-                                                        At
+                                                        {{ $t('message.At') }}
                                                         <b>{{
                                                             hCommande.updated_at
                                                         }}
@@ -805,61 +868,111 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="reclamationCommande">
-                            Change Status
+                            {{ $t('message.Order_id') }}: <b>{{ formDataUpdate.id_commande }}</b>
                         </h5>
                     </div>
                     <div class="modal-body">
                         <div class="page-content page-container" id="page-content">
                             <div class="p-3">
-                                <div class="form-group row">
-                                    <div class="col-8">
-                                        <b><i class="fas fa-box-open"></i>
-                                            {{ formData.id_commande }}</b>
-                                    </div>
-                                    <div class="col-3">
-                                        <b><i class="fas fa-dollar-sign"></i>
-                                            {{ formData.prix_commande }} {{ $t('message.Dhs') }}</b>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <b><i class="fas fa-user-alt"></i>
-                                        {{ formData.nom_client_commande }}</b>
-                                </div>
+
+
                                 <div class="form-group row">
                                     <div class="alert alert-danger" role="alert" v-if="nom_err">
                                         {{ nom_err[0] }}
                                     </div>
                                 </div>
-                                <div class="form-group row"
-                                    v-if="formData.etat_commande == 'RELANCER' || formData.etat_commande == 'REPORTED' || formData.etat_commande == 'RAMASSER' || formData.etat_commande == 'PICKUP' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'ENROUTE' || formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'INHOUSE' || formData.etat_commande == 'HOME' || formData.etat_commande == 'ASSIGN'">
-                                    <div class="col-5">
-                                        <button type="button" class="btn btn-danger" @click.prevent="
-                                            editStatut('ANNULER')
-                                        ">
-                                            <i class="fas fa-check"></i> Annuler
-                                        </button>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="nom_client">{{ $t('message.Name') }}</label>
+
+                                        <input type="text" class="form-control" id="nom_client"
+                                            v-model="formDataUpdate.nom_client_commande" name="nom_client" />
                                     </div>
-                                    <div class="col-7">
+                                    <!-- <div class="col-3">
                                         <button type="button" class="btn btn-info" @click.prevent="
-                                            editStatut('CHANGERPRIX')
-                                        ">
-                                            <i class="fas fa-truck"></i> {{ $t('message.Change_Price') }}
+                                            updateCommandeInfo('nom_client_commande', formData.nom_client_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
                                         </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="telephone_client">{{ $t('message.Phone_Number') }}</label>
+
+                                        <input type="text" class="form-control" id="telephone_client"
+                                            v-model="formDataUpdate.telephone_client_commande" name="telephone_client" />
+                                    </div>
+                                    <!-- <div class="col-3">
+                                        <button type="button" class="btn btn-info" @click.prevent="
+                                            updateCommandeInfo('telephone_client_commande', formData.telephone_client_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="adresse_client">{{ $t('message.Address') }}</label>
+
+                                        <input type="text" class="form-control" id="adresse_client"
+                                            v-model="formDataUpdate.adresse_client_commande" name="adresse_client" />
+                                    </div>
+                                    <!-- <div class="col-3">
+                                        <button type="button" class="btn btn-info" @click.prevent="
+                                            updateCommandeInfo('adresse_client_commande', formData.adresse_client_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="prix_commande">{{ $t('message.Price') }}</label>
+
+                                        <input type="text" class="form-control" id="prix_commande"
+                                            v-model="formDataUpdate.prix_commande" name="prix_commande" />
+                                    </div>
+                                    <!-- <div class="col-3">
+                                        <button type="button" class="btn btn-info" @click.prevent="
+                                            updateCommandeInfo('prix_commande', formData.prix_commande, formData.id_commande)
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
+                                    </div> -->
+                                </div>
+                                <div class="form-group row">
+
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-info" style="min-width: 200px;" @click.prevent="
+                                            updateCommandeInfo()
+                                        "> {{ $t('message.Update') }}
+                                        </button>
+
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="relaunch">
-                                    <div class="col-6" v-if="formData.etat_commande == 'TRANSIT' || formData.etat_commande == 'NOREPONSE' || formData.etat_commande == 'DMSUIVIE' || formData.etat_commande == 'REPORTED'
-                                        || formData.etat_commande == 'HOME'
-                                    ">
-                                        <button type="button" class="btn btn-warning" @click.prevent="
-                                            editStatut('RELANCER')
-                                        ">
+                                <div class="form-group row"
+                                    v-if="formDataUpdate.etat_commande == 'PROCESSING' || formDataUpdate.etat_commande == 'CHANGERPRIX' || formDataUpdate.etat_commande == 'RELANCER' || formDataUpdate.etat_commande == 'REPORTED' || formDataUpdate.etat_commande == 'RAMASSER' || formDataUpdate.etat_commande == 'PICKUP' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'ENROUTE' || formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'INHOUSE' || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'ASSIGN'">
+                                    <div class="col-6" style="display: flex;justify-content: center;">
+                                        <button type="button" class="btn btn-danger" @click.prevent="editStatut('ANNULER')"
+                                            style="min-width: 160px;">
+                                            <i class="fas fa-check"></i> Annuler
+                                        </button>
+                                    </div>
+                                    <div class="col-6" style="display: flex;justify-content: center;"
+                                        v-if="(formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'NOREPONSE' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'REPORTED'
+                                            || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'CHANGERPRIX') && relaunch">
+                                        <button type="button" class="btn btn-info" @click.prevent="editStatut('RELANCER')"
+                                            style="min-width: 160px;">
                                             <i class="fas fa-clock"></i>
                                             {{ $t('message.Relaunch') }}
                                         </button>
                                     </div>
+
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -881,6 +994,11 @@ input[type="number"] {
     padding: 0px 7px;
     width: 40%;
     margin-left: 23px;
+}
+.form-group.row {
+    align-items: flex-end;
+    justify-content: center;
+
 }
 </style>
 <script>
@@ -947,6 +1065,13 @@ export default {
             formDataCherche3: {
                 selected_option3: "20",
             },
+            formDataUpdate: {
+                id_commande: '',
+                nom_client_commande: "",
+                adresse_client_commande: "",
+                telephone_client_commande: "",
+                prix_commande: "",
+            },
             btn_confirme: false,
             historiqueFacture: [],
             stores: [],
@@ -988,7 +1113,60 @@ export default {
             await this.initialiserFormData();
             this.classifierCommande(this.formDataCherche3.selected_option3);
         },
+        async updateCommandeInfo() {
+            let formData = new FormData();
+            formData.append("id_commande", this.formDataUpdate.id_commande);
+            formData.append("adresse_client_commande", this.formDataUpdate.adresse_client_commande);
+            formData.append("prix_commande", this.formDataUpdate.prix_commande);
+            formData.append("telephone_client_commande", this.formDataUpdate.telephone_client_commande);
+            formData.append("nom_client_commande", this.formDataUpdate.nom_client_commande);
+            await axios
+                .post("/api/updateCommandeInfo", formData)
+                .then((res) => {
 
+                    if (res.data.message == 'commande update successfully') {
+                        this.$vs.notify({
+                            title: res.data.message,
+                            color: 'success',
+                            position: "top-right",
+                            time: 4000,
+                        });
+                        $("#reclamationCommande").modal("hide");
+                        this.classifierCommande(this.formDataCherche3.selected_option3);
+
+                    } else if (res.data.message == 'Erreur') {
+                        this.$vs.notify({
+                            title: this.$t('message.Error'),
+                            color: 'danger',
+                            position: "top-right",
+                            time: 8000,
+                        });
+                    }
+                    else if (res.data.message == 'Le prix doit etre superieur ou egale 0') {
+                        this.$vs.notify({
+                            title: 'Le prix doit etre superieur ou egale 0',
+                            color: 'danger',
+                            position: "top-right",
+                            time: 8000,
+                        });
+                    }
+                    else if (res.data.message == 'Le prix doit être inférieur au prix précédent') {
+                        this.$vs.notify({
+                            title: 'Le prix doit être inférieur au prix précédent',
+                            color: 'danger',
+                            position: "top-right",
+                            time: 8000,
+                        });
+                    }
+
+                })
+                .catch((error) => {
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                        this.nom_err = this.errors[Object.keys(this.errors)[0]];
+                    }
+                });
+        },
         async showDetails(id) {
             this.$vs.loading({ color: "#22c22b" });
             await axios
@@ -1293,6 +1471,12 @@ export default {
         },
 
         async reclamationCommande(tr) {
+            this.formDataUpdate.prix_commande = tr.prix_commande;
+            this.formDataUpdate.adresse_client_commande = tr.adresse_client_commande;
+            this.formDataUpdate.id_commande = tr.id_commande;
+            this.formDataUpdate.telephone_client_commande = tr.telephone_client_commande;
+            this.formDataUpdate.nom_client_commande = tr.nom_client_commande;
+            this.formDataUpdate.etat_commande = tr.etat_commande;
             this.formData = tr;
             this.nom_err = '';
             await axios

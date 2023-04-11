@@ -830,7 +830,7 @@ class CommandeController extends Controller
                     ->leftjoinSub($historiquecommandes, 'historiquecommandes', function ($join) {
                         $join->on('commandes.id_commande', '=', 'historiquecommandes.id_commande');
                     })
-                    ->selectRaw('commandes.id_commande,commandes.nom_client_commande,commandes.type_commande,stores.nom_store,clients.company,	
+                    ->selectRaw('commandes.adresse_client_commande,commandes.id_commande,commandes.nom_client_commande,commandes.type_commande,stores.nom_store,clients.company,	
                 commandes.telephone_client_commande,commandes.prix_commande,commandes.etat_commande,commandes.updated_at,villes.nom_ville as ville_client_commande,historiquecommandes.commentaire_commande')
                     ->orderBy('commandes.updated_at', 'desc')
                     ->paginate($_GET['count_nbr']);

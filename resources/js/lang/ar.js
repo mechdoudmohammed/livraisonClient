@@ -219,6 +219,7 @@ let message = {
     Traking:'تتبع',
     Signout:'تسجيل الخروج',
     Profile:'الملف الشخصي',
+    RELANCER:'إعادة التوزيع'
 
 };
 

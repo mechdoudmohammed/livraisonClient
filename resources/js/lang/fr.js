@@ -221,6 +221,7 @@ let message = {
     Traking:'Suivie',
 Signout:'Déconnecter',
 Profile:'Profile',
+RELANCER:'RELANCER',
 };
 
 export default {
