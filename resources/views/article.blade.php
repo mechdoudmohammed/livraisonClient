@@ -84,9 +84,10 @@
                         </td>
                         <td style="width:250px">
 
-                            <p style="font-size: 12px;margin-bottom: 6px;">Statut : @if($key->etat_article=='En stock')
+                            <p style="font-size: 12px;margin-bottom: 6px;">Statut : 
+                            @if($key->etat_article=='En stock')
                             En stock
-                            @else if($key->etat_article=='Processing')
+                            @elseif($key->etat_article=='En traitement')
                             Nouveaux
                             @endif
 

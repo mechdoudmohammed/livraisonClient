@@ -30,7 +30,7 @@
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
             <h4 class="font-weight-normal mb-3">{{$t('message.Delivered_this_month')}} <i
-                class="mdi mdi-chart-line mdi-24px float-right"></i>
+                class="mdi mdi-trending-up mdi-24px float-right"></i>
             </h4>
             <h2 class="mb-5">{{ DELIVERED }} {{$t('message.Order')}}</h2>
             <!-- <h6 class="card-text">Increased by 60%</h6> -->
@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="col-md-3 stretch-card grid-margin">
-        <div class="card bg-gradient-secondary card-img-holder text-white">
+        <div class="card bg-gradient-rate card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
             <h4 class="font-weight-normal mb-3">{{$t('message.Delivery_Rate')}} <i class="mdi mdi-diamond mdi-24px float-right"></i>
@@ -52,7 +52,7 @@
         <div class="card bg-gradient-success card-img-holder text-white">
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
-            <h4 class="font-weight-normal mb-3">{{$t('message.Returned_this_month')}}<i class="mdi mdi-diamond mdi-24px float-right"></i>
+            <h4 class="font-weight-normal mb-3">{{$t('message.Returned_this_month')}}<i class="mdi mdi-reply mdi-24px float-right"></i>
             </h4>
             <h2 class="mb-5">{{ RETURNED }} {{$t('message.Order')}}</h2>
             <!-- <h6 class="card-text">Increased by 5%</h6> -->
@@ -65,7 +65,7 @@
           <div class="card-body">
             <img :src="getImage('images/dashboard/circle.svg')" class="card-img-absolute" alt="circle-image" />
             <h4 class="font-weight-normal mb-3">{{$t('message.COD_this_month')}}<i
-                class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+                class="mdi mdi-currency-usd mdi-24px float-right"></i>
             </h4>
             <h2 class="mb-5">{{ REVENU }} {{$t('message.Dhs')}}</h2>
             <!-- <h6 class="card-text">Decreased by 10%</h6> -->

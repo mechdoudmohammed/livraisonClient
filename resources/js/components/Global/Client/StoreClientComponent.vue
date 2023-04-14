@@ -119,7 +119,7 @@
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="ville_client">{{$t('message.City')}}</label>
+                            <label for="ville_client">{{$t('message.City')}}<span class="text-danger"> *</span></label>
 
                             <v-select :placeholder="$t('message.Please_Select_City')" v-model="formData.ville"
                                 name="ville" :options="villes" label="ville" index="id" />
@@ -128,24 +128,24 @@
 
                         <div class="form-group">
 
-                            <label for="nom_store">{{$t('message.Store_Name')}}</label>
+                            <label for="nom_store">{{$t('message.Store_Name')}}<span class="text-danger"> *</span></label>
                             <input type="text" class="form-control" id="nom_store" v-model='formData.nom_store'
                                 name="nom_store">
                         </div>
                         <div class="form-group">
-                            <label for="siteweb_commande">{{$t('message.WebSite')}}</label>
+                            <label for="siteweb_commande">{{$t('message.WebSite')}}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="siteweb_commande"
                                 v-model='formData.siteweb_store' name="siteweb_commande">
                         </div>
                         <div class="form-group">
-                            <label for="telephone_store">{{$t('message.Phone_Number')}}</label>
+                            <label for="telephone_store">{{$t('message.Phone_Number')}}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="telephone_store"
                                 v-model='formData.telephone_store' name="telephone_store">
                         </div>
                         <div class="form-group">
-                            <label for="adresse_store">{{$t('message.Address')}}</label>
+                            <label for="adresse_store">{{$t('message.Address')}}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="adresse_store" v-model='formData.adresse_store'
                                 name="adresse_store">

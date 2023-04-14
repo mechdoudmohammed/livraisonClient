@@ -241,7 +241,7 @@
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="Type_reclamation">{{$t('message.Type')}}</label>
+                            <label for="Type_reclamation">{{$t('message.Type')}}<span class="text-danger"> *</span></label>
 
                             <select class="form-control" id="Type_reclamation" v-model="formData.Type_reclamation">
                                 <option name="Type_reclamation">{{$t('message.Order')}}</option>
@@ -251,18 +251,18 @@
                         </div>
                         <div class="form-group"
                             v-if="formData.Type_reclamation == $t('message.Order') || formData.Type_reclamation == $t('message.Invoice')">
-                            <label for="id">{{ formData.Type_reclamation }} N°</label>
+                            <label for="id">{{ formData.Type_reclamation }} N° <span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="id" v-model='formData.id' name="id">
                         </div>
                         <div class="form-group">
-                            <label for="object_commande">{{$t('message.Subject')}}</label>
+                            <label for="object_commande">{{$t('message.Subject')}}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="object_commande"
                                 v-model='formData.object_reclamation' name="object_commande">
                         </div>
                         <div class="form-group">
-                            <label for="message_reclamation">{{$t('message.Message')}}</label>
+                            <label for="message_reclamation">{{$t('message.Message')}}<span class="text-danger"> *</span></label>
 
                             <!-- <input type="text" class="form-control" id="message_reclamation"
                                 v-model='formData.message_reclamation' name="message_reclamation"> -->

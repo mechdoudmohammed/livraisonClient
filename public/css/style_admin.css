@@ -16461,10 +16461,14 @@ code {
   background: -webkit-gradient(linear, left top, right top, from(#71c0ff), to(#198ae3)) !important;
   background: linear-gradient(to right, #71c0ff, #198ae3) !important
 }
-
-.bg-gradient-secondary {
+.bg-gradient-rate {
   background: -webkit-gradient(linear, left top, right top, from(#015044), to(#0f9e02)) !important;
   background: linear-gradient(to right, #015044, #0f9e02) !important;
+}
+
+.bg-gradient-secondary {
+  background: -webkit-gradient(linear, left top, right top, from(#198754), to(#00ffd9)) !important;
+  background: linear-gradient(to right, #198754, #00ffd9) !important;
 }
 
 .bg-gradient-success {

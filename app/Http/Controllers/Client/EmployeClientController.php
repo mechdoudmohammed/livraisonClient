@@ -155,15 +155,6 @@ class EmployeClientController extends Controller
         }
     }
 
-
-
-
-
-
-
-
-
-
     public function updateCommande(Request $request)
     {
     }

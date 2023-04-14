@@ -109,7 +109,7 @@
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="nom_article">{{$t('message.Article_Name')}}</label>
+                            <label for="nom_article">{{$t('message.Article_Name')}}<span class="text-danger"> *</span></label>
                             <input type="text" class="form-control" id="nom_article" v-model="formData.nom_article"
                                 name="nom_article">
                         </div>
@@ -119,7 +119,7 @@
                                 name="commentaire">
                         </div>
                         <div class="form-group">
-                            <label for="prix_article">{{$t('message.Price')}}</label>
+                            <label for="prix_article">{{$t('message.Price')}}<span class="text-danger"> *</span></label>
                             <input type="number" class="form-control" id="prix_article" v-model="formData.prix_article"
                                 name="prix_article">
                         </div>

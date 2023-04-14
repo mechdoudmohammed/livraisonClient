@@ -319,7 +319,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="ville_client">{{ $t('message.City') }}</label>
+                            <label for="ville_client">{{ $t('message.City') }}<span class="text-danger"> *</span></label>
 
                             <v-select placeholder="Veuillez-vous selectionner une ville"
                                 v-model="formData.ville_client_commande" name="ville_client" :options="villes" label="ville"
@@ -331,19 +331,19 @@
                                 name="store" :options="stores" label="nom_store" index="id" />
                         </div>
                         <div class="form-group">
-                            <label for="nom_client">{{ $t('message.Name') }}</label>
+                            <label for="nom_client">{{ $t('message.Name') }}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="nom_client" v-model="formData.nom_client_commande"
                                 name="nom_client" />
                         </div>
                         <div class="form-group">
-                            <label for="adresse_client">{{ $t('message.Address') }}</label>
+                            <label for="adresse_client">{{ $t('message.Address') }}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="adresse_client"
                                 v-model="formData.adresse_client_commande" name="adresse_client" />
                         </div>
                         <div class="form-group">
-                            <label for="telephone_client">{{ $t('message.Phone_Number') }}</label>
+                            <label for="telephone_client">{{ $t('message.Phone_Number') }}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="telephone_client"
                                 v-model="formData.telephone_client_commande" name="telephone_client"
@@ -351,7 +351,7 @@
                             <p class="text-danger" id="text-blacklist"></p>
                         </div>
                         <div class="form-group">
-                            <label for="prix_commande">{{ $t('message.Price') }}</label>
+                            <label for="prix_commande">{{ $t('message.Price') }}<span class="text-danger"> *</span></label>
 
                             <input type="text" class="form-control" id="prix_commande" v-model="formData.prix_commande"
                                 name="prix_commande" />

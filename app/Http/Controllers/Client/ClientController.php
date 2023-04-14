@@ -279,7 +279,7 @@ class ClientController extends Controller
             if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
                 $packagesClient = DB::table('commandes')
                     ->join('clients', 'commandes.id_client', '=', 'clients.id')
-                    ->join('packages','packages.id_package','commandes.id_package')
+                    ->join('packages', 'packages.id_package', 'commandes.id_package')
                     ->where(function ($query) use ($user) {
                         $query->where('commandes.id_client', $user->id)
                             ->orwhere('commandes.id_client', $user->superviseur);
@@ -311,64 +311,118 @@ class ClientController extends Controller
             $statut2 = 0;
             $statut = 0;
             if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
-                for ($i = 0; $i < count($request->all()); $i++) {
-
-                    if ($request[$i]['type_commande'] == 'stock' && $request[$i]['etat_commande'] == 'CONFIRMED') {
-                        $statut2 = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                            ->where(function ($query) use ($user) {
+                DB::beginTransaction();
+                if (count($request->all()) > 0) {
+                    for ($i = 0; $i < count($request->all()); $i++) {
+                        if ($request[$i]['type_commande'] == 'stock' && $request[$i]['etat_commande'] == 'CONFIRMED') {
+                            $statut2 =Commande::where(function ($query) use ($user) {
                                 $query->where('commandes.id_client', $user->id)
                                     ->orwhere('commandes.id_client', $user->superviseur);
                             })
-                            ->where('commandes.etat_commande', 'CONFIRMED')
-                            ->where('commandes.id_commande', $request[$i]['id_commande'])
-                            ->update(['etat_commande' => 'PROCESSING']);
+                                ->where('commandes.etat_commande', 'CONFIRMED')
+                                ->where('commandes.id_commande', $request[$i]['id_commande'])
+                                ->update(['etat_commande' => 'PROCESSING']);
+                            HistoriqueCommande::create([
+                                "id_commande" =>  $request[$i]['id_commande'],
+                                "etat_commande" => 'PROCESSING',
+                                "id_client" => $user->id,
+                            ]);
+                        } else if ($request[$i]['type_commande'] == 'ramassage' && $request[$i]['etat_commande'] == 'CONFIRMED') {
+                            $statut =Commande::where(function ($query) use ($user) {
+                                $query->where('commandes.id_client', $user->id)
+                                    ->orwhere('commandes.id_client', $user->superviseur);
+                            })
+                                ->where('commandes.etat_commande', 'CONFIRMED')
+                                ->where('commandes.id_commande', $request[$i]['id_commande'])
+                                ->update(['id_package' => $id_package, 'etat_commande' => 'PICKUP']);
+                            HistoriqueCommande::create([
+                                "id_commande" =>  $request[$i]['id_commande'],
+                                "etat_commande" => 'PICKUP',
+                                "id_client" => $user->id,
+
+                            ]);
+                        }
+                    }
+                    if ($statut == 1 || $statut2 == 1) {
+                        if ($user->role == 'Client') {
+                            HistoriqueRamassage::create([
+                                "id_ville" => $user->id_ville,
+                                "statut_ramassage" => 'pas encour',
+                                "id_client" => $user->id,
+                            ]);
+                        } elseif ($user->role == 'EmployeClient') {
+                            HistoriqueRamassage::create([
+                                "id_ville" => $user->id_ville,
+                                "statut_ramassage" => 'pas encour',
+                                "id_client" => $user->superviseur,
+                            ]);
+                        }
+                    } elseif ($statut == 0 && $statut2 == 0) {
+                        return response()->json([
+                            'message' => 'Erreur'
+                        ]);
+                    }
+                    
+                } else {
+                    $commandesStock = Commande::where(function ($query) use ($user) {
+                        $query->where('commandes.id_client', $user->id)
+                            ->orwhere('commandes.id_client', $user->superviseur);
+                    })
+                        ->where('commandes.etat_commande', 'CONFIRMED')
+                        ->where('commandes.type_commande', 'stock')
+                        ->get();
+                    Commande::where(function ($query) use ($user) {
+                        $query->where('commandes.id_client', $user->id)
+                            ->orwhere('commandes.id_client', $user->superviseur);
+                    })
+                        ->where('commandes.etat_commande', 'CONFIRMED')
+                        ->where('commandes.type_commande', 'stock')
+                        ->update(['etat_commande' => 'PROCESSING']);
+
+                    foreach ($commandesStock as $commande) {
                         HistoriqueCommande::create([
-                            "id_commande" =>  $request[$i]['id_commande'],
+                            "id_commande" =>  $commande->id_commande,
                             "etat_commande" => 'PROCESSING',
                             "id_client" => $user->id,
                         ]);
-                    } else if ($request[$i]['type_commande'] == 'ramassage' && $request[$i]['etat_commande'] == 'CONFIRMED') {
+                    }
 
-                        $statut = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                            ->where(function ($query) use ($user) {
-                                $query->where('commandes.id_client', $user->id)
-                                    ->orwhere('commandes.id_client', $user->superviseur);
-                            })
-                            ->where('commandes.etat_commande', 'CONFIRMED')
-                            ->where('commandes.id_commande', $request[$i]['id_commande'])
-                            ->update(['id_package' => $id_package, 'etat_commande' => 'PICKUP']);
+                    $commandesRamassage = Commande::where(function ($query) use ($user) {
+                        $query->where('commandes.id_client', $user->id)
+                            ->orwhere('commandes.id_client', $user->superviseur);
+                    })
+                        ->where('commandes.etat_commande', 'CONFIRMED')
+                        ->where('commandes.type_commande', 'ramassage')
+                        ->get();
+
+                    Commande::where(function ($query) use ($user) {
+                        $query->where('commandes.id_client', $user->id)
+                            ->orwhere('commandes.id_client', $user->superviseur);
+                    })
+                        ->where('commandes.etat_commande', 'CONFIRMED')
+                        ->where('commandes.type_commande', 'ramassage')
+                        ->update(['id_package' => $id_package, 'etat_commande' => 'PICKUP']);
+
+                    foreach ($commandesRamassage as $commande) {
                         HistoriqueCommande::create([
-                            "id_commande" =>  $request[$i]['id_commande'],
+                            "id_commande" =>  $commande->id_commande,
                             "etat_commande" => 'PICKUP',
                             "id_client" => $user->id,
+                        ]);
+                    }
 
+                    if (count($commandesRamassage) == 0 && count($commandesStock) == 0) {
+                        return response()->json([
+                            'message' => 'Erreur'
                         ]);
                     }
                 }
             }
-            if ($statut == 1 || $statut2 == 1) {
-                if ($user->role == 'Client') {
-                    HistoriqueRamassage::create([
-                        "id_ville" => $user->id_ville,
-                        "statut_ramassage" => 'pas encour',
-                        "id_client" => $user->id,
-                    ]);
-                } elseif ($user->role == 'EmployeClient') {
-                    HistoriqueRamassage::create([
-                        "id_ville" => $user->id_ville,
-                        "statut_ramassage" => 'pas encour',
-                        "id_client" => $user->superviseur,
-                    ]);
-                }
+            DB::commit();
+            return response()->json([
 
-                return response()->json([
-                    'message' => 'commande created successfully'
-                ]);
-            } elseif ($statut == 0 && $statut2 == 0) {
-                return response()->json([
-                    'message' => 'Erreur'
-                ]);
-            }
+                'message' => 'commande created successfully'
+            ]);
         } catch (Throwable $e) {
             return response()->json([
                 'message' => 'Erreur'
@@ -645,7 +699,7 @@ class ClientController extends Controller
                 'email' => 'required|unique:clients,email,' . $request->selected_employe,
 
             ]);
-            $client = Client::where('id', $request->selected_employe)->where('superviseur',$user->id)->first();
+            $client = Client::where('id', $request->selected_employe)->where('superviseur', $user->id)->first();
 
 
             $client->nom = $request->nom;

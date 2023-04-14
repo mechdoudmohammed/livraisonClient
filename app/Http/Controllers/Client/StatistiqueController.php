@@ -184,18 +184,16 @@ class StatistiqueController extends Controller
 
             $colisTauxLivraison = DB::table("commandes")
                 ->where('id_client', $user->id)
-                ->whereNotIn('etat_commande', ['CREATED', 'CONFIRMED', 'PROCESSING', 'PICKUP'])
+                ->whereNotIn('etat_commande', ['CREATED', 'CONFIRMED', 'PROCESSING', 'PICKUP','DELIVERED'])
                 ->where('updated_at', '>', $date_debut)
                 ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
+
             $tauxLivraison = 0;
             if ($colisTauxLivraison->nbrColis != 0) {
                 $tauxLivraison = ($deliverdCommande->nbrColis * 100) / $colisTauxLivraison->nbrColis;
-            }
-
-          
-
+            }       
             $colisFacture = DB::table("commandes")
                 ->where('id_client', $user->id)
                 ->whereIn('etat_commande', ['DELIVERED'])
@@ -204,15 +202,12 @@ class StatistiqueController extends Controller
                 ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")
                 ->first();
-            $nbrFacture = DB::table("commandes")
-                ->join('factures', 'commandes.id_facture', 'factures.id_facture')
-                ->where('commandes.id_client', $user->id)
-                ->where('factures.updated_at', '>', $date_debut)
-                ->where('factures.updated_at', '<', $date_fin)
-                ->groupBy('commandes.id_facture')
-                ->selectRaw("count(distinct commandes.id_facture) as nbrFacture")
+            $nbrFacture = DB::table("factures")
+                ->where('factures.id_client', $user->id)
+                ->where('factures.created_at', '>', $date_debut)
+                ->where('factures.created_at', '<', $date_fin)
+                ->selectRaw("count(factures.id_facture) as nbrFacture")
                 ->first();
-
             if (!$nbrFacture) {
                 $nbrFacture['nbrFacture'] = 0;
             }
