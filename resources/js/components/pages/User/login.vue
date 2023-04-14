@@ -27,12 +27,12 @@
                 <form action="#" class="signin-form">
                   <div class="form-group mb-3">
                     <label class="label" for="name">Username</label>
-                    <input type="text" class="form-control" placeholder="Username" v-model="formData.email" required>
+                    <input type="text" class="form-control" placeholder="Username" v-model="formData.email" required @keydown.enter="login">
                   </div>
                   <div class="form-group mb-3">
                     <label class="label" for="password">Password</label>
                     <input type="password" class="form-control" placeholder="Password" v-model="formData.password"
-                      required>
+                      required @keydown.enter="login">
                   </div>
                   <div class="form-group">
                     <button type="button" class="form-control btn btn-primary submit px-3" @click="login">Sign

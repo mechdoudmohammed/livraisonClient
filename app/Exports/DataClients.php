@@ -29,10 +29,22 @@ class DataClients implements FromQuery, WithHeadings, WithColumnWidths, WithStyl
 
     public function query()
     {
-        return Commande::query()
-            ->selectRaw('commandes.nom_client_commande,commandes.adresse_client_commande,commandes.telephone_client_commande,villes.nom_ville,count(commandes.id_commande),commandes.etat_commande')
+        // return Commande::query()
+        //     ->selectRaw('commandes.nom_client_commande,commandes.adresse_client_commande,commandes.telephone_client_commande,villes.nom_ville,count(commandes.id_commande),commandes.etat_commande')
+        //     ->join('villes', 'villes.id', 'commandes.id_ville')
+        //     ->groupby('commandes.nom_client_commande')
+        //     ->where('commandes.id_client', $this->id);
+            return Commande::query()
+            ->selectRaw('commandes.nom_client_commande, commandes.adresse_client_commande, commandes.telephone_client_commande, villes.nom_ville, count(commandes.id_commande), 
+                        CASE 
+                            WHEN commandes.etat_commande = "RETURNEDLV" THEN "RETURNED" 
+                            WHEN commandes.etat_commande = "RETURNEDEV" THEN "RETURNED" 
+                            WHEN commandes.etat_commande = "RETURNEDRR" THEN "RETURNED" 
+                            WHEN commandes.etat_commande = "RETURNEDAG" THEN "RETURNED" 
+                            ELSE commandes.etat_commande 
+                        END as etat_commande')
             ->join('villes', 'villes.id', 'commandes.id_ville')
-            ->groupby('commandes.nom_client_commande')
+            ->groupBy('commandes.nom_client_commande')
             ->where('commandes.id_client', $this->id);
     }
     public function headings(): array
@@ -43,10 +55,11 @@ class DataClients implements FromQuery, WithHeadings, WithColumnWidths, WithStyl
     {
         return [
             'A' => 25,
-            'B' => 20,
-            'C' => 25,
-            'D' => 25,
+            'B' => 30,
+            'C' => 20,
+            'D' => 20,
             'E' => 25,
+            'F' => 25,
 
         ];
     }
