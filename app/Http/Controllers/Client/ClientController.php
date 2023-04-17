@@ -405,6 +405,21 @@ class ClientController extends Controller
                             "id_client" => $user->id,
                         ]);
                     }
+                    if(count($commandesRamassage)>0){
+                        if ($user->role == 'Client') {
+                            HistoriqueRamassage::create([
+                                "id_ville" => $user->id_ville,
+                                "statut_ramassage" => 'pas encour',
+                                "id_client" => $user->id,
+                            ]);
+                        } elseif ($user->role == 'EmployeClient') {
+                            HistoriqueRamassage::create([
+                                "id_ville" => $user->id_ville,
+                                "statut_ramassage" => 'pas encour',
+                                "id_client" => $user->superviseur,
+                            ]);
+                        }
+                    }
 
                     if (count($commandesRamassage) == 0 && count($commandesStock) == 0) {
                         return response()->json([

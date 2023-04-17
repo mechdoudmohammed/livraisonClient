@@ -18,7 +18,7 @@ let message = {
     Paid: "Payé",
     NotPaid: "Non payé",
     Invoiced: "Facturé",
-    Add_Order: "Ajouter une commande",
+    Add_Order: "Ajouter commande",
     Edit_Order: "Modifier la commande",
     Quantity_available: "Quantité disponible",
     Address: "Adresse",
