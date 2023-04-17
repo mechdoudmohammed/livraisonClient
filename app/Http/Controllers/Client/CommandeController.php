@@ -689,7 +689,7 @@ class CommandeController extends Controller
                     ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
                     ->where('commandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('historiquefactures.statut_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
+                    ->select('historiquefactures.statut_facture','historiquefactures.id_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
                     ->orderBy('historiquefactures.updated_at', 'asc')
                     ->get();
 
@@ -856,12 +856,11 @@ class CommandeController extends Controller
                         ->where('id_bon_retour_client', 'LIKE', "%$request->valeur_recherche%")
                         ->paginate($_GET['count_nbr']);
                 } else if ($request->selected_option == 'id_commande' && $request->valeur_recherche != '') {
-
                     $commandes = DB::table('bonretourclients')
                         ->join('commandes', 'commandes.id_bon_retour_client', 'bonretourclients.id_bon_retour_client')
-                        ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
-                        ->where('id_client', $user->id)
-
+                        ->selectRaw('bonretourclients.id_bon_retour_client,bonretourclients.statut_bonRetourClient,bonretourclients.nbrColis_bonRetourClient,bonretourclients.updated_at')
+                        ->where('bonretourclients.id_client', $user->id)
+                        ->where('commandes.id_commande', 'LIKE', "%$request->valeur_recherche%")
                         ->paginate($_GET['count_nbr']);
                 } else {
                     $commandes = DB::table('bonretourclients')
@@ -876,7 +875,7 @@ class CommandeController extends Controller
             }
         } catch (Throwable $e) {
             return response()->json([
-                'message' => 'Erreur'
+                'message' => 'Erreur'.$e
             ]);
         }
     }

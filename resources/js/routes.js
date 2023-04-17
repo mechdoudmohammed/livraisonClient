@@ -5,7 +5,7 @@ import inscription from "./components/pages/User/inscription.vue";
 import waitVerification from "./components/pages/User/waitVerification.vue";
 import successVerification from "./components/pages/User/successVerification.vue";
 import dashboardClient from "./components/Global/Client/dashboardClient.vue";
-
+import passwordReset from "./components/pages/User/passwordReset.vue";
 /* fin Client importaion */
 
 import error404 from "./components/Global/Errors/Errors404Component.vue";
@@ -275,6 +275,13 @@ let routes = [
         name: "successVerification",
         path: "/email/verify/success",
         component: successVerification,
+    },
+
+    {
+        path: "/passwordReset",
+        name: "passwordReset",
+       
+        component: passwordReset,
     },
     //========Fin Client routes===============//
 ];

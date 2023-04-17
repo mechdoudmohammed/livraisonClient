@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\VerifyEmail;
 
-class Client extends Authenticatable implements MustVerifyEmail
+class Client extends Authenticatable implements MustVerifyEmail 
 {
     protected $table = 'clients';
     use HasApiTokens, HasFactory, Notifiable;

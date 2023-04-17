@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -119,11 +120,18 @@ Route::middleware(['auth:client'])
         Route::get('getBonRetour/{id}', 'Client\CommandeController@getBonRetourClient');
         Route::get('getCountDMsuivie', 'Client\NotificationController@getCountDMsuivie');
         Route::get('StatusToPrint/{id}', 'Client\CommandeController@changeStatusToPrint');
+
         
     });
 
+    Route::post('forgot-password','Client\ClientController@forgotPassword' )->middleware('guest');
+
+    Route::post('resetPassword','Client\ClientController@reset' )->middleware('guest');
 
 
+    // Route::get('/reset-password/{token}', function (string $token) {
+    //     return view('auth.reset-password', ['token' => $token]);
+    // })->middleware('guest')->name('password.reset');
 
 
 //---------------Other---------------

@@ -16,6 +16,7 @@ use App\Models\Message;
 use App\Models\Notification;
 use App\Models\Package;
 use App\Models\Reclamation;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Password;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
@@ -99,11 +101,9 @@ class ClientController extends Controller
                     'adresse' => 'required|String',
                     'company' => 'required|String',
                     'website' => 'required|String',
-
                     'ribBank' => 'required|String',
                     'email' => 'required|max:150|unique:clients,email,' . $user->id,
                     'telephone' => 'required|regex:/(0)[0-9]{9}$/',
-
                 ]);
             } else {
                 $this->validate($request, [
@@ -116,24 +116,19 @@ class ClientController extends Controller
                     'ribBank' => 'required|String',
                     'email' => 'required|max:150|unique:clients,email,' . $user->id,
                     'telephone' => 'required|regex:/(0)[0-9]{9}$/',
-
                 ]);
                 $client->nom = $request->nom;
                 $client->prenom = $request->prenom;
                 $client->cin = $request->cin;
+                $client->email = $request->email;
             }
             $client->notification_statut = $request->notification_statut;
-
             $client->adresse = $request->adresse;
             $client->telephone = $request->telephone;
-            $client->email = $request->email;
             $client->company = $request->company;
             $client->website = $request->website;
-
             $client->ribBank = $request->ribBank;
             $client->id_bank = $request->id_bank;
-
-
             $client->save();
             return response()->json([
                 'message' => 'Client update successfully'
@@ -735,4 +730,75 @@ class ClientController extends Controller
             }
         }
     }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $status = Password::broker('clients')->sendResetLink($request->only('email'),null,'client');
+        
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return [
+                'status' => __($status)
+            ];
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+    }
+
+    public function reset(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (Client $user, string $password) {
+                
+                $user->forceFill(['password' => Hash::make($password)])->setRememberToken(Str::random(60));
+                $user->save();
+     
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status == Password::PASSWORD_RESET) {
+            return response([
+                'message'=> 'Password reset successfully'
+            ]);
+        }
+
+        return response([
+            'message'=> __($status)
+        ], 500);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

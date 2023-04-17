@@ -138,13 +138,9 @@
 
 
                     <vs-td :data="tr.statut_facture">
-                      <b class="badge badge badge-gradient-danger" v-if="tr.statut_facture == 'NOTPAID'">{{
-                        tr.statut_facture
-                      }}</b>
+                      <b class="badge badge badge-gradient-danger" v-if="tr.statut_facture == 'NOTPAID'">{{ $t('message.NotPaid') }}</b>
 
-                      <b class="badge badge badge-gradient-success" v-if="tr.statut_facture == 'PAID'">{{
-                        tr.statut_facture
-                      }}</b>
+                      <b class="badge badge badge-gradient-success" v-if="tr.statut_facture == 'PAID'">{{ $t('message.Paid') }}</b>
                     </vs-td>
                     <vs-td>
                       <button type="button" class="btn btn-valide"

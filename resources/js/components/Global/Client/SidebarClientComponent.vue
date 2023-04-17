@@ -5,7 +5,7 @@
       <ul class="nav">
         <li class="nav-item nav-profile">
           <router-link to="/profile">
-            <a class="nav-link">
+            <a class="nav-link" @click="hideMenu">
               <div class="nav-profile-image">
                 <img src="images/profile/profile.jpg" alt="profile">
                 <span class="login-status online"></span>

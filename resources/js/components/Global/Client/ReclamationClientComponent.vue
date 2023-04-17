@@ -275,10 +275,11 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click.prevent="addReclamation">{{$t('message.Report')}}</button>
-
                         <button type="button" id="btn_cancel" class="btn btn-secondary"
                             data-bs-dismiss="modal"><i class="fa fa-times"></i></button>
+                        <button type="button" class="btn btn-primary" @click.prevent="addReclamation">{{$t('message.Report')}}</button>
+
+                  
 
                     </div>
                 </div>
@@ -408,22 +409,30 @@ export default {
 
                 .then(res => {
                     console.log(res.data.data['id_commande'])
-                    var text = "<table class='table table-borderless' style='text-align: left;'>" +
-                        "<tr><td><b>Subject:</b></td></tr><tr><td>" + res.data.data['object_reclamation'];
+                    var text = "<table id='info-table' class='table table-borderless' style='text-align: left;'>" +
+                        "<tr><td><b>"+this.$t('message.Subject')+" :</b></td></tr><tr><td>" + res.data.data['object_reclamation'];
                     if (res.data.data['id_commande'] != null) {
-                        text += "<tr><td><b>Id Commande</b></td></tr><tr><td>" + res.data.data['id_commande']
+                        text += "<tr><td><b>"+this.$t('message.Order_id')+" :</b></td></tr><tr><td>" + res.data.data['id_commande']
+                    }
+                    if (res.data.data['id_facture'] != null) {
+                        text += "<tr><td><b>"+this.$t('message.Invoice_id')+" :</b></td></tr><tr><td>" + res.data.data['id_facture']
                     }
 
 
                     Swal.fire({
-                        title: 'Reclamation N°: ' + res.data.data['id_reclamation'],
+                        title: this.$t('message.Claim')+'<br>'+ res.data.data['id_reclamation'],
                         html: text,
                         showCancelButton: false,
+                        
                     })
 
 
                 })
-                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());;
+                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
+                if (this.locale == 'ar') {
+                document.getElementById("info-table").setAttribute("dir", "rtl");
+                document.getElementById("info-table").style.textAlign = 'right';
+            }
         },
 
         async showChat(id, statut_reclamation) {

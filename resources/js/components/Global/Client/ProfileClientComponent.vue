@@ -95,13 +95,13 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          <label class="form-control-label" for="input-email">{{$t('message.Email')}}</label>
-                          <input type="email" class="form-control form-control-alternative" v-model="Client.email">
+                          <label class="form-control-label" for="input-email">{{$t('message.Email')}}<span class="text-danger"> *</span></label>
+                          <input type="email" class="form-control form-control-alternative disableChamps" v-model="Client.email">
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-first-name">{{$t('message.Phone_Number')}}</label>
+                          <label class="form-control-label" for="input-first-name">{{$t('message.Phone_Number')}}<span class="text-danger"> *</span></label>
                           <input type="text" class="form-control form-control-alternative" v-model="Client.telephone">
                         </div>
                       </div>
@@ -109,14 +109,14 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-first-name">{{$t('message.Last_name')}}</label>
+                          <label class="form-control-label" for="input-first-name">{{$t('message.Last_name')}}<span class="text-danger"> *</span></label>
                           <input type="text" class="form-control form-control-alternative disableChamps"
                             v-model="Client.nom">
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-last-name">{{$t('message.First_name')}}</label>
+                          <label class="form-control-label" for="input-last-name">{{$t('message.First_name')}}<span class="text-danger"> *</span></label>
                           <input type="text" class="form-control form-control-alternative disableChamps"
                             v-model="Client.prenom">
                         </div>
@@ -125,7 +125,7 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          <label class="form-control-label" for="input-email">{{$t('message.CIN')}}</label>
+                          <label class="form-control-label" for="input-email">{{$t('message.CIN')}}<span class="text-danger"> *</span></label>
                           <input type="text" class="form-control form-control-alternative disableChamps"
                             v-model="Client.cin">
                         </div>
@@ -142,7 +142,7 @@
                     <div class="row">
                       <div class="col-md-8">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-address">{{$t('message.RibBank')}}</label>
+                          <label class="form-control-label" for="input-address">{{$t('message.RibBank')}}<span class="text-danger"> *</span></label>
                           <input id="input-address" class="form-control form-control-alternative" type="text"
                             v-model="Client.ribBank">
                         </div>
@@ -158,7 +158,7 @@
 
                       <div class="col-lg-4" v-if="Client.role == 'Client'">
                         <div class="form-group">
-                          <label for="id_bank">bankName</label>
+                          <label for="id_bank">{{$t('message.BankName')}}<span class="text-danger"> *</span></label>
                           <span class="text-danger"></span>
                           <select class="form-control" id="id_bank" v-model="Client.id_bank">
                             <option name="id_bank" :value="bank.id_bank" v-for="bank in banks">{{ bank.nomBank }}
@@ -172,26 +172,26 @@
                   </div>
                   <hr class="my-4">
                   <!-- Address -->
-                  <h6 class="heading-small text-muted mb-4" v-if="Client.role == 'Client'">{{$t('message.Company_Information')}}</h6>
+                  <h6 class="heading-small text-muted mb-4" v-if="Client.role == 'Client'">{{$t('message.Company_Information')}}<span class="text-danger"> *</span></h6>
                   <div class="pl-lg-4" v-if="Client.role == 'Client'">
                     <div class="row">
                       <div class="col-lg-4">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-city2">{{$t('message.Company')}}</label>
+                          <label class="form-control-label" for="input-city2">{{$t('message.Company')}}<span class="text-danger"> *</span></label>
                           <input type="text" id="input-city2" class="form-control form-control-alternative"
                             v-model="Client.company">
                         </div>
                       </div>
                       <div class="col-lg-4">
                         <div class="form-group focused">
-                          <label class="form-control-label" for="input-country">{{$t('message.WebSite')}}</label>
+                          <label class="form-control-label" for="input-country">{{$t('message.WebSite')}}<span class="text-danger"> *</span></label>
                           <input type="text" id="input-country" class="form-control form-control-alternative"
                             v-model="Client.website">
                         </div>
                       </div>
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label class="form-control-label" for="input-country">{{$t('message.Address')}}</label>
+                          <label class="form-control-label" for="input-country">{{$t('message.Address')}}<span class="text-danger"> *</span></label>
                           <input type="text" id="input-postal-code" class="form-control form-control-alternative"
                             v-model="Client.adresse">
                         </div>
@@ -254,7 +254,7 @@ export default {
           }
           setTimeout(() => {
             location.reload();
-          }, 800);
+          }, 2000);
         })
         .catch(error => {
           if (error.response.status === 422) {
@@ -358,7 +358,9 @@ export default {
 .card.card-profile.shadow {
   height: 97.5%;
 }
-
+.disableChamps{
+  pointer-events:none;
+}
 .activer-stock {
   justify-content: flex-end;
   align-items: center;

@@ -90,7 +90,9 @@ class ReclamationController extends Controller
                         ]);
                     }
                 } else if ($request->Type_reclamation == 'Invoice') {
-                    $facture = Facture::where('factures.id_facture', $request->id)->join('commandes', 'commandes.id_facture', 'factures.id_facture')->where('commandes.id_client', $user->id)->first();
+                    $facture = Facture::where('factures.id_facture', $request->id)
+                    ->where('factures.id_client', $user->id)
+                    ->first();
 
                     if ($facture && $request->id == $facture->id_facture) {
                         $id_facture = $request->id;

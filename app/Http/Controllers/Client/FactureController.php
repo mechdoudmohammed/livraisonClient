@@ -20,17 +20,32 @@ class FactureController extends Controller
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
                 if ($request->selected_option == "id_facture" && $request->valeur_recherche != '') {
-                    $clients = DB::table('clients')
-                        ->join('commandes', 'commandes.id_client', '=', 'clients.id')
-                        ->join('factures', 'factures.id_facture', '=', 'commandes.id_facture')
+
+                        $clients = DB::table('factures')
+                        ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
+                        ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')
                         ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
-                        ->where('commandes.id_client', $user->id)
+                        ->where('factures.id_client', $user->id)
                         ->where('factures.id_facture', 'LIKE', "%{$request->valeur_recherche}%")
                         ->groupBy('factures.id_facture')
                         ->orderBy('factures.updated_at', 'desc')
-                        ->selectRaw('factures.updated_at,count(commandes.id_commande) as nombre_commande,factures.statut_facture,clients.id as id_client,clients.username,factures.id_facture')
+                        ->selectRaw('factures.updated_at,factures.type_facture,factures.total_facture,factures.frais_livraison_facture,count(factures.id_facture) as nombre_commande,factures.statut_facture,factures.id_facture')
                         ->paginate($_GET['count_nbr']);
-                } else {
+                }
+                else if ($request->selected_option == "id_commande" && $request->valeur_recherche != '') {
+
+                    $clients = DB::table('factures')
+                    ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
+                    ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')
+                    ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
+                    ->where('factures.id_client', $user->id)
+                    ->where('commandes.id_commande', 'LIKE', "%{$request->valeur_recherche}%")
+                    ->groupBy('factures.id_facture')
+                    ->orderBy('factures.updated_at', 'desc')
+                    ->selectRaw('factures.updated_at,factures.type_facture,factures.total_facture,factures.frais_livraison_facture,count(factures.id_facture) as nombre_commande,factures.statut_facture,factures.id_facture')
+                    ->paginate($_GET['count_nbr']);
+            }
+                else {
                     $clients = DB::table('factures')
                         ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
                         ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')

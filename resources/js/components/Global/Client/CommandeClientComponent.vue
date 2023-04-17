@@ -137,61 +137,64 @@
                                     </vs-td>
                                     <vs-td :data="tr.etat_commande">
                                         <b class="badge badge badge-gradient-secondary"
-                                            v-if="tr.etat_commande == 'CREATED'">{{ $t('message.CREATED')}}</b>
-                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'CONFIRMED'">{{ $t('message.CONFIRMED')}}</b>
+                                            v-if="tr.etat_commande == 'CREATED'">{{ $t('message.CREATED') }}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'CONFIRMED'">{{
+                                            $t('message.CONFIRMED') }}</b>
                                         <b class="badge badge badge-gradient-secondary"
-                                            v-if="tr.etat_commande == 'PICKUP'">{{ $t('message.PICKUP')}}</b>
+                                            v-if="tr.etat_commande == 'PICKUP'">{{ $t('message.PICKUP') }}</b>
                                         <b class="badge badge badge-gradient-secondary"
-                                            v-if="tr.etat_commande == 'PROCESSING'">{{ $t('message.PROCESSING')}}</b>
+                                            v-if="tr.etat_commande == 'PROCESSING'">{{ $t('message.PROCESSING') }}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'HOME'">{{
+                                            $t('message.HOME') }}</b>
                                         <b class="badge badge badge-gradient-info"
-                                            v-if="tr.etat_commande == 'HOME'">{{ $t('message.HOME')}}</b>
-                                        <b class="badge badge badge-gradient-info"
-                                            v-if="tr.etat_commande == 'CHANGERPRIX'">{{ $t('message.CHANGEPRIX')}}</b>
-                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'INHOUSE'">{{ $t('message.INHOUSE')}}</b>
+                                            v-if="tr.etat_commande == 'CHANGERPRIX'">{{ $t('message.CHANGEPRIX') }}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'INHOUSE'">{{
+                                            $t('message.INHOUSE') }}</b>
                                         <b class="badge badge badge-gradient-primary"
-                                            v-if="tr.etat_commande == 'ENROUTE'">{{ $t('message.ENROUTE')}}</b>
+                                            v-if="tr.etat_commande == 'ENROUTE'">{{ $t('message.ENROUTE') }}</b>
                                         <b class="badge badge badge-gradient-primary"
-                                            v-if="tr.etat_commande == 'RAMASSER'">{{ $t('message.RAMASSER')}}</b>
+                                            v-if="tr.etat_commande == 'RAMASSER'">{{ $t('message.RAMASSER') }}</b>
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'TRANSIT'">{{
                                             tr.etat_commande }}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'NOREPONSE'">NO REP + SMS</b>
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'REPORTED'">{{
                                             tr.etat_commande }}</b>
-              <b class="badge badge badge-gradient-warning"
+                                        <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDLV'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDLV')}}</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDLV') }}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDAG'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDAG')}}</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDAG') }}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDEV'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDEV')}}</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDEV') }}</b>
                                         <b class="badge badge badge-gradient-warning"
                                             v-if="tr.etat_commande == 'RETURNEDRR'" data-toggle="tooltip"
-                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDRR')}}</b>
+                                            title="Retours envoye vers agence">{{ $t('message.RETURNEDRR') }}</b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'RETURNED'">{{ $t('message.RETURNED')}}</b>
+                                            v-if="tr.etat_commande == 'RETURNED'">{{ $t('message.RETURNED') }}</b>
 
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'ASSIGN'">{{
-                                            tr.etat_commande }}</b>
+                                            $t('message.ASSIGN') }}</b>
                                         <b class="badge badge badge-gradient-success"
-                                            v-if="tr.etat_commande == 'DELIVERED'">{{ $t('message.DELIVERED')}}</b>
+                                            v-if="tr.etat_commande == 'DELIVERED'">{{ $t('message.DELIVERED') }}</b>
 
 
                                         <b class="badge badge badge-gradient-danger"
-                                            v-if="tr.etat_commande == 'CANCELED'">{{ $t('message.CANCELED')}}</b>
-                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'DMSUIVIE'">{{ $t('message.DMSUIVIE')}}</b>
+                                            v-if="tr.etat_commande == 'CANCELED'">{{ $t('message.CANCELED') }}</b>
+                                        <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'DMSUIVIE'">{{
+                                            $t('message.DMSUIVIE') }}</b>
                                         <b class="badge badge badge-gradient-danger"
                                             v-if="tr.etat_commande == 'ARCHIVED'">{{ tr.etat_commande }}</b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'ANNULER'">{{ $t('message.ANNULER')}}
+                                            v-if="tr.etat_commande == 'ANNULER'">{{ $t('message.ANNULER') }}
                                         </b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'ANNULER_CL'">{{ $t('message.ANNULER')}}
+                                            v-if="tr.etat_commande == 'ANNULER_CL'">{{ $t('message.ANNULER') }}
                                         </b>
                                         <b class="badge badge badge-gradient-warning"
-                                            v-if="tr.etat_commande == 'RELANCER'">{{ $t('message.RELANCER')}}</b>
+                                            v-if="tr.etat_commande == 'RELANCER'">{{ $t('message.RELANCER') }}</b>
                                     </vs-td>
                                     <vs-td v-if="Client.role == 'Client'">
                                         <button class="badge badge badge-gradient-success"
@@ -337,13 +340,15 @@
                                 name="nom_client" />
                         </div>
                         <div class="form-group">
-                            <label for="adresse_client">{{ $t('message.Address') }}<span class="text-danger"> *</span></label>
+                            <label for="adresse_client">{{ $t('message.Address') }}<span class="text-danger">
+                                    *</span></label>
 
                             <input type="text" class="form-control" id="adresse_client"
                                 v-model="formData.adresse_client_commande" name="adresse_client" />
                         </div>
                         <div class="form-group">
-                            <label for="telephone_client">{{ $t('message.Phone_Number') }}<span class="text-danger"> *</span></label>
+                            <label for="telephone_client">{{ $t('message.Phone_Number') }}<span class="text-danger">
+                                    *</span></label>
 
                             <input type="text" class="form-control" id="telephone_client"
                                 v-model="formData.telephone_client_commande" name="telephone_client"
@@ -653,7 +658,7 @@
                                                         </b>
                                                     </div>
 
-                 
+
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande == 'COMMENTAIRE'">
                                                         <span class="commentaireCommande">{{ hCommande.commentaire_commande
@@ -1039,9 +1044,12 @@
                                                             hCommande.username ==
                                                             null
                                                         ">Service Facturation</b>
-                                                        <b v-else-if="
-                                                            hCommande.username !=
-                                                            null">{{ hCommande.username }}</b>
+                                                        <br>
+                                                        <b v-if="hCommande.username != null">{{ hCommande.username }}</b>
+                                                        <span v-if="hCommande.id_facture != null">
+                                                            {{ $t('message.Invoice_id') }}:
+                                                            <b>{{ hCommande.id_facture }}</b>
+                                                        </span>
                                                         <br />{{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
@@ -1359,9 +1367,9 @@ export default {
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: '#08ab5f',
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: this.$t('message.Yes_I_Confirme'),
-                    cancelButtonText: this.$t('message.Cancel')
+                cancelButtonColor: "#d33",
+                confirmButtonText: this.$t('message.Yes_I_Confirme'),
+                cancelButtonText: this.$t('message.Cancel')
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     this.$vs.loading({ color: "#22c22b" });
@@ -1391,8 +1399,8 @@ export default {
                 .then((res) => {
                     this.commande = res.data.data;
                     var text =
-                        "<table class='table table-borderless' style='text-align: left;'>" +
-                        "<tr><td colspan='2'><b>" + this.$t('message.Original') + "</b></td></tr>";
+                        "<table class='table table-borderless' id='info-table' style='text-align: left;'>" +
+                        "<tr><td><b>" + this.$t('message.Original') + "</b></td></tr>";
 
                     if (res.data.data.nom_store != null) {
                         text +=
@@ -1418,7 +1426,7 @@ export default {
                     }
 
                     text +=
-                        "<tr><td colspan='2'><b>" + this.$t('message.Destination') + "</b></td></tr>" +
+                        "<tr><td><b>" + this.$t('message.Destination') + "</b></td></tr>" +
                         "</td></tr><tr><td>" + this.$t('message.Order_id') + " :</td><td>" +
                         this.commande.id_commande +
                         "</td></tr>";
@@ -1440,9 +1448,9 @@ export default {
                         this.commande.telephone_client_commande +
                         "</td></tr>";
                     text +=
-                        "</td></tr><tr><td>" + this.$t('message.Price') + " :<b> </b></td><td>" +
-                        this.commande.prix_commande +
-                        " Dhs </td></tr>";
+                        "</td></tr><tr><td>" + this.$t('message.Price') + " :<b> </b></td><td> " +
+                        this.commande.prix_commande +' '+ this.$t('message.Dhs') +
+                        " </td></tr>";
 
 
 
@@ -1476,6 +1484,10 @@ export default {
                 })
                 .catch((error) => console.log(res))
                 .finally(() => this.$vs.loading.close());
+            if (this.locale == 'ar') {
+                document.getElementById("info-table").setAttribute("dir", "rtl");
+                document.getElementById("info-table").style.textAlign = 'right';
+            }
         },
         async chercher(count_nbr) {
             if (this.formDataCherche2.selected_option2 != "") {

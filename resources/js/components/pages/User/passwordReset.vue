@@ -1,12 +1,12 @@
-<template>
-  <div>
 
+<template>
+  <div class="main-container">
     <section class="ftco-section">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6 text-center mb-5">
-            <a class="heading-section" href="/"><img src="/images/logoFiles.png" alt="Company logo"
-                style="width: 35%; max-width: 300px" /></a>
+            <a class="heading-section" href="/"><img src="/images/whiteLogo.png" alt="Company logo"
+                style="width: 60%; max-width: 300px" /></a>
           </div>
         </div>
         <div class="row justify-content-center">
@@ -16,41 +16,24 @@
 
               </div>
               <div class="login-wrap p-4 p-lg-5">
-                <div class="d-flex">
-                  <div class="w-100">
-                    <h3 class="mb-4">Sign In</h3>
-                  </div>
 
-                </div>
-                <div class="alert alert-danger" role="alert" v-if="nom_err">
-                  {{ nom_err[0] }}
-                </div>
+
                 <form action="#" class="signin-form">
-                  <div class="form-group mb-3">
-                    <label class="label" for="name">Username</label>
-                    <input type="text" class="form-control" placeholder="Username" v-model="formData.email" required
-                      @keydown.enter="login">
-                  </div>
+                  <img src="images/shild.png" class="shildImg" />
                   <div class="form-group mb-3">
                     <label class="label" for="password">Password</label>
-                    <input type="password" class="form-control" placeholder="Password" v-model="formData.password"
-                      required @keydown.enter="login">
+                    <input type="password" class="form-control" placeholder="Password" v-model="password">
                   </div>
+                  <div class="form-group mb-3">
+                    <label class="label" for="password">Confirmed Password</label>
+                    <input type="password" class="form-control" placeholder="Password" v-model="passwordConfirmation">
+                  </div>
+
                   <div class="form-group">
-                    <button type="button" class="form-control btn btn-primary submit px-3" @click="login">Sign
-                      In</button>
+                    <button type="button" class="form-control btn btn-primary submit px-3"
+                      @click.prevent="resetPassword()">Changer password</button>
                   </div>
-                  <div class="form-group d-md-flex" style="display: flex;align-items: center;">
-                    <div class="w-50 text-left">
-                      <label class="checkbox-wrap checkbox-primary mb-0">Remember Me
-                        <input type="checkbox" checked>
-                        <span class="checkmark"></span>
-                      </label>
-                    </div>
-                    <div class="w-50 text-md-right">
-                      <a  @click.prevent="ForgotPassword">Forgot Password</a>
-                    </div>
-                  </div>
+
                 </form>
               </div>
             </div>
@@ -61,9 +44,86 @@
 
   </div>
 </template>
+  
+<script>
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+      token: '',
+      passwordConfirmation: '',
+      status: '',
+      errorMessages: []
+    };
+  },
+  methods: {
+    resetPassword() {
+      // Make an API request to your Laravel backend to reset password
+      this.$vs.loading({ color: "#22c22b" })
+      axios.post('/api/resetPassword', {
+        email: this.$route.query.email,
+        password: this.password,
+        password_confirmation: this.passwordConfirmation,
+        token: this.$route.query.token
+      })
+        .then(response => {
+          this.$vs.notify({
+            time: 5000,
+            title: response.data.status,
+            color: "success",
+            position: "top-right",
+          });
+          setTimeout(() => {
+            this.$router.push('/login');
+          }, 2000);
+
+        })
+        .catch(error => {
+          if (error.response.status === 422) {
+            this.$vs.notify({
+              time: 8000,
+              title: error.response.data.errors[Object.keys(error.response.data.errors)[0]][0],
+              color: "danger",
+              position: "top-right",
+            });
+          }
+          if (error.response.status === 500) {
+            if (error.response.data.message == 'This password reset token is invalid.') {
+              this.$vs.notify({
+                time: 8000,
+                title: 'Invalid link. Please attempt to reset your password.',
+                color: "danger",
+                position: "top-right",
+              });
+            }
+
+          }
+
+
+        }).finally(() => this.$vs.loading.close());
+    }
+  },
+  created() {
+
+  }
+};
+</script>
 <style scoped>
-body {
-  background-color: #19123B;
+.shildImg {
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 120px;
+}
+
+.main-container {
+  height: auto;
+
+  min-height: 100vh;
+  background-image: url("../../../../../public/images/background.jpg") !important;
 }
 
 .alert-danger {
@@ -159,19 +219,13 @@ h5,
 }
 
 .text-wrap {
-  background: #edaeff;
-  background: -moz-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -webkit-gradient(left top, right bottom, color-stop(0%, #edaeff), color-stop(100%, #198ae3));
-  background: -webkit-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -o-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -ms-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -webkit-linear-gradient(315deg, #edaeff 0%, #198ae3 100%);
-  background: -o-linear-gradient(315deg, #edaeff 0%, #198ae3 100%);
+
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url("../../../../../public/images/livraison.png"), linear-gradient(135deg, #edaeff 0%, #198ae3 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#edaeff', endColorstr='#198ae3', GradientType=1);
+  background-image: url("../../../../../public/images/reset.jpg");
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4557c7', endColorstr='#198ae3', GradientType=1);
   color: #fff;
+  background-size: 100%;
 }
 
 .text-wrap .text h2 {
@@ -374,16 +428,16 @@ h5,
   background: #198ae3;
   border: 1px solid #198ae3;
   color: #fff;
-  background: #edaeff;
-  background: -moz-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -webkit-gradient(left top, right bottom, color-stop(0%, #edaeff), color-stop(100%, #198ae3));
-  background: -webkit-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -o-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -ms-linear-gradient(-45deg, #edaeff 0%, #198ae3 100%);
-  background: -webkit-linear-gradient(315deg, #edaeff 0%, #198ae3 100%);
-  background: -o-linear-gradient(315deg, #edaeff 0%, #198ae3 100%);
-  background: linear-gradient(135deg, #edaeff 0%, #198ae3 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#edaeff', endColorstr='#198ae3', GradientType=1);
+  background: #4557c7;
+  background: -moz-linear-gradient(-45deg, #4557c7 0%, #198ae3 100%);
+  background: -webkit-gradient(left top, right bottom, color-stop(0%, #4557c7), color-stop(100%, #198ae3));
+  background: -webkit-linear-gradient(-45deg, #4557c7 0%, #198ae3 100%);
+  background: -o-linear-gradient(-45deg, #4557c7 0%, #198ae3 100%);
+  background: -ms-linear-gradient(-45deg, #4557c7 0%, #198ae3 100%);
+  background: -webkit-linear-gradient(315deg, #4557c7 0%, #198ae3 100%);
+  background: -o-linear-gradient(315deg, #4557c7 0%, #198ae3 100%);
+  background: linear-gradient(135deg, #4557c7 0%, #198ae3 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4557c7', endColorstr='#198ae3', GradientType=1);
 }
 
 .btn.btn-primary:hover {
@@ -428,98 +482,3 @@ h5,
   color: #000;
 }
 </style>
-<script>
-import axios from 'axios'
-import store from '../../../store';
-export default {
-  name: "login",
-  data() {
-    return {
-      formData: {
-        email: '',
-        password: '',
-        device_name: 'browser',
-      },
-      nom_err: '',
-      errors: {},
-      currentUser: {},
-      token: localStorage.getItem('token') || "",
-    }
-  },
-
-  methods: {
-    ForgotPassword() {
-
-      Swal.fire({
-        html: '<h5><i class="fa fa-lock fa-4x" style="color: #198ae3;"></i></h5><h4>Forgot Password?</h4>Enter your email and we\'ll send you a link to get back into your account.',
-        input: 'text',
-        inputAttributes: {
-          autocapitalize: 'off'
-        },
-        showCancelButton: false,
-        confirmButtonText: 'Send login link',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.$vs.loading({ color: "#22c22b" });
-          axios.post('api/forgot-password',{'email':result.value})
-            .then(res => {
-              console.log(res.data);
-              this.$vs.notify({
-                                time: 8000,
-                                title: res.data.status,
-                                color: "success",
-                                position: "top-right",
-                            });
-            })
-            .catch(error => {
-              this.$vs.notify({
-                                time: 8000,
-                                title: error.response.data.errors.email[0],
-                                color: "danger",
-                                position: "top-right",
-                            });
-            }).finally(() => this.$vs.loading.close());
-
-        }
-      })
-    },
-    async login() {
-      this.$vs.loading({ color: "#22c22b" });
-      this.nom_err = '';
-      this.errors = {};
-      await axios.post('api/loginClient', this.formData).then(async (response) => {
-        if (response.data.data == 'bloque') {
-          Swal.fire({
-            icon: 'error',
-            title: 'Votre compte est Désactiver!',
-            text: 'Veillez-vous contacter l\'administrateur',
-          })
-        } else {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.data}`
-          localStorage.setItem('token', response.data.data);
-          localStorage.setItem('locale', response.data.language);
-          store.state.loginClient = true;
-          await axios.get('api/client')
-            .then(res => {
-              console.log(res);
-              if (res.data.statut == 'Active' && res.data.email_verified_at != null) {
-                this.$router.push('dashboardClient');
-              } else if ((res.data.statut == 'Inactive' || res.data.statut == 'Active') && res.data.email_verified_at == null) {
-                this.$router.push('waitVerification');
-              }
-
-
-            })
-        }
-      }).catch((error) => {
-        if (error.response.status === 422) {
-          this.errors = error.response.data.errors || {};
-          this.nom_err = this.errors[Object.keys(this.errors)[0]];
-        }
-      }).finally(() => this.$vs.loading.close());
-    }
-  },
-
-
-}
-</script>

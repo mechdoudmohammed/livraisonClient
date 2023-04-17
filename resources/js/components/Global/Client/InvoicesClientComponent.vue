@@ -95,14 +95,10 @@
 
                                     <vs-td :data="tr.statut_facture">
                                         <b class="badge badge badge-gradient-danger"
-                                            v-if="tr.statut_facture == 'NOTPAID'">{{
-                                                    tr.statut_facture
-                                            }}</b>
+                                            v-if="tr.statut_facture == 'NOTPAID'">{{ $t('message.NotPaid') }}</b>
 
                                         <b class="badge badge badge-gradient-success"
-                                            v-if="tr.statut_facture == 'PAID'">{{
-                                                    tr.statut_facture
-                                            }}</b>
+                                            v-if="tr.statut_facture == 'PAID'">{{ $t('message.Paid') }}</b>
                                     </vs-td>
                                     <vs-td>
                                         <button type="button" class="btn btn-valide" @click.prevent="getFactureClient(tr.id_facture)"><i
@@ -137,6 +133,7 @@ export default {
     data() {
         return {
             token: localStorage.getItem('token'),
+            locale: localStorage.getItem("locale"),
             edit: false,
             errors: {},
             factures: {
@@ -158,6 +155,7 @@ export default {
             },
             options2: [
                 { text: this.$t('message.Invoice_id'), value: 'id_facture' },
+                { text: this.$t('message.Order_id'), value: 'id_commande' },
 
             ],
 
@@ -191,12 +189,8 @@ export default {
 
             axios.get('/api/getFacture/'+id,{ responseType: 'blob' })
                 .then(res => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(res.data);
-                    link.download = id+'.pdf';
-                    document.body.append(link);
-                    link.click();
-                    link.remove();
+                    window.open(URL.createObjectURL(res.data))
+                   
                    
                  })
                 .catch(error => console.log(res));
@@ -205,7 +199,12 @@ export default {
 
 axios.get('/api/getFacture/'+id,{ responseType: 'blob' })
     .then(res => {
-        window.open(URL.createObjectURL(res.data))
+        const link = document.createElement('a');
+                    link.href = URL.createObjectURL(res.data);
+                    link.download = id+'.pdf';
+                    document.body.append(link);
+                    link.click();
+                    link.remove();
      })
     .catch(error => console.log(res));
 },
