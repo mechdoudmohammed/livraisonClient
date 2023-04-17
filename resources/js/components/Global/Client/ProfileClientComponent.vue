@@ -358,9 +358,6 @@ export default {
 .card.card-profile.shadow {
   height: 97.5%;
 }
-.disableChamps{
-  pointer-events:none;
-}
 .activer-stock {
   justify-content: flex-end;
   align-items: center;
