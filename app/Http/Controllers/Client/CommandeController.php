@@ -36,7 +36,7 @@ class CommandeController extends Controller
                 $historiquecommandes = DB::table(DB::raw("({$sub->toSql()}) as historiquecommandes"))
                     ->whereIn('historiquecommandes.commentaire_commande', ["Pas de réponse", "Retours envoye vers agence"])
                     ->groupBy('id_commande');
-                $commandes = DB::table('commandes')->join('clients', 'commandes.id_client', '=', 'clients.id')
+                $commandes = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
                     ->join('villes', 'commandes.id_ville', '=', 'villes.id')
                     ->join('stores', 'stores.id', '=', 'commandes.id_store')
                     ->leftjoin('factures', 'commandes.id_facture', 'factures.id_facture')
@@ -512,12 +512,12 @@ class CommandeController extends Controller
                 } else {
 
                     $commande = Commande::where('commandes.id_client', $user->id)->where('etat_commande', 'CREATED')->where('id_commande', $request->id_commande)->first();
-                   if($commande->id_ville!=$ville->id){
-                    $commande->id_ville =  $ville->id;
-                    $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
-                    $commande->id_commande=$id_commande;
-                }
-                    
+                    if ($commande->id_ville != $ville->id) {
+                        $commande->id_ville =  $ville->id;
+                        $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
+                        $commande->id_commande = $id_commande;
+                    }
+
                     $commande->nom_client_commande = $request->nom_client_commande;
                     $commande->adresse_client_commande = $request->adresse_client_commande;
                     $commande->telephone_client_commande = $request->telephone_client_commande;
@@ -539,7 +539,7 @@ class CommandeController extends Controller
             }
         } catch (Throwable $e) {
             return response()->json([
-                'message' => 'Erreur'.$e
+                'message' => 'Erreur' . $e
             ]);
         }
     }
@@ -567,8 +567,7 @@ class CommandeController extends Controller
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 if ($user->role == 'Client') {
 
-                    $packageClient = DB::table('commandes')
-                        ->join('clients', 'commandes.id_client', '=', 'clients.id')
+                    $packageClient = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
                         ->join('villes', 'commandes.id_ville', '=', 'villes.id')
                         ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
                         ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
@@ -596,8 +595,7 @@ class CommandeController extends Controller
                         ->orderBy('commandes.updated_at', 'desc')
                         ->get();
                 } else if ($user->role == 'EmployeClient') {
-                    $packageClient = DB::table('commandes')
-                        ->join('clients', 'commandes.id_client', '=', 'clients.id')
+                    $packageClient = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
                         ->join('clients as superviseur', 'superviseur.id', '=', 'commandes.id_client')
                         ->join('villes', 'commandes.id_ville', '=', 'villes.id')
                         ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
@@ -689,7 +687,7 @@ class CommandeController extends Controller
                     ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
                     ->where('commandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('historiquefactures.statut_facture','historiquefactures.id_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
+                    ->select('historiquefactures.statut_facture', 'historiquefactures.id_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
                     ->orderBy('historiquefactures.updated_at', 'asc')
                     ->get();
 
@@ -819,7 +817,7 @@ class CommandeController extends Controller
                 $historiquecommandes = DB::table(DB::raw("({$sub->toSql()}) as historiquecommandes"))
                     ->whereIn('historiquecommandes.commentaire_commande', ["Pas de réponse", "Retours envoye vers agence"])
                     ->groupBy('id_commande');
-                $commandes = DB::table('commandes')->join('clients', 'commandes.id_client', '=', 'clients.id')
+                $commandes = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
                     ->join('villes', 'commandes.id_ville', '=', 'villes.id')
                     ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
                     ->where('commandes.etat_commande', 'DMSUIVIE')
@@ -875,7 +873,7 @@ class CommandeController extends Controller
             }
         } catch (Throwable $e) {
             return response()->json([
-                'message' => 'Erreur'.$e
+                'message' => 'Erreur' . $e
             ]);
         }
     }
@@ -941,11 +939,11 @@ class CommandeController extends Controller
             $user = auth('sanctum')->user();
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 $statut = HistoriqueCommande::where('historiquecommandes.id_commande', $id)
-                ->where(function ($query) use ($user) {
-                    $query->where('historiquecommandes.id_client', $user->id)
-                        ->orwhere('historiquecommandes.id_client', $user->superviseur);
-                })
-                ->where('historiquecommandes.etat_commande', 'RELANCER')->first();
+                    ->where(function ($query) use ($user) {
+                        $query->where('historiquecommandes.id_client', $user->id)
+                            ->orwhere('historiquecommandes.id_client', $user->superviseur);
+                    })
+                    ->where('historiquecommandes.etat_commande', 'RELANCER')->first();
 
                 if ($statut) {
                     return response()->json([
@@ -978,7 +976,7 @@ class CommandeController extends Controller
 
     public function updateCommandeInfo(Request $request)
     {
-       
+
         $this->validate($request, [
             "adresse_client_commande" => 'required|string',
             "nom_client_commande" => 'required|string',
@@ -995,13 +993,12 @@ class CommandeController extends Controller
                     $query->where('commandes.id_client', $user->id)
                         ->orwhere('commandes.id_client', $user->superviseur);
                 })->whereNotIn('etat_commande', ['DELIVERED', 'CANCEL', 'ANNULER', 'RETURNED', 'RETURNEDEV', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDRR'])->where('id_commande', $request->id_commande)->first();
-                $etat_commande="COMMENTAIRE";
-                $commentaire_commande="Changement de destination";
-                if ($request->nom_client_commande!=$commande->nom_client_commande) {
+                $etat_commande = "COMMENTAIRE";
+                $commentaire_commande = "Changement de destination";
+                if ($request->nom_client_commande != $commande->nom_client_commande) {
                     $commande->nom_client_commande = $request->nom_client_commande;
-
                 } else if ($request->prix_commande != $commande->prix_commande) {
-                    $etat_commande="CHANGERPRIX";
+                    $etat_commande = "CHANGERPRIX";
                     if ($request->prix_commande < 0) {
                         return response()->json([
                             'message' => 'Le prix doit etre superieur ou egale 0',
@@ -1028,9 +1025,9 @@ class CommandeController extends Controller
                     $statut = $commande->save();
                 } else if ($request->adresse_client_commande != $commande->adresse_client_commande) {
                     $commande->adresse_client_commande = $request->adresse_client_commande;
-                } else if ($request->telephone_client_commande!=$commande->telephone_client_commande) {
+                } else if ($request->telephone_client_commande != $commande->telephone_client_commande) {
                     $commande->telephone_client_commande = $request->telephone_client_commande;
-                }else{
+                } else {
                     return response()->json([
                         'message' => 'No Change'
                     ]);
@@ -1059,4 +1056,5 @@ class CommandeController extends Controller
             ]);
         }
     }
+
 }

@@ -41,11 +41,24 @@
                             </div>
                             <div class="chercher">
                                 <!-- Example single danger button -->
+                                
                                 <vs-select class="selectExample" v-model="formDataCherche3.selected_option3"
                                     @change="classifierCommande(formDataCherche3.selected_option3)">
-                                    <vs-select-item :key="index" :value="item.value" :text="item.text"
-                                        v-for="(item, index) in options3" />
+                                    <vs-select-item :key="index" :value="item.value" :text="changeSelectedItem(item)"
+                                        v-for="(item, index) in options3.slice(0, 1)" v-if="totalOrders <= 20" />
+
+                                    <vs-select-item :key="index2" :value="item.value" :text="changeSelectedItem(item)"
+                                        v-for="(item, index2) in options3.slice(0, 2)" v-else-if="totalOrders <= 50" />
+
+                                    <vs-select-item :key="index3" :value="item.value" :text="changeSelectedItem(item)"
+                                        v-for="(item, index3) in options3.slice(0, 3)" v-else-if="totalOrders <= 150" />
+
+                                        <vs-select-item :key="index4" :value="item.value" :text="changeSelectedItem(item)"
+                                        v-for="(item, index4) in options3.slice(0, 4)" v-else-if="totalOrders <= 200" />
+                                        <vs-select-item :key="index5" :value="item.value" :text="changeSelectedItem(item)"
+                                        v-for="(item, index5) in options3.slice(0, 4)" v-else="" />
                                 </vs-select>
+
 
 
                                 <vs-select class="selectExample" v-model="formDataCherche2.selected_option2"
@@ -78,11 +91,9 @@
                             <template slot="thead">
                                 <vs-th v-if="Client.stock == 1"> {{ $t('message.Type') }}</vs-th>
                                 <vs-th> {{ $t('message.Id') }} </vs-th>
-                                <vs-th> {{ $t('message.Store') }} </vs-th>
+                                <!-- <vs-th> {{ $t('message.Store') }} </vs-th> -->
                                 <vs-th> {{ $t('message.Name') }} </vs-th>
                                 <vs-th> {{ $t('message.Phone_Number') }} </vs-th>
-                                <vs-th> {{ $t('message.City') }} </vs-th>
-                                <vs-th> {{ $t('message.Price') }} </vs-th>
                                 <vs-th> {{ $t('message.Status') }} </vs-th>
                                 <vs-th> {{ $t('message.Invoice') }} </vs-th>
                                 <vs-th> {{ $t('message.Operation') }} </vs-th>
@@ -113,27 +124,22 @@
                                         <span><time-ago :datetime="tr.updated_at" long :locale="locale"></time-ago>
                                         </span>
                                     </vs-td>
-                                    <vs-td :data="tr.nom_store">
+                                    <!-- <vs-td :data="tr.nom_store">
                                         <span v-if="tr.nom_store != null">
                                             {{ tr.nom_store }}
                                         </span>
                                         <span v-else-if="tr.nom_store == null">
                                             {{ tr.company }}
                                         </span>
-                                    </vs-td>
+                                    </vs-td> -->
                                     <vs-td :data="tr.nom_client_commande">
-                                        {{ tr.nom_client_commande }}
+                                        <b>{{ tr.nom_client_commande }}</b><br>
+                                        {{ tr.prix_commande }} {{ $t('message.Dhs') }}
                                     </vs-td>
                                     <vs-td :data="tr.telephone_client_commande">
                                         {{ tr.telephone_client_commande }}
                                         <span @click="whatsapp(tr.telephone_client_commande, tr.nom_client_commande)"
                                             class="whatsapp"><i class="fab fa-whatsapp" aria-hidden="true"></i></span>
-                                    </vs-td>
-                                    <vs-td :data="tr.ville_client_commande">
-                                        {{ tr.ville_client_commande }}
-                                    </vs-td>
-                                    <vs-td :data="tr.prix_commande">
-                                        {{ tr.prix_commande }}
                                     </vs-td>
                                     <vs-td :data="tr.etat_commande">
                                         <b class="badge badge badge-gradient-secondary"
@@ -254,7 +260,6 @@
                         <vs-pagination v-if="locale == 'ar'" @input="classifierCommande(formDataCherche3.selected_option3)"
                             :max="9" :total="commandes.last_page" v-model="commandes.current_page" prev-icon="arrow_forward"
                             next-icon="arrow_back"></vs-pagination>
-
                         <vs-pagination v-else @input="classifierCommande(formDataCherche3.selected_option3)" :max="9"
                             :total="commandes.last_page" v-model="commandes.current_page" prev-icon="arrow_back"
                             next-icon="arrow_forward"></vs-pagination>
@@ -1219,6 +1224,45 @@ input[type="number"] {
 
 }
 
+@media only screen and (max-width: 768px) {
+    div#btn-top-package {
+        justify-content: flex-end;
+    }
+
+    .chercher {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .con-select {
+        margin-left: 0px;
+        margin-top: 5px;
+        width: 6% !important;
+        min-width: 139px;
+        margin-right: 18px;
+    }
+
+    .btn-sync {
+        border-radius: 31px;
+        color: #198ae3;
+        width: 41px;
+        min-width: 39px;
+        border: 1px solid #198ae3;
+        margin-left: 0px;
+        background: transparent;
+        margin-top: 5px;
+    }
+
+    .search_bar {
+        width: auto;
+        display: flex;
+        margin-top: 5px;
+        margin-left: 0px;
+    }
+
+}
+
 .form-group.row {
     align-items: flex-end;
     justify-content: center;
@@ -1275,6 +1319,7 @@ export default {
                 prix_commande: "",
             },
             nbrCommande: 0,
+            totalOrders: 0,
             villes: [],
             historiqueCommande: {},
             options: [
@@ -1310,10 +1355,10 @@ export default {
             },
             responsable: "",
             options3: [
-                { text: '1-20 ' + this.$t('message.Items'), value: '20' },
-                { text: '1-50 ' + this.$t('message.Items'), value: '50' },
-                { text: '1-150 ' + this.$t('message.Items'), value: '150' },
-                { text: '1-200 ' + this.$t('message.Items'), value: '200' },
+                { text: '1-20 ', value: '20' },
+                { text: '1-50 ', value: '50' },
+                { text: '1-150 ', value: '150' },
+                { text: '1-200 ', value: '200' },
             ],
             formDataCherche3: {
                 selected_option3: "20",
@@ -1353,6 +1398,25 @@ export default {
         },
     },
     methods: {
+        changeSelectedItem(item) {
+            if (parseInt(item.value) == '20' && parseInt(item.value) >= this.totalOrders) {
+                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+            }
+            if (parseInt(item.value) == '50' && parseInt(item.value) >= this.totalOrders) {
+                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+            }
+            if (parseInt(item.value) == '150' && parseInt(item.value) >= this.totalOrders) {
+                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+            }
+            if (parseInt(item.value) == '200' && parseInt(item.value) >= this.totalOrders) {
+                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+            }
+            if(parseInt(item.value) == 0){
+                return '0-0 of ' + this.totalOrders;
+            }
+            return item.text + 'of ' + this.totalOrders;
+        },
+
         FirstLowerRestUper(world) {
             return world[0].toUpperCase() + world.slice(1).toLowerCase();
         },
@@ -1449,7 +1513,7 @@ export default {
                         "</td></tr>";
                     text +=
                         "</td></tr><tr><td>" + this.$t('message.Price') + " :<b> </b></td><td> " +
-                        this.commande.prix_commande +' '+ this.$t('message.Dhs') +
+                        this.commande.prix_commande + ' ' + this.$t('message.Dhs') +
                         " </td></tr>";
 
 
@@ -1543,6 +1607,7 @@ export default {
                             )
                             .then((res) => {
                                 this.commandes = res.data.data;
+                                this.totalOrders = res.data.data.total
                             })
                             .catch((error) => console.log(res))
                             .finally(() => this.$vs.loading.close());
@@ -1556,6 +1621,7 @@ export default {
                             )
                             .then((res) => {
                                 this.commandes = res.data.data;
+                                this.totalOrders = res.data.data.total
                             })
                             .catch((error) => console.log(res))
                             .finally(() => this.$vs.loading.close());
@@ -1563,11 +1629,10 @@ export default {
                     this.nbrCommande = this.commandes.to;
                 }, 200);
             }
-
-
-
-
-
+            if(this.totalOrders<20){
+                this.formDataCherche3.selected_option3=20
+            }
+            
         },
         copyCommande(tr) {
             navigator.clipboard.writeText(
@@ -2087,10 +2152,10 @@ export default {
                 }),
                 (this.responsable = ""),
                 (this.options3 = [
-                    { text: "1-20 items", value: "20" },
-                    { text: "1-50 items", value: "50" },
-                    { text: "1-150 items", value: "150" },
-                    { text: "1-200 items", value: "200" },
+                { text: '1-20 ', value: '20' },
+                { text: '1-50 ', value: '50' },
+                { text: '1-150 ', value: '150' },
+                { text: '1-200 ', value: '200' },
                 ]),
                 (this.formDataCherche3 = {
                     selected_option3: "20",
