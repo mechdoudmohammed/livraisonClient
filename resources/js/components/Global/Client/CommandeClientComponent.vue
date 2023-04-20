@@ -92,7 +92,7 @@
                                 <vs-th v-if="Client.stock == 1"> {{ $t('message.Type') }}</vs-th>
                                 <vs-th> {{ $t('message.Id') }} </vs-th>
                                 <!-- <vs-th> {{ $t('message.Store') }} </vs-th> -->
-                                <vs-th> {{ $t('message.Name') }} </vs-th>
+                                <vs-th> {{ $t('message.Destination') }} </vs-th>
                                 <vs-th> {{ $t('message.Phone_Number') }} </vs-th>
                                 <vs-th> {{ $t('message.Status') }} </vs-th>
                                 <vs-th> {{ $t('message.Invoice') }} </vs-th>
@@ -134,6 +134,7 @@
                                     </vs-td> -->
                                     <vs-td :data="tr.nom_client_commande">
                                         <b>{{ tr.nom_client_commande }}</b><br>
+                                        {{ tr.ville_client_commande}}<br>
                                         {{ tr.prix_commande }} {{ $t('message.Dhs') }}
                                     </vs-td>
                                     <vs-td :data="tr.telephone_client_commande">

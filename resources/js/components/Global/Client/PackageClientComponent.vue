@@ -63,13 +63,13 @@
                                         {{ tr.nombre_commande }}
                                     </vs-td>
                                     <vs-td :data="tr.statut_package">
-                                        <b v-if="tr.statut_package == 'New'"
-                                            class="badge badge badge-gradient-info"> {{ $t('message.New') }}</b>
-                                            <b v-if="tr.statut_package == 'Printed'"
-                                            class="badge badge badge-gradient-success"> {{ $t('message.Printed') }}</b>
+                                        <b v-if="tr.statut_package == 'New'" class="badge badge badge-gradient-info"> {{
+                                            $t('message.New') }}</b>
+                                        <b v-if="tr.statut_package == 'Printed'" class="badge badge badge-gradient-success">
+                                            {{ $t('message.Printed') }}</b>
                                     </vs-td>
-                          
-                                    
+
+
                                     <vs-td :data="tr.id_package">
                                         <button type="button" class="btn btn-valide"
                                             @click.prevent="getPackagePrint(tr.id_package, false)"><i
@@ -194,9 +194,9 @@ export default {
                         link.click();
                         link.remove();
                     },
-                    await axios.get('/api/StatusToPrint/'+id)
-                    .then(res => {})
-                    .catch(error => console.log(res)).finally(() => this.$vs.loading.close())
+                        await axios.get('/api/StatusToPrint/' + id)
+                            .then(res => { })
+                            .catch(error => console.log(res)).finally(() => this.$vs.loading.close())
                     )
                     .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
             } else {
@@ -206,41 +206,41 @@ export default {
                         .then(res => { })
                         .catch(error => console.log(res)))
                     .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
-                    this.getPackages(0);
-    }
+                this.getPackages(0);
+            }
 
-},
+        },
         async getPackages(count_nbr) {
-    this.$vs.loading({ color: "#22c16b" });
-    setTimeout(async () => {
-        if (count_nbr > 1) {
-            await axios.get('/api/showPackage?page=' + this.packagesClient.current_page + '&count_nbr=' + count_nbr)
-                .then(res => { this.packagesClient = res.data.data; })
-                .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
-        } else {
-            await axios.get('/api/showPackage?page=' + this.packagesClient.current_page + '&count_nbr=20')
-                .then(res => { this.packagesClient = res.data.data; })
-                .catch(error => console.log(res)).finally(() => this.$vs.loading.close())
-        }
-    }, 200);
+            this.$vs.loading({ color: "#22c16b" });
+            setTimeout(async () => {
+                if (count_nbr > 1) {
+                    await axios.get('/api/showPackage?page=' + this.packagesClient.current_page + '&count_nbr=' + count_nbr)
+                        .then(res => { this.packagesClient = res.data.data; })
+                        .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
+                } else {
+                    await axios.get('/api/showPackage?page=' + this.packagesClient.current_page + '&count_nbr=20')
+                        .then(res => { this.packagesClient = res.data.data; })
+                        .catch(error => console.log(res)).finally(() => this.$vs.loading.close())
+                }
+            }, 200);
 
 
-},
+        },
 
 
 
     },
     async beforeMount() {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
 
 
-},
-mounted() {
+    },
+    mounted() {
 
-    $(".form-check label,.form-radio label").append('<i class="input-helper"></i>');
+        $(".form-check label,.form-radio label").append('<i class="input-helper"></i>');
 
 
-},
+    },
 
 }
 

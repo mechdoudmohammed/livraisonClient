@@ -282,7 +282,7 @@ class ClientController extends Controller
                     ->where('commandes.id_package', '!=', null)
                     ->whereNotIn('commandes.etat_commande', ['CREATED', 'CONFIRMED'])
                     ->groupBy('commandes.id_package')
-                    ->orderBy('commandes.updated_at', 'desc')
+                    ->orderBy('commandes.created_at', 'desc')
                     ->selectRaw('packages.statut_package,commandes.id_package , count(commandes.id_package) as nombre_commande,commandes.id_commande,commandes.updated_at,commandes.type_commande')
                     ->paginate($_GET['count_nbr']);
                 return response()->json([
