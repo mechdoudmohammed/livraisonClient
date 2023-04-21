@@ -148,7 +148,7 @@ let message = {
     To: "إلى",
     Default: "الافتراضي",
     Price_change: "تغيير السعر",
-    ANNULER_CL: "إلغاء_CL",
+    ANNULER_CL: "إلغاء",
     ANNULER: "إلغاء",
     NOREPONSE: "بدون رد",
     CANCELED: "مرفوض",
@@ -185,11 +185,10 @@ let message = {
     Items: "عنصر",
     Request_order_tracking: "المسؤول طلب متابعة هذه الطلبية",
     Relaunch_request: "إعادة إطلاق الطلب",
-    Return_sent_to_agency: "تم إرسال الإرجاع إلى الوكالة",
-    Return_received_by_agency: "تم استلام الإرجاع من الوكالة",
+    Return_received_by_agency: "تم استلام الطلبية في الوكالة",
     Return_send: "تم إرسال الإرجاع",
-    Return_received_by_Ramasseur: "تم استلام الإرجاع من الراماسور",
-    Return_send_to_hometown: "تم إرسال الإرجاع إلى مدينة الأصل",
+    Return_received_by_Ramasseur: "تم استلام الطلبية من الموزع",
+    Return_send_to_hometown: "تم إرسال الطلبية إلى مدينة الأصل",
     Email:'البريد الالكتروني',
     CIN: 'رقم البطاقة الوطنية',
     RibBank: 'رقم الحساب البنكي (RIB)',
@@ -219,8 +218,13 @@ let message = {
     Traking:'تتبع',
     Signout:'تسجيل الخروج',
     Profile:'الملف الشخصي',
-    RELANCER:'إعادة التوزيع'
-
+    RELANCER:'إعادة التوزيع',
+    Annuler:'إلغاء',
+    of:'من ',
+    Close:'إلغاء',
+    Package: "حزمة",
+    Return_send_to_agency: "تم إرجاع الطلبية إلى الوكالة",
+    Successfully: "تمت العملية بنجاح",
 };
 
 export default {

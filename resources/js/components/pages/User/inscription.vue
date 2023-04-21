@@ -4,29 +4,23 @@
       <section class="ftco-section">
         <div class="container">
           <div class="row justify-content-center">
-            <div class="col-md-6 text-center mb-5">
-              <a class="heading-section" href="/">ColiZone</a>
+            <div class="col-md-6 text-center mb-2">
+              <a class="heading-section" href="/"><img src="/images/logoFiles.png" alt="Company logo"
+                style="width: 35%; max-width: 300px" /></a>
             </div>
           </div>
           <div class="row justify-content-center">
             <div class="col-md-12 col-lg-10">
               <div class="wrap d-md-flex">
-                <div class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+                <div class="text-wrap p-4 p-lg-3 text-center d-flex align-items-center order-md-last">
   
                 </div>
-                <div class="login-wrap p-4 p-lg-5">
+                <div class="login-wrap p-4 p-lg-4">
                   <div class="d-flex">
                     <div class="w-100">
                       <h3 class="mb-4">Sign In</h3>
                     </div>
-                    <div class="w-100">
-                      <p class="social-media d-flex justify-content-end">
-                        <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span
-                            class="fa fa-facebook"></span></a>
-                        <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span
-                            class="fa fa-twitter"></span></a>
-                      </p>
-                    </div>
+            
                   </div>
                   <div class="alert alert-danger" role="alert" v-if="nom_err">
                     {{ nom_err[0] }}
@@ -121,7 +115,7 @@
   }
   
   .ftco-section {
-    padding: 7em 0;
+    padding: 1em 0;
   }
   
   .ftco-no-pt {
@@ -214,7 +208,8 @@
   
   .form-control {
     height: 48px;
-    background: rgba(0, 0, 0, 0.05);
+    background: rgb(194 189 189 / 5%);
+    border: 1px solid #dddddd;
     color: #000;
     font-size: 16px;
     border-radius: 50px;

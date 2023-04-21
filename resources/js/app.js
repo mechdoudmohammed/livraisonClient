@@ -22,6 +22,22 @@ const messages = {
     ar
 };
 
+axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+async function myAsyncFunction() {
+    await axios.get('api/client').then((response) => {
+    
+        currentUser = response.data;
+    }).catch((errors) => {
+        if (errors.response.status === 401) {
+            localStorage.removeItem('token');
+        }
+    });
+  }
+  
+
+
+
+
 const i18n = new VueI18n({
     locale: localStorage.getItem("locale"), // set locale
     messages, // set locale messages

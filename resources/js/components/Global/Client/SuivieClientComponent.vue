@@ -4,8 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span>{{ $t('message.Track_This_Order') }} <b class="badge badge badge-gradient-secondary">{{ nbrCommande
-                }}</b>
+                </span>{{ $t('message.Track_This_Order') }}
             </h3>
         </div>
         <div class="row">
@@ -1162,21 +1161,21 @@ export default {
     methods: {
         changeSelectedItem(item) {
             if (parseInt(item.value) == '20' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+  this.$t('message.of') + this.totalOrders;
             }
             if (parseInt(item.value) == '50' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+  this.$t('message.of')  + this.totalOrders;
             }
             if (parseInt(item.value) == '150' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+ this.$t('message.of')  + this.totalOrders;
             }
             if (parseInt(item.value) == '200' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+  this.$t('message.of')  + this.totalOrders;
             }
             if(parseInt(item.value) == 0){
-                return '0-0 of ' + this.totalOrders;
+                return '0-0 ' +this.$t('message.of')  + this.totalOrders;
             }
-            return item.text + 'of ' + this.totalOrders;
+            return item.text +' '+ this.$t('message.of')  + this.totalOrders;
         },
         FirstLowerRestUper(world) {
             return world[0].toUpperCase() + world.slice(1).toLowerCase();

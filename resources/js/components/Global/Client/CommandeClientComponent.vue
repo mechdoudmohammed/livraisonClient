@@ -4,7 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span>{{ $t('message.Orders') }} <b class="badge badge badge-gradient-secondary">{{ nbrCommande }}</b>
+                </span>{{ $t('message.Orders') }}
             </h3>
         </div>
         <div class="row">
@@ -692,6 +692,13 @@
                                                             v-else-if="hCommande.commentaire_commande == 'Avec Sms'">{{
                                                                 $t('message.With_Sms') }}</span>
 
+
+
+
+
+
+
+
                                                         <span class="commentaireCommande" v-else>{{
                                                             hCommande.commentaire_commande }}</span>
                                                     </div>
@@ -808,7 +815,8 @@
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'DMSUIVIE'">
                                                         {{ $t('message.By') }}
-                                                        <b>{{ hCommande.username }}</b>
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
                                                         <br />
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
@@ -856,11 +864,19 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'PICKUP'">
+                                                        
                                                         {{ $t('message.PICKUP') }} {{ $t('message.By') }}:
                                                         <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
                                                         }}</b>
                                                         <b v-else>{{ hCommande.username }}</b>
-                                                        <br />
+                                                        <br>
+                                                        <span v-if="hCommande.id_package != null">{{
+                                                            $t('message.Package') }}
+                                                            :</span>
+                                                        <b v-if="hCommande.id_package != null">{{
+                                                            hCommande.id_package }}</b>
+                                                        <br v-if="hCommande.id_package != null" />
+               
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
@@ -955,8 +971,7 @@
 
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDLV'">
-                                                        <span class="commentaireCommande">Retours envoye vers
-                                                            agence</span><br>
+                                                        <span class="commentaireCommande">{{$t('message.Return_send_to_agency') }}</span><br>
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -967,17 +982,18 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDAG'">
-                                                        <span class="commentaireCommande">Retours reçu par agence</span><br>
+                                                        <span class="commentaireCommande">{{$t('message.Return_received_by_agency') }}</span><br>
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
+                                                        <br>
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDEV'">
-                                                        <span class="commentaireCommande">Return send to hometown</span><br>
+                                                        <span class="commentaireCommande">{{$t('message.Return_send_to_hometown') }}</span><br>
 
                                                         {{ $t('message.By') }}
 
@@ -1185,7 +1201,7 @@
                                     <div class="col-6" style="display: flex;justify-content: center;">
                                         <button type="button" class="btn btn-danger" @click.prevent="editStatut('ANNULER')"
                                             style="min-width: 160px;">
-                                            <i class="fa fa-times"></i> {{ $t('message.Cancel') }}
+                                            <i class="fa fa-times"></i> {{ $t('message.Annuler') }}
                                         </button>
                                     </div>
                                     <div class="col-6" style="display: flex;justify-content: center;"
@@ -1350,6 +1366,10 @@ export default {
                 { text: this.FirstLowerRestUper(this.$t('message.RETURNED')), value: "RETURNED" },
                 { text: this.FirstLowerRestUper(this.$t('message.CANCELED')), value: "CANCELED" },
                 { text: this.FirstLowerRestUper(this.$t('message.NOREPONSE')), value: "NOREPONSE" },
+                { text: this.FirstLowerRestUper(this.$t('message.ANNULER')), value: "ANNULER" },
+
+
+
             ],
             formDataCherche2: {
                 selected_option2: "DEFAULT",
@@ -1401,21 +1421,21 @@ export default {
     methods: {
         changeSelectedItem(item) {
             if (parseInt(item.value) == '20' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+  this.$t('message.of') + this.totalOrders;
             }
             if (parseInt(item.value) == '50' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+  this.$t('message.of')  + this.totalOrders;
             }
             if (parseInt(item.value) == '150' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+ this.$t('message.of')  + this.totalOrders;
             }
             if (parseInt(item.value) == '200' && parseInt(item.value) >= this.totalOrders) {
-                return '1-' + this.totalOrders + ' of ' + this.totalOrders;
+                return '1-' + this.totalOrders +' '+  this.$t('message.of')  + this.totalOrders;
             }
             if(parseInt(item.value) == 0){
-                return '0-0 of ' + this.totalOrders;
+                return '0-0 ' +this.$t('message.of')  + this.totalOrders;
             }
-            return item.text + 'of ' + this.totalOrders;
+            return item.text +' '+ this.$t('message.of')  + this.totalOrders;
         },
 
         FirstLowerRestUper(world) {
@@ -2147,6 +2167,7 @@ export default {
                     { text: this.FirstLowerRestUper(this.$t('message.RETURNED')), value: "RETURNED" },
                     { text: this.FirstLowerRestUper(this.$t('message.CANCELED')), value: "CANCELED" },
                     { text: this.FirstLowerRestUper(this.$t('message.NOREPONSE')), value: "NOREPONSE" },
+                    { text: this.FirstLowerRestUper(this.$t('message.ANNULER')), value: "ANNULER" },
                 ]),
                 (this.formDataCherche2 = {
                     selected_option2: "DEFAULT",
@@ -2224,7 +2245,7 @@ export default {
                     confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
-                    cancelButtonText: this.$t('message.Cancel')
+                    cancelButtonText: this.$t('message.Close')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -2241,7 +2262,7 @@ export default {
                     confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
-                    cancelButtonText: this.$t('message.Cancel')
+                    cancelButtonText: this.$t('message.Close')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -2259,7 +2280,7 @@ export default {
                     confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
-                    cancelButtonText: this.$t('message.Cancel')
+                    cancelButtonText: this.$t('message.Close')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.formData.statut = button;
@@ -2272,12 +2293,13 @@ export default {
             }
         },
         async editStatutAxios(formData) {
+            this.$vs.loading({ color: "#22c22b" });
             await axios
                 .post("/api/changeStatutCommande", formData)
                 .then((res) => {
                     this.message = res.data.message;
                 })
-                .catch((error) => console.log(res));
+                .catch((error) => console.log(res)).finally(() => this.$vs.loading.close());
             if (this.message == "Erreur") {
                 var statut_icon = "danger";
             } else if (this.message == "Successfully") {

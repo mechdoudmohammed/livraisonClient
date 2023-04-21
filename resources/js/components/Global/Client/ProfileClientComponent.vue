@@ -335,17 +335,25 @@ export default {
   async beforeMount() {
     axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
     this.getBanks();
-    if (this.Client.nom != null && this.Client.prenom != null & this.Client.cin != null) {
+    if (this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null) {
+      
       this.showMsgInformation = false;
+
+      }
+
+  },
+  mounted() {
+    if (this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null) {
+    
       var list;
       list = document.querySelectorAll(".disableChamps");
       for (var i = 0; i < list.length; ++i) {
         list[i].style.pointerEvents = 'none';
+        list[i].style.background = '#ff0000c9';
+        list[i].style.color = '#fff';
+       
       }
     }
-  },
-  mounted() {
-   
   },
 
 }

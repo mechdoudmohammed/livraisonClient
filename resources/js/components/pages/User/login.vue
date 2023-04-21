@@ -501,9 +501,11 @@ export default {
           store.state.loginClient = true;
           await axios.get('api/client')
             .then(res => {
-              console.log(res);
               if (res.data.statut == 'Active' && res.data.email_verified_at != null) {
                 this.$router.push('dashboardClient');
+                this.$i18n.locale = res.data.language;
+
+
               } else if ((res.data.statut == 'Inactive' || res.data.statut == 'Active') && res.data.email_verified_at == null) {
                 this.$router.push('waitVerification');
               }

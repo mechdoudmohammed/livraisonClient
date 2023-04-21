@@ -55,7 +55,7 @@
 
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
             aria-labelledby="notificationDropdown">
-            <h6 class="p-3 mb-0" v-if="locale == 'ar'" style="float: right;">{{ $t('message.Notifications') }}</h6>
+            <h6 class="p-3 mb-0" v-if="Client.language == 'ar'" style="float: right;">{{ $t('message.Notifications') }}</h6>
             <h6 class="p-3 mb-0" v-else>{{ $t('message.Notifications') }}</h6>
 
 
@@ -63,13 +63,13 @@
               @click.prevent="getCommandeSuivie(notification.id_commande, notification.id)"
               v-for="notification in notifications">
               <div class="preview-thumbnail">
-                <div class="preview-icon bg-warning">
-                  <i class="mdi mdi-calendar"></i>
+                <div class="preview-icon bg-info">
+                  <i class="mdi mdi-package" style="color: white;"></i>
                 </div>
               </div>
 
               <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                <h6 class="preview-subject font-weight-normal mb-1"> {{ notification.titre }} </h6>
+                <h6 class="preview-subject font-weight-normal mb-1">{{ notification.titre }} </h6>
 
                 <p class="text-gray ellipsis mb-0"> {{ notification.description }} </p>
                 <span><time-ago :datetime="notification.updated_at" long :locale="locale"></time-ago></span>
@@ -112,13 +112,13 @@
         </li>
         <li class="nav-item dropdown" ref="myElement">
           <div class="lang-menu">
-            <div class="selected-lang" v-if="locale == 'fr'" @click="displayDropdownLang">
+            <div class="selected-lang" v-if="Client.language == 'fr'" @click="displayDropdownLang">
               <img src="https://img.icons8.com/color/32/france.png" style="margin-right: 4px; width: 23px;">French
             </div>
-            <div class="selected-lang" v-if="locale == 'en'" @click="displayDropdownLang">
+            <div class="selected-lang" v-else-if="Client.language == 'en'" @click="displayDropdownLang">
               <img src="https://img.icons8.com/color/32/great-britain.png" style="margin-right: 4px;width: 23px;">English
             </div>
-            <div class="selected-lang" v-if="locale == 'ar'" @click="displayDropdownLang">
+            <div class="selected-lang" v-else-if="Client.language == 'ar'" @click="displayDropdownLang">
               <img src="https://img.icons8.com/color/32/morocco.png" style="margin-right: 4px;width: 23px;">العربية
             </div>
             <ul id="dropdownLang">
@@ -149,6 +149,7 @@ import "vue2-timeago/dist/vue2-timeago.css";
 export default {
   name: "NavbarClientComponent",
   components: { TimeAgo },
+  props: ['Client'],
   data() {
     return {
       currentUser: {},
@@ -207,7 +208,7 @@ export default {
       this.getNotification();
     },
     changeToRight() {
-      if (localStorage.getItem('locale') == 'ar') {
+      if (this.Client.language == 'ar') {
 
         if (window.innerWidth <= 991) {
           if (document.getElementById("sidebar").style.right == "0px") {
@@ -312,6 +313,10 @@ export default {
 }
 </script>
 <style scoped>
+h6.preview-subject.font-weight-normal.mb-1 {
+    font-weight: 600;
+    font-size: 15px;
+}
 .lang-menu {
   font-weight: bold;
   display: flex;

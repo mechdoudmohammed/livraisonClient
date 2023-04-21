@@ -18770,6 +18770,7 @@ code {
 
 .card.card-img-holder {
   position: relative;
+  border: none;
 }
 
 .card.card-img-holder .card-img-absolute {
@@ -19206,7 +19207,7 @@ select.form-control {
   padding: .4375rem .75rem;
   border: 0;
   outline: 1px solid #ebedf2;
-  color: #c9c8c8;
+
 }
 
 select.form-control:focus {
@@ -19572,6 +19573,7 @@ dl li {
 .preview-list .preview-item .preview-item-content {
   line-height: 1;
   padding-left: 15px;
+  padding-right: 15px;
 }
 
 .preview-list .preview-item .preview-item-content:first-child {
@@ -21068,4 +21070,8 @@ span.w-32.avatar.circle.gd-info {
   
   background-color: #198ae3 !important;
 
+}
+div#vs1__combobox {
+  border-radius: 21px;
+  padding: 6px 5px;
 }

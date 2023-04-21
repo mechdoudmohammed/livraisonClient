@@ -1,6 +1,6 @@
 <template>
 	<div id="PageContainer">
-		<navbar-client-component v-if="currentUser"></navbar-client-component>
+		<navbar-client-component  :Client="currentUser" v-if="currentUser"></navbar-client-component>
 		<sidebar-client-component :Client="currentUser"  v-if="currentUser"></sidebar-client-component>
 
 	</div>

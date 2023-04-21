@@ -47,7 +47,7 @@ class CommandeController extends Controller
                     ->leftjoinSub($historiquecommandes, 'historiquecommandes', function ($join) {
                         $join->on('commandes.id_commande', '=', 'historiquecommandes.id_commande');
                     })
-                    ->selectRaw('statut_facture,commandes.id_commande,commandes.nom_client_commande,commandes.type_commande,stores.nom_store,	
+                    ->selectRaw('statut_facture,commandes.id_commande,commandes.nom_client_commande,commandes.type_commande,stores.nom_store,commandes.id_package,	
                     commandes.telephone_client_commande,commandes.prix_commande,commandes.etat_commande,commandes.updated_at,villes.nom_ville as ville_client_commande,historiquecommandes.commentaire_commande')
                     ->orderBy('commandes.updated_at', 'desc')
                     ->paginate($_GET['count_nbr']);
@@ -139,7 +139,7 @@ class CommandeController extends Controller
 
                     $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
 
-                    $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
+                    $id_commande = $ville->pref_ville . '-' . $user->id . '-' . strtoupper(Str::random(6)). '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') ;
 
                     if ($user->role == 'EmployeClient') {
                         $id_client = $user->superviseur;
@@ -228,7 +228,7 @@ class CommandeController extends Controller
                             $id_client = $user->id;
                         }
                         $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                        $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
+                        $id_commande = $ville->pref_ville . '-' . $user->id . '-' . strtoupper(Str::random(6)). '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') ;
                         $statut = Commande::create([
                             "id_commande" => $id_commande,
                             "id_ville" => $request->ville_client_commande['id'],
@@ -336,7 +336,7 @@ class CommandeController extends Controller
                     ->leftjoin('clients', 'clients.id', 'commandes.id_client')
                     ->where('commandes.id_commande', $id)
                     ->selectRaw('additional_commentaire,telephone_client_commande,adresse_client_commande,etat_commande,type_commande,employes.nom,employes.prenom,employes.telephone as telephone_responsable,stores.nom_store,clients.company,
-                commandes.id_commande,villes.nom_ville,nom_client_commande,prix_commande,
+                commandes.id_commande,villes.nom_ville,nom_client_commande,prix_commande,commandes.id_package,
                 telephone_client_commande,commandes.prix_livraison_final,
                 type_autorisation,commandes.updated_at,villes.id as ville_client_commande,articles.nom_article')
                     ->first();
@@ -678,7 +678,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client','commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -717,7 +717,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->superviseur)
-                    ->select('commandes.id_bon_retour_client', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client','commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
