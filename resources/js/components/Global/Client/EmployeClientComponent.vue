@@ -4,7 +4,7 @@
             <h3 class="page-title">
                 <span class="page-title-icon bg-gradient-primary text-white me-2">
                     <i class="mdi mdi-home"></i>
-                </span>   {{$t('message.Employee_list')}}
+                </span> {{ $t('message.Employee_list') }}
             </h3>
         </div>
         <div class="row">
@@ -13,35 +13,35 @@
                     <div class="card-body">
                         <div id="btn-top-package">
                             <button type="button" style="margin: 0 13px;" class="btn btn-primary float-end"
-                              @click.prevent="checkEmploye(false)"><i
-                                    class="fa fa-plus" aria-hidden="true"></i>   {{$t('message.Add_Staff')}}</button>
+                                @click.prevent="checkEmploye(false)"><i class="fa fa-plus" aria-hidden="true"></i>
+                                {{ $t('message.Add_Staff') }}</button>
                         </div>
-               
+
                         <vs-table stripe :data="employes.data">
                             <template slot="thead">
                                 <vs-th>
-                                    {{$t('message.Id')}}
+                                    {{ $t('message.Id') }}
                                 </vs-th>
                                 <vs-th>
-                                    {{$t('message.Name')}}
+                                    {{ $t('message.Name') }}
                                 </vs-th>
                                 <vs-th>
-                                    {{$t('message.Phone_Number')}}
+                                    {{ $t('message.Phone_Number') }}
                                 </vs-th>
                                 <vs-th>
-                                    {{$t('message.Username')}}
+                                    {{ $t('message.Username') }}
                                 </vs-th>
                                 <vs-th>
-                                    {{$t('message.Zone')}}
+                                    {{ $t('message.Zone') }}
                                 </vs-th>
                                 <vs-th>
-                                    {{$t('message.Stock')}}
+                                    {{ $t('message.Stock') }}
                                 </vs-th>
                                 <vs-th>
-                                    {{$t('message.Status')}}
+                                    {{ $t('message.Status') }}
                                 </vs-th>
                                 <vs-th>
-                                    {{$t('message.Operation')}}
+                                    {{ $t('message.Operation') }}
                                 </vs-th>
                             </template>
                             <template slot-scope="{data}">
@@ -61,26 +61,29 @@
                                     <vs-td :data="tr.nom_zone">
                                         {{ tr.nom_zone }}
                                     </vs-td>
-                                    
+
                                     <vs-td :data="tr.stock">
-                                       <span class="badge badge badge-gradient-info" v-if="tr.stock==1">{{$t('message.Yes')}}</span>
-                                        <span class="badge badge badge-gradient-info" v-if="tr.stock==0">{{$t('message.No')}}</span>
+                                        <span class="badge badge badge-gradient-info" v-if="tr.stock == 1">{{
+                                            $t('message.Yes') }}</span>
+                                        <span class="badge badge badge-gradient-info" v-if="tr.stock == 0">{{
+                                            $t('message.No') }}</span>
                                     </vs-td>
                                     <vs-td :data="tr.statut">
                                         <b class="badge badge badge-gradient-danger" v-if="tr.statut == 'Inactive'">{{
-                                                tr.statut
+                                            tr.statut
                                         }}</b>
                                         <b class="badge badge badge-gradient-success" v-if="tr.statut == 'Active'">{{
-                                                tr.statut
+                                            tr.statut
                                         }}</b>
                                     </vs-td>
                                     <vs-td>
                                         <button type="button" class="btn btn-valide" v-if="tr.statut == 'Inactive'"
                                             @click.prevent="BlockEmployeClient(tr.id)"><i class="fa fa-check"></i></button>
-                                        <button type="button" class="btn btn-warning" @click.prevent="checkEmploye(true,tr.id)"><i
-                                                class="fa fa-edit"></i></button>
-                                        <button type="button" class="btn btn-danger" @click.prevent="BlockEmployeClient(tr.id)"
-                                            v-if="tr.statut == 'Active'"><i class="fa fa-ban"></i></button>
+                                        <button type="button" class="btn btn-warning"
+                                            @click.prevent="checkEmploye(true, tr.id)"><i class="fa fa-edit"></i></button>
+                                        <button type="button" class="btn btn-danger"
+                                            @click.prevent="BlockEmployeClient(tr.id)" v-if="tr.statut == 'Active'"><i
+                                                class="fa fa-ban"></i></button>
                                     </vs-td>
 
 
@@ -99,81 +102,104 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="ajouterEmploye" v-if="!edit">{{$t('message.Add_Staff')}}</h5>
-                        <h5 class="modal-title" id="ajouterEmploye" v-if="edit">{{$t('message.Edit_Employee')}}</h5>
+                        <h5 class="modal-title" id="ajouterEmploye" v-if="!edit">{{ $t('message.Add_Staff') }}</h5>
+                        <h5 class="modal-title" id="ajouterEmploye" v-if="edit">{{ $t('message.Edit_Employee') }}</h5>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <div class="alert alert-danger" role="alert" v-if="nom_err">
                                 {{ nom_err[0] }}
                             </div>
-                            <label for="id_ville">{{$t('message.City')}}<span class="text-danger"> *</span></label>
+                            <label for="id_ville">{{ $t('message.City') }}<span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
-                            <v-select :placeholder="$t('message.Please_Select_City')" v-model="ville"
-                                name="id_ville" :options="villes" label="ville" index="id" />
-                        </div>
+                            <v-select :placeholder="$t('message.Please_Select_City')" v-model="ville" name="id_ville"
+                                :options="villes" label="ville" index="id" />
+                        </div> -->
 
                         <div class="form-group">
-                            <label for="prenom">{{$t('message.Last_Name')}} <span class="text-danger"> *</span></label>
+                            <label for="prenom">{{ $t('message.Last_Name') }} <span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="nom" v-model="formData.nom" name="nom">
                         </div>
                         <div class="form-group">
-                            <label for="prenom">{{$t('message.First_Name')}} <span class="text-danger"> *</span> </label>
+                            <label for="prenom">{{ $t('message.First_Name') }} <span class="text-danger"> *</span> </label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="prenom" v-model="formData.prenom" name="prenom">
                         </div>
                         <div class="form-group">
-                            <label for="telephone">{{$t('message.Phone_Number')}} <span class="text-danger"> *</span></label>
+                            <label for="telephone">{{ $t('message.Phone_Number') }} <span class="text-danger">
+                                    *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="telephone" v-model="formData.telephone"
                                 name="telephone">
                         </div>
                         <div class="form-group">
-                            <label for="email">{{$t('message.Email')}}<span class="text-danger"> *</span></label>
+                            <label for="email">{{ $t('message.Email') }}<span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="email" v-model="formData.email" name="email">
                         </div>
+
                         <div class="form-group">
-                            <label for="cin">{{$t('message.CIN')}} <span class="text-danger"> *</span></label>
-                            <span class="text-danger"></span>
-                            <input type="text" class="form-control" id="cin" v-model="formData.cin" name="cin">
-                        </div>
-                        <div class="form-group">
-                            <label for="ribBank">{{$t('message.RibBank')}}</label>
-                            <span class="text-danger"></span>
-                            <input type="text" class="form-control" id="ribBank" v-model="formData.ribBank"
-                                name="ribBank">
-                        </div>
-                        <div class="form-group">
-                            <label for="id_bank">{{$t('message.BankName')}}</label>
-                            <span class="text-danger"></span>
-                            <select class="form-control" id="id_bank" v-model="formData.id_bank">
-                                <option name="id_bank" :value="bank.id_bank" v-for="bank in banks">{{ bank.nomBank }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="username">{{$t('message.Username')}}<span class="text-danger"> *</span></label>
+                            <label for="username">{{ $t('message.Username') }}<span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
                             <input type="text" class="form-control" id="username" v-model="formData.username"
                                 name="username">
                         </div>
                         <div class="form-group">
-                            <label for="password">{{$t('message.Password')}} <span class="text-danger"> *</span></label>
+                            <label for="password">{{ $t('message.Password') }} <span class="text-danger"> *</span></label>
                             <span class="text-danger"></span>
-                            <input type="password" class="form-control" id="password" v-model="formData.password"
-                                name="password">
+                            <div class="input-group">
+                                <input :type="passwordHidden ? 'password' : 'text'" class="form-control" id="password"
+                                    v-model="formData.password" name="password">
+                                <div style="display: flex;">
+                                    <span class="input-group-text">
+                                        <a class="toggle_hide_password" @click="passwordHidden = !passwordHidden"
+                                            v-if="passwordHidden">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a class="toggle_hide_password" @click="passwordHidden = !passwordHidden" v-else>
+                                            <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                                        </a>
+
+                                    </span>
+                                    <span class="input-group-text">
+                                        <a @click="generatePassword" class="toggle_hide_password">
+                                            <i class="fas fa-sync" aria-hidden="true"></i>
+                                        </a>
+                                    </span>
+
+                                </div>
+                            </div>
+                          
                         </div>
-                
+                        <div class="form-group">
+                                <label for="cin">{{ $t('message.CIN') }}</label>
+                                <span class="text-danger"></span>
+                                <input type="text" class="form-control" id="cin" v-model="formData.cin" name="cin">
+                            </div>
+                            <div class="form-group">
+                                <label for="ribBank">{{ $t('message.RibBank') }}</label>
+                                <span class="text-danger"></span>
+                                <input type="text" class="form-control" id="ribBank" v-model="formData.ribBank"
+                                    name="ribBank">
+                            </div>
+                            <div class="form-group">
+                                <label for="id_bank">{{ $t('message.BankName') }}</label>
+                                <span class="text-danger"></span>
+                                <select class="form-control" id="id_bank" v-model="formData.id_bank">
+                                    <option name="id_bank" :value="bank.id_bank" v-for="bank in banks">{{ bank.nomBank }}
+                                    </option>
+                                </select>
+                            </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="btn_cancel" class="btn btn-secondary"
-                            data-bs-dismiss="modal"><i class="fa fa-times"></i></button>
-                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addEmploye()">{{$t('message.Add_Staff')}}</button>
-                        <button type="button" class="btn btn-primary" v-if="edit"
-                            @click.prevent="updateEmploye()">{{$t('message.Edit_Employee')}}</button>
-               
+                        <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                                class="fa fa-times"></i></button>
+                        <button type="button" class="btn btn-primary" v-if="!edit" @click.prevent="addEmploye()">{{
+                            $t('message.Add_Staff') }}</button>
+                        <button type="button" class="btn btn-primary" v-if="edit" @click.prevent="updateEmploye()">{{
+                            $t('message.Edit_Employee') }}</button>
+
                     </div>
                 </div>
             </div>
@@ -196,12 +222,15 @@ export default {
             errors: {},
             selected: [],
             villes: [],
-          
-            employes: {'data': '',
+            passwordHidden: true,
+            generatedPassword: '',
+            employes: {
+                'data': '',
                 'current_page': 1,
-                'last_page': 1},
+                'last_page': 1
+            },
             message: {},
-            edit:false,
+            edit: false,
             formData: {
                 nom: '',
                 prenom: '',
@@ -213,14 +242,24 @@ export default {
                 statut: '',
                 username: '',
                 password: '',
-                id_ville:'',
-                selected_employe:'',
+                id_ville: '',
+                selected_employe: '',
             },
             banks: '',
-            ville:'',
+            ville: '',
         }
     },
     methods: {
+        generatePassword() {
+            const length = 10;
+            const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            this.formData.password = password;
+
+        },
         async updateEmploye() {
             console.log(this.formData.selected_employe);
             this.formData.id_ville = this.ville['id'];
@@ -228,13 +267,13 @@ export default {
 
             _.each(this.formData, (value, key) => { formData.append(key, value) })
             await axios.post('/api/updateEmploye', formData, { headers: { 'Content-Type': "multipart/form-data; charset=utf-8;boundary=" + Math.random().toString().substr(2) } }).then((res) => {
-    
-                this.$vs.notify({
-                        time: 5000,
-                        text:  'L\'employe a été enregistrée',
-                        color: 'success', position: 'top-right',
 
-                    })
+                this.$vs.notify({
+                    time: 5000,
+                    text: 'L\'employe a été enregistrée',
+                    color: 'success', position: 'top-right',
+
+                })
                 // this.initialiserFormData();
                 this.getEmployes(0);
                 $("#ajouterClient").modal('hide')
@@ -269,17 +308,17 @@ export default {
             this.$vs.loading({ color: '#22c16b' })
             this.formData.id_ville = this.ville['id'];
             await axios.post('/api/EmployeClient', this.formData).then((res) => {
-                if(res.data.message=='Employe Created successfully'){
-                      this.$vs.notify({
+                if (res.data.message == 'Employe Created successfully') {
+                    this.$vs.notify({
                         title: this.$t('message.Add_Employee'),
                         color: 'success', position: 'top-right',
                         time: 4000
                     })
                     this.initialiserFormData();
-                this.getEmployes();
-                $("#ajouterEmploye").modal('hide')
+                    this.getEmployes();
+                    $("#ajouterEmploye").modal('hide')
                 }
-              
+
             }).catch(error => {
                 if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
@@ -293,34 +332,34 @@ export default {
                 .catch(error => console.log(res));
         },
         async getEmploye(id) {
-            await axios.get('/api/EmployeClient/'+id)
+            await axios.get('/api/EmployeClient/' + id)
                 .then(res => { this.formData = res.data.data; })
                 .catch(error => console.log(res));
-                this.ville = {
+            this.ville = {
                 id: this.formData.ville,
                 ville: this.formData.nom_ville,
             };
         },
         async checkEmploye(btn_val, id_employe) {
-           await this.initialiserFormData();
-            await this.getVilles();
+            await this.initialiserFormData();
+            // await this.getVilles();
             this.edit = btn_val;
             if (btn_val) {
                 await this.getEmploye(id_employe);
                 this.formData.selected_employe = id_employe;
-               
+
             }
             $("#ajouterEmploye").modal('show')
 
         },
         async BlockEmployeClient(id) {
-            await axios.get('/api/BlockEmployeClient/'+id)
-                .then(res => {})
+            await axios.get('/api/BlockEmployeClient/' + id)
+                .then(res => { })
                 .catch(error => console.log(res));
-                this.getEmployes(0);
+            this.getEmployes(0);
         },
         initialiserFormData() {
-            this.formData= {
+            this.formData = {
                 nom: '',
                 prenom: '',
                 telephone: '',
@@ -331,16 +370,16 @@ export default {
                 statut: '',
                 username: '',
                 password: '',
-                id_ville:'',
-                selected_employe:'',
+                id_ville: '',
+                selected_employe: '',
             },
-            this.nom_err= '',
-            this.ville=''
+                this.nom_err = '',
+                this.ville = ''
         }
     },
     async beforeMount() {
         axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-this.getBanks();
+        this.getBanks();
 
     },
     mounted() {

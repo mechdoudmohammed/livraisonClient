@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Facture</title>
+    <title>Bon Ramassage</title>
     <!-- Favicon -->
     <link rel="icon" href="./images/favicon.png" type="image/x-icon" />
     <!-- Invoice styling -->
@@ -135,13 +135,13 @@
                     <tr>
 
                     <td class="title">
-                              <img src="{{ public_path('/images/logoFiles.png') }}" alt="Company logo" style="width: 37%; max-width: 330px" />
+                    <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
 
                         <td class='facture_info'>
                             <b>ColiZone S.A.R.L</b><br />
-                            <b>CITE DHAR MEHREZ FES</b><br />
-                            <b>+212 767 09 13 77</b><br />
+                            <b>MAG 4 N°4 IMMEUBLE 9 RESIDENCE ASSAFA<br> DHAR MAHRAZ FES</b><br />
+                            <b>08 08 67 01 71</b><br />
                             <b>Contact@ColiZone.ma</b><br />
                         </td>
                     </tr>

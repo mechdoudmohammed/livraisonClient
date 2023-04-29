@@ -114,7 +114,7 @@ class StatistiqueController extends Controller
             $Livraison = DB::table("historiquecommandes")
             ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
                 ->join('villes', 'villes.id', 'commandes.id_ville')
-                ->whereIn('historiquecommandes.etat_commande', ['DELIVERED', 'CANCELED', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDEV', 'RETURNED', 'RETURNEDRR'])
+                ->whereIn('historiquecommandes.etat_commande', ['DELIVERED', 'CANCELEDLV', 'CANCELEDAG', 'CANCELEDEV', 'CANCELED', 'CANCELEDRR', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDEV', 'RETURNED', 'RETURNEDRR'])
                 ->where('historiquecommandes.updated_at', '>', $date_debut)
                 ->where('historiquecommandes.updated_at', '<', $date_fin)
                 ->where('commandes.id_client', $user->id)
@@ -137,7 +137,7 @@ class StatistiqueController extends Controller
                     $fraisLivraison += $commande->prix_livraison_final;
                 } elseif ($commande->etat_commande == 'RETURNEDAG'  || $commande->etat_commande == 'RETURNEDEV' || $commande->etat_commande == 'RETURNEDRR' || $commande->etat_commande == 'RETURNED') {
                     $fraisLivraison += $commande->prix_retour;
-                } elseif ($commande->etat_commande == 'CANCELED') {
+                } elseif ($commande->etat_commande == 'CANCELEDAG'  || $commande->etat_commande == 'CANCELEDEV' || $commande->etat_commande == 'CANCELEDRR' || $commande->etat_commande == 'CANCELED') {
                     $fraisLivraison += $commande->prix_refus;
                 }
             }
@@ -162,7 +162,7 @@ class StatistiqueController extends Controller
                 ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
                 ->where('historiquecommandes.updated_at', '>', $date_debut)
                 ->where('historiquecommandes.updated_at', '<', $date_fin)
-                ->whereIn('historiquecommandes.etat_commande', ['CANCELED'])
+                ->whereIn('historiquecommandes.etat_commande', ['CANCELEDAG', 'CANCELEDLV', 'CANCELEDEV', 'CANCELEDRR', 'CANCELED'])
                 ->where('commandes.id_client', $user->id)
                 ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
                 ->first();
@@ -176,7 +176,7 @@ class StatistiqueController extends Controller
                 ->first();
             $colisEnCours = DB::table("commandes")
                 ->where('id_client', $user->id)
-                ->whereIn('etat_commande', ['CANCELED', 'RELANCER', 'DMSUIVIE', 'ENROUTE', 'TRANSIT', 'REPORTED', 'ANNULER_CL', 'ANNULER', 'INHOUSE', 'HOME', 'ASSIGN', 'NOREPONSE', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR',])
+                ->whereIn('etat_commande', ['CANCELEDLV', 'CANCELEDAG', 'CANCELEDEV', 'CANCELED', 'CANCELEDRR', 'RELANCER', 'DMSUIVIE', 'ENROUTE', 'TRANSIT', 'REPORTED', 'ANNULER_CL', 'ANNULER', 'INHOUSE', 'HOME', 'ASSIGN', 'NOREPONSE', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR',])
                 ->where('updated_at', '>', $date_debut)
                 ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")

@@ -114,6 +114,12 @@ let message = {
     RETURNEDAG: "RETOURNÉ",
     RETURNEDEV: "RETOURNÉ",
     RETURNEDRR: "RETOURNÉ",
+
+    CANCELEDLV:"REFUSÉ",
+    CANCELEDAG:"REFUSÉ",
+    CANCELEDEV:"REFUSÉ",
+    CANCELEDRR:"REFUSÉ",
+
     CANCELED: "REFUSÉ",
     ARCHIVED: "ARCHIVÉ",
     NOREPONSE: "PAS DE RÉPONSE",
@@ -229,6 +235,9 @@ let message = {
     Close:'Fermer',
     Return_send_to_agency: "Retour envoyer à l'agence",
     Successfully: "Succès",
+    Package_send_to_agency:'Colis envoyé à l\'agence',
+    Package_in_agency:'Colis reçu en agence',
+    Package_send_to_origin_city:'Colis envoyé à la ville d\'origine',
 };
 
 export default {

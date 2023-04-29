@@ -1245,69 +1245,69 @@ export default {
                 .then((res) => {
                     this.commande = res.data.data;
                     var text =
-                        "<table class='table table-borderless' style='text-align: left;'>" +
-                        "<tr><td colspan='2'><b>"+this.$t('message.Original')+"</b></td></tr>";
+                        "<table class='table table-borderless' id='info-table' style='text-align: left;'>" +
+                        "<tr><td><b>" + this.$t('message.Original') + "</b></td></tr>";
 
                     if (res.data.data.nom_store != null) {
                         text +=
-                            "</td></tr><tr><td>Store :<b> </b></td><td>" +
+                            "</td></tr><tr><td>" + this.$t('message.Store') + " :<b> </b></td><td>" +
                             this.commande.nom_store +
                             "</td></tr>";
                     } else {
                         text +=
-                            "</td></tr><tr><td>Store :<b> </b></td><td>" +
+                            "</td></tr><tr><td>" + this.$t('message.Store') + " :<b> </b></td><td>" +
                             this.commande.company +
                             "</td></tr>";
                     }
 
                     if (res.data.data.nom != null && res.data.data.prenom != null) {
                         text +=
-                            "</td></tr><tr><td>Responsable :<b> </b></td><td>" +
+                            "</td></tr><tr><td>" + this.$t('message.Responsible') + " :<b> </b></td><td>" +
                             this.commande.nom + ' ' + this.commande.prenom +
                             "</td></tr>";
                         text +=
-                            "</td></tr><tr><td>Phone :<b> </b></td><td>" +
+                            "</td></tr><tr><td>" + this.$t('message.Phone_Number') + " :<b> </b></td><td>" +
                             this.commande.telephone_responsable +
                             "</td></tr>";
                     }
 
                     text +=
-                        "<tr><td colspan='2'><b>Destination</b></td></tr>" +
-                        "</td></tr><tr><td>ORDER N°</td><td>" +
+                        "<tr><td><b>" + this.$t('message.Destination') + "</b></td></tr>" +
+                        "</td></tr><tr><td>" + this.$t('message.Order_id') + " :</td><td>" +
                         this.commande.id_commande +
                         "</td></tr>";
                     text +=
-                        "</td></tr><tr><td>Client :<b> </b></td><td>" +
+                        "</td></tr><tr><td>" + this.$t('message.Client') + " :<b> </b></td><td>" +
                         this.commande.nom_client_commande
                     "</td></tr>";
 
                     text +=
-                        "</td></tr><tr><td>City :<b> </b></td><td>" +
+                        "</td></tr><tr><td>" + this.$t('message.City') + " :<b> </b></td><td>" +
                         this.commande.nom_ville +
                         "</td></tr>";
                     text +=
-                        "</td></tr><tr><td>Adresse :<b> </b></td><td>" +
+                        "</td></tr><tr><td>" + this.$t('message.Address') + " :<b> </b></td><td>" +
                         this.commande.adresse_client_commande +
                         "</td></tr>";
                     text +=
-                        "</td></tr><tr><td>Phone :<b> </b></td><td>" +
+                        "</td></tr><tr><td>" + this.$t('message.Phone_Number') + " :<b> </b></td><td>" +
                         this.commande.telephone_client_commande +
                         "</td></tr>";
                     text +=
-                        "</td></tr><tr><td>Price :<b> </b></td><td>" +
-                        this.commande.prix_commande +
-                        $t('message.Dhs') + "</td></tr>";
+                        "</td></tr><tr><td>" + this.$t('message.Price') + " :<b> </b></td><td> " +
+                        this.commande.prix_commande + ' ' + this.$t('message.Dhs') +
+                        " </td></tr>";
 
 
 
                     if (res.data.data.additional_commentaire != null) {
                         text +=
-                            "<tr><td>Commentaire :</td><td>" +
+                            "<tr><td>" + this.$t('message.Comment') + " :</td><td>" +
                             this.commande.additional_commentaire;
                     }
                     if (res.data.data.nom_article != null) {
                         text +=
-                            "</td></tr><tr><td><b><i class='fa fa-shopping-bag'></i> Article :</b></td><td><b><i class='fa fa-sort'></i> Quantite :</b></td></tr>";
+                            "</td></tr><tr><td><b>Articles :</b></td></tr>";
                         for (
                             let i = 0;
                             i < Object.keys(res.data.data2).length;
@@ -1323,13 +1323,17 @@ export default {
                         }
                     }
                     Swal.fire({
-                        title: "<h5><b>Package informations</b></h5>",
+                        title: "<h5><b>" + this.$t('message.Order_Informations') + "</b></h5>",
                         html: text,
                         showCancelButton: false,
                     });
                 })
                 .catch((error) => console.log(res))
                 .finally(() => this.$vs.loading.close());
+            if (this.locale == 'ar') {
+                document.getElementById("info-table").setAttribute("dir", "rtl");
+                document.getElementById("info-table").style.textAlign = 'right';
+            }
         },
         async chercher(count_nbr) {
             this.$vs.loading({ color: "#22c16b" });

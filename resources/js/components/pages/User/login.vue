@@ -48,7 +48,7 @@
                       </label>
                     </div>
                     <div class="w-50 text-md-right">
-                      <a  @click.prevent="ForgotPassword">Forgot Password</a>
+                      <a @click.prevent="ForgotPassword">Forgot Password</a>
                     </div>
                   </div>
                 </form>
@@ -461,23 +461,23 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.$vs.loading({ color: "#22c22b" });
-          axios.post('api/forgot-password',{'email':result.value})
+          axios.post('api/forgot-password', { 'email': result.value })
             .then(res => {
               console.log(res.data);
               this.$vs.notify({
-                                time: 8000,
-                                title: res.data.status,
-                                color: "success",
-                                position: "top-right",
-                            });
+                time: 8000,
+                title: res.data.status,
+                color: "success",
+                position: "top-right",
+              });
             })
             .catch(error => {
               this.$vs.notify({
-                                time: 8000,
-                                title: error.response.data.errors.email[0],
-                                color: "danger",
-                                position: "top-right",
-                            });
+                time: 8000,
+                title: error.response.data.errors.email[0],
+                color: "danger",
+                position: "top-right",
+              });
             }).finally(() => this.$vs.loading.close());
 
         }

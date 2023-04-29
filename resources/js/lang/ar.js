@@ -152,6 +152,11 @@ let message = {
     ANNULER: "إلغاء",
     NOREPONSE: "بدون رد",
     CANCELED: "مرفوض",
+
+    CANCELEDAG: "مرفوض",
+    CANCELEDEV:"مرفوض",
+    CANCELEDRR: "مرفوض",
+    CANCELEDLV:"مرفوض",
     RETURNEDRR: "إرجاع",
     RETURNEDDEV: "إرجاع",
     RETURNEDAG: "إرجاع",
@@ -225,6 +230,9 @@ let message = {
     Package: "حزمة",
     Return_send_to_agency: "تم إرجاع الطلبية إلى الوكالة",
     Successfully: "تمت العملية بنجاح",
+    Package_send_to_agency:'إرسال الطرد إلى الوكالة',
+    Package_in_agency:'تم استلام الطرد من قبل الوكالة',
+    Package_send_to_origin_city:'إرسال الطرد إلى مدينةالأصل',
 };
 
 export default {

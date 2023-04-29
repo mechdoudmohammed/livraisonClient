@@ -39,7 +39,7 @@
                         </router-link>
                     </li>
                 </div>
-                <span class="m-0 pe-lg-5 d-none d-lg-block"><i class="fa fa-headphones text-primary me-3"></i>+212 767 09 13 77</span>
+                <span class="m-0 pe-lg-5 d-none d-lg-block"><i class="fa fa-headphones text-primary me-3"></i>08 08 67 01 71</span>
             </div>
         </nav>
         <!-- Navbar End -->

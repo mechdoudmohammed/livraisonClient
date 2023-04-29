@@ -143,14 +143,14 @@
                       <div class="col-md-8">
                         <div class="form-group focused">
                           <label class="form-control-label" for="input-address">{{$t('message.RibBank')}}<span class="text-danger"> *</span></label>
-                          <input id="input-address" class="form-control form-control-alternative" type="text"
-                            v-model="Client.ribBank">
+                          <input id="input-address" class="form-control form-control-alternative disableChamps" type="text"
+                            v-model="Client.ribBank" >
                         </div>
                       </div>
                       <div class="col-lg-4" v-if="Client.role == 'Client'">
                         <div class="form-group focused">
                           <label class="form-control-label" for="input-city">{{$t('message.ICE')}}</label>
-                          <input type="text" id="input-city" class="form-control form-control-alternative">
+                          <input type="text" id="input-city" class="form-control form-control-alternative disableChamps">
                         </div>
                       </div>
                     </div>
@@ -160,7 +160,7 @@
                         <div class="form-group">
                           <label for="id_bank">{{$t('message.BankName')}}<span class="text-danger"> *</span></label>
                           <span class="text-danger"></span>
-                          <select class="form-control" id="id_bank" v-model="Client.id_bank">
+                          <select class="form-control disableChamps" id="id_bank" v-model="Client.id_bank">
                             <option name="id_bank" :value="bank.id_bank" v-for="bank in banks">{{ bank.nomBank }}
                             </option>
                           </select>

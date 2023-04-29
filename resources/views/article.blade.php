@@ -50,8 +50,8 @@
                         </td>
                         <td style="width:350px;margin-left:50px" class='facture_info'>
                             <b>ColiZone S.A.R.L</b><br />
-                            <b>CITE DHAR MEHREZ FES</b><br />
-                            <b>+212 767 09 13 77</b><br />
+                            <b>MAG 4 N°4 IMMEUBLE 9 RESIDENCE ASSAFA<br> DHAR MAHRAZ FES</b><br />
+                            <b>08 08 67 01 71</b><br />
                             <b>Contact@ColiZone.ma</b><br />
                         </td>
                     </tr>

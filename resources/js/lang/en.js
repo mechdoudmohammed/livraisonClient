@@ -114,6 +114,12 @@ let message = {
     RETURNEDAG: "RETURNED",
     RETURNEDEV: "RETURNED",
     RETURNEDRR: "RETURNED",
+
+    CANCELEDAG: "REFUSED",
+    CANCELEDEV: "REFUSED",
+    CANCELEDRR: "REFUSED",
+    CANCELEDLV: "REFUSED",
+
     CANCELED: "REFUSED",
     ARCHIVED: "ARCHIVED",
     NOREPONSE: "NOREPONSE",
@@ -221,13 +227,15 @@ let message = {
     Signout: "Signout",
     Profile: "Profile",
     Successfully: "Successfully",
-
-
     RELANCER: "RELAUNCH",
     Annuler: "Canceled",
     of: "of ",
     Package: "Package",
     Close:'Close',
+    Package_send_to_agency:'Package send to agency',
+    Package_in_agency:'Package received by agency',
+    Package_send_to_origin_city:'Package send to origin city',
+
     //=========================================================================================
     Model_Excel: "Model Excel",
     With_Sms: "With Sms",

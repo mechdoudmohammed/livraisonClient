@@ -59,7 +59,6 @@ class EmployeClientController extends Controller
             'cin' => 'nullable|String',
             'ribBank' => 'nullable|String',
             'username' => 'required|String',
-            'id_ville' => 'required',
             'email' => 'required|unique:clients,email|email',
             'password' => 'required|String',
         ]);
@@ -87,7 +86,7 @@ class EmployeClientController extends Controller
                     'id_bank' => $request->id_bank,
                     'ribBank' => $request->ribBank,
                     'username' =>  $request->username,
-                    'id_ville' => $request->id_ville,
+                    'id_ville' => $user->id_ville,
                     'superviseur' =>  $user->id,
                     'password' => Hash::make($request->password),
                 ]);

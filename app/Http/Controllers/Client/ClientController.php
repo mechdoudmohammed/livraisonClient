@@ -121,14 +121,16 @@ class ClientController extends Controller
                 $client->prenom = $request->prenom;
                 $client->cin = $request->cin;
                 $client->email = $request->email;
+                $client->ribBank = $request->ribBank;
+                $client->id_bank = $request->id_bank;
+
             }
             $client->notification_statut = $request->notification_statut;
             $client->adresse = $request->adresse;
             $client->telephone = $request->telephone;
             $client->company = $request->company;
             $client->website = $request->website;
-            $client->ribBank = $request->ribBank;
-            $client->id_bank = $request->id_bank;
+
             $client->save();
             return response()->json([
                 'message' => 'Client update successfully'
