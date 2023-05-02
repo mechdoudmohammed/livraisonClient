@@ -466,13 +466,13 @@ class ClientController extends Controller
                             ->first();
                         // that if means it's the first confirmed of the article
                         if ($article->qnt_article == null) {
-                            $article_in_stock = Article::where('articles.id', $commande_client[$n]->id_article)
+                            $article_in_stock = Article::where('articles.id_article', $commande_client[$n]->id_article)
                                 ->selectRaw('articles.stock_article as qnt_article_stock')
                                 ->first();
                             $articles = $article_in_stock->qnt_article_stock;
                         } else {
                             //pour savoir la quantite exist en stock
-                            $article_in_stock = Article::where('articles.id', $commande_client[$n]->id_article)
+                            $article_in_stock = Article::where('articles.id_article', $commande_client[$n]->id_article)
                                 ->selectRaw('articles.stock_article as qnt_article_stock')
                                 ->first();
                             $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;

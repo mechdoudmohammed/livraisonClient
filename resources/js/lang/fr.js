@@ -196,7 +196,7 @@ let message = {
     Return_sent_to_agency: "Retour envoyé à l'agence",
     Return_received_by_agency: "Retour reçu par l'agence",
     Return_send: "Retour envoyé",
-    Return_received_by_Ramasseur: "Retour reçu par le ramasseur",
+    Return_received_by_Ramasseur: "Retour reçu par le responsable",
     Return_send_to_hometown: "Retour envoyé à la ville d'origine",
     Email: "Email",
     CIN: "CIN",
@@ -238,6 +238,10 @@ let message = {
     Package_send_to_agency:'Colis envoyé à l\'agence',
     Package_in_agency:'Colis reçu en agence',
     Package_send_to_origin_city:'Colis envoyé à la ville d\'origine',
+    Return_received_by_responsible:'Retour reçu par le responsable',
+
+
+
 };
 
 export default {

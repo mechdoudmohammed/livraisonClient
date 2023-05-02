@@ -19,7 +19,7 @@ class CreatedetailsCommandesTable extends Migration
             $table->unsignedBigInteger('id_article')->nullable();
             $table->string('id_commande',100)->nullable();
 
-            $table->foreign('id_article')->references('id')->on('articles')->onDelete('cascade');
+            $table->foreign('id_article')->references('id_article')->on('articles')->onDelete('cascade');
 
             $table->foreign('id_commande')->references('id_commande')->on('commandes')->onDelete('cascade');
 

@@ -168,7 +168,7 @@
                         </td>
                     </tr>
                     @php
-                    $detailscommandes=DB::table('detailscommandes')->join('articles','articles.id','detailscommandes.id_article')
+                    $detailscommandes=DB::table('detailscommandes')->join('articles','articles.id_article','detailscommandes.id_article')
                     ->where('id_commande',$key->id_commande)->get();
                     @endphp
 

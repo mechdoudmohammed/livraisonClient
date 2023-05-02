@@ -195,7 +195,7 @@ let message = {
     Return_sent_to_agency: "Return sent to agency",
     Return_received_by_agency: "Return received by agency",
     Return_send: "Return send",
-    Return_received_by_Ramasseur: "Return received by Ramasseur",
+    Return_received_by_Ramasseur: "Return received by Responsible",
     Return_send_to_hometown: "Return send to hometown",
     Return_send_to_agency: "Return send to agency",
 
@@ -235,7 +235,7 @@ let message = {
     Package_send_to_agency:'Package send to agency',
     Package_in_agency:'Package received by agency',
     Package_send_to_origin_city:'Package send to origin city',
-
+    Return_received_by_responsible:'Return received by Responsible',
     //=========================================================================================
     Model_Excel: "Model Excel",
     With_Sms: "With Sms",

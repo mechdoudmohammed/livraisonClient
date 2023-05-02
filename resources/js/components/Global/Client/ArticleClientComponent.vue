@@ -48,8 +48,8 @@
                             </template>
                             <template slot-scope="{data}">
                                 <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-                                    <vs-td :data="tr.id">
-                                        {{ tr.id }}
+                                    <vs-td :data="tr.id_article ">
+                                        {{ tr.id_article }}
                                     </vs-td>
                                     <vs-td :data="tr.nom_article">
                                         {{ tr.nom_article }}
@@ -73,13 +73,13 @@
                                     <vs-td :data="tr.etat_article" v-if="Client.role == 'Client'">
                                 
                                         <button type="button" class="btn btn-danger"
-                                            @click.prevent="downloadSticker(tr.id)"><i
+                                            @click.prevent="downloadSticker(tr.id_article )"><i
                                                 class="fa fa-download"></i></button>
                                  <button type="button" class="btn btn-success" 
                                                 v-if="tr.etat_article == 'En stock'"
-                                    @click="downloadHistoriqueArticle(tr.id)"><i class="fa fa-file-excel"></i></button>
+                                    @click="downloadHistoriqueArticle(tr.id_article )"><i class="fa fa-file-excel"></i></button>
                                     <button type="button" class="btn btn-history" data-bs-toggle="modal"
-                                            data-bs-target="#showArticleHistory" @click.prevent="getHistoriqueArticles(tr.id)">
+                                            data-bs-target="#showArticleHistory" @click.prevent="getHistoriqueArticles(tr.id_article )">
                                             <i class="fa fa-history"></i>
                                         </button>
 
@@ -154,11 +154,14 @@
                                         <div class="timeline">
                                             <div class="tl-item" v-for="HistoriqueArticle in HistoriqueArticles">
                                                 <div class="tl-dot">
-                                                    <a class="tl-author" href="#" data-abc="true"><span
-                                                            class="w-32 avatar circle gd-info">
-                                                            <b>{{ HistoriqueArticle.new_stock }}</b><br>
-
-                                                        </span></a>
+                                                    <a class="tl-author" data-abc="true">
+                                                        <span v-if="HistoriqueArticle.new_stock>0" class="w-32 avatar circle gd-info">
+                                                            <b >{{ HistoriqueArticle.new_stock }}</b><br>
+                                                        </span>
+                                                        <span v-if="HistoriqueArticle.new_stock<0" class="w-32 avatar circle gd-error">
+                                                            <b >{{ HistoriqueArticle.new_stock }}</b><br>
+                                                        </span>
+                                                    </a>
                                                 </div>
                                                 <div class="tl-content">
                                                     <div class="etat_commande">
@@ -256,9 +259,6 @@ export default {
 
                     })
                     .catch(error => console.log(res)).finally(() => this.$vs.loading.close());
-
-
-
         },
         async downloadSticker(id) {
             this.$vs.loading({ color: '#22c16b' })

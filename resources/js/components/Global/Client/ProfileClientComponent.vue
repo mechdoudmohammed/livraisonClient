@@ -130,6 +130,7 @@
                             v-model="Client.cin">
                         </div>
                       </div>
+                      
 
                     </div>
 

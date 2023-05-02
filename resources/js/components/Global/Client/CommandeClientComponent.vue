@@ -814,72 +814,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CANCELEDLV'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_agency') }}</span><br>
-
-                                                        {{ $t('message.Order_canceled') }}
-                                                        {{ $t('message.By') }}
-                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
-                                                        <b v-else>Service Client</b>
-                                                        <br>
-                                                        <span v-if="hCommande.id_bon_retour_client != null">{{
-                                                            $t('message.Return_receipt') }}
-                                                            :</span>
-                                                        <b v-if="hCommande.id_bon_retour_client != null">{{
-                                                            hCommande.id_bon_retour_client }}</b>
-                                                        <br v-if="hCommande.id_bon_retour_client != null" />
-                                                        {{ $t('message.At') }}
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CANCELEDAG'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_in_agency') }}</span><br>
-                                                        {{ $t('message.Order_canceled') }}
-                                                        {{ $t('message.By') }}
-                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
-                                                        <b v-else>Service Client</b>
-                                                        <br>
-                                                        {{ $t('message.At') }}
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CANCELEDEV'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_origin_city') }}</span><br>
-
-                                                        {{ $t('message.Order_canceled') }}
-                                                        {{ $t('message.By') }}
-                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
-                                                        <b v-else>Service Client</b>
-                                                        <br>
-                                                        {{ $t('message.At') }}
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CANCELEDRR'">
-                                                        {{ $t('message.Order_canceled') }}
-                                                        {{ $t('message.By') }}
-                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
-                                                        <b v-else>Service Client</b>
-                                                        <br>
-                                                        {{ $t('message.At') }}
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CANCELED'">
-                                                        {{ $t('message.Order_canceled') }}
-                                                        {{ $t('message.By') }}
-                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
-                                                        <b v-else>Service Client</b>
-                                                        <br>
-                                                        {{ $t('message.At') }}
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
+                                                   
 
 
 
@@ -1068,7 +1003,72 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'CANCELEDLV'">
+                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_agency') }}</span><br>
 
+                                                        {{ $t('message.Order_canceled') }}
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        <span v-if="hCommande.id_bon_retour_client != null">{{
+                                                            $t('message.Return_receipt') }}
+                                                            :</span>
+                                                        <b v-if="hCommande.id_bon_retour_client != null">{{
+                                                            hCommande.id_bon_retour_client }}</b>
+                                                        <br v-if="hCommande.id_bon_retour_client != null" />
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'CANCELEDAG'">
+                                                        <span class="commentaireCommande">{{$t('message.Package_in_agency') }}</span><br>
+                                                        {{ $t('message.Order_canceled') }}
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'CANCELEDEV'">
+                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_origin_city') }}</span><br>
+
+                                                        {{ $t('message.Order_canceled') }}
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'CANCELEDRR'">
+                                                        <span class="commentaireCommande">{{$t('message.Return_received_by_responsible')}}</span><br>
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-1"
+                                                        v-if="hCommande.etat_commande == 'CANCELED'">
+                                                        {{ $t('message.Order_canceled') }}
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDLV'">
                                                         <span class="commentaireCommande">{{$t('message.Package_send_to_agency') }}</span><br>
@@ -1112,7 +1112,7 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDRR'">
-                                                        <span class="commentaireCommande">Return send to hometown</span><br>
+                                                        <span class="commentaireCommande">{{$t('message.Return_received_by_responsible')}}</span><br>
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>

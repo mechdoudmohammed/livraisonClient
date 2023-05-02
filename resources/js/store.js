@@ -34,7 +34,7 @@ const store = new Vuex.Store({
             commit('isClient', true);
           })
           .catch(error => {
-            console.log(error)
+         
           })
       } else {
         commit('isClient', false);
@@ -50,7 +50,7 @@ const store = new Vuex.Store({
             }
           })
           .catch(error => {
-            console.log(error)
+          
           })
       }
       else {
@@ -67,7 +67,7 @@ const store = new Vuex.Store({
             }
           })
           .catch(error => {
-            console.log(error)
+
           })
       }
       else {

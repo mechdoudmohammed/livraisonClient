@@ -19,7 +19,7 @@ class CreatehistoriqueArticlesTable extends Migration
             $table->string('new_stock')->nullable();
 
             $table->unsignedBigInteger('id_article')->nullable();
-            $table->foreign('id_article')->references('id')->on('articles');
+            $table->foreign('id_article')->references('id_article')->on('articles');
             $table->unsignedBigInteger('id_employe')->nullable();
             $table->foreign('id_employe')->references('id')->on('employes');
 

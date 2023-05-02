@@ -195,18 +195,18 @@ class CommandeController extends Controller
                                     $query->where('commandes.id_client', $user->id)
                                         ->orwhere('commandes.id_client', $user->superviseur);
                                 })
-                                ->where('detailscommandes.id_article', $request->articles[$i]['id'])
+                                ->where('detailscommandes.id_article', $request->articles[$i]['id_article'])
                                 ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
                                 ->first();
                             // that if means it's the first confirmed of the article
                             if ($article->qnt_article == null) {
-                                $article_in_stock = Article::where('articles.id', $request->articles[$i]['id'])
+                                $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
                                     ->selectRaw('articles.stock_article as qnt_article_stock')
                                     ->first();
                                 $articles = $article_in_stock->qnt_article_stock;
                             } else {
                                 //pour savoir la quantite exist en stock
-                                $article_in_stock = Article::where('articles.id', $request->articles[$i]['id'])
+                                $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
                                     ->selectRaw('articles.stock_article as qnt_article_stock')
                                     ->first();
                                 $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
@@ -254,7 +254,7 @@ class CommandeController extends Controller
                         for ($i = 0; $i < count($request->articles); $i++) {
                             DetailsCommandes::create([
                                 "id_commande" =>  $id_commande,
-                                "id_article" => $request->articles[$i]['id'],
+                                "id_article" => $request->articles[$i]['id_article'],
                                 "quantite_article" => $request->articles[$i]['quantite'],
                             ]);
                         }
@@ -330,7 +330,7 @@ class CommandeController extends Controller
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
                 $commande = Commande::join('villes', 'commandes.id_ville', '=', 'villes.id')
                     ->leftjoin('detailscommandes', 'commandes.id_commande', 'detailscommandes.id_commande')
-                    ->leftjoin('articles', 'articles.id', 'detailscommandes.id_article')
+                    ->leftjoin('articles', 'articles.id_article', 'detailscommandes.id_article')
                     ->leftjoin('employes', 'commandes.responsable', 'employes.id')
                     ->leftjoin('stores', 'commandes.id_store', 'stores.id')
                     ->leftjoin('clients', 'clients.id', 'commandes.id_client')
@@ -340,9 +340,9 @@ class CommandeController extends Controller
                 telephone_client_commande,commandes.prix_livraison_final,
                 type_autorisation,commandes.updated_at,villes.id as ville_client_commande,articles.nom_article')
                     ->first();
-                $DetailsCommandes = DetailsCommandes::leftjoin('articles', 'articles.id', 'detailscommandes.id_article')
+                $DetailsCommandes = DetailsCommandes::leftjoin('articles', 'articles.id_article', 'detailscommandes.id_article')
                     ->where('detailscommandes.id_commande', $id)
-                    ->selectRaw('quantite_article as quantite,articles.id as id,articles.nom_article')
+                    ->selectRaw('quantite_article as quantite,articles.id_article as id,articles.nom_article')
                     ->get();
                 for ($i = 0; $i < count($DetailsCommandes); $i++) {
                     $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
@@ -356,7 +356,7 @@ class CommandeController extends Controller
                         ->first();
                     // that if means it's the first confirmed of the article
                     if ($article->qnt_article == null) {
-                        $article_in_stock = Article::where('articles.id', $DetailsCommandes[$i]->id)
+                        $article_in_stock = Article::where('articles.id_article', $DetailsCommandes[$i]->id)
                             ->selectRaw('articles.stock_article as qnt_article_stock')
                             ->first();
                         if ($article_in_stock->qnt_article_stock <= 0) {
@@ -365,7 +365,7 @@ class CommandeController extends Controller
                         }
                     } else {
                         //pour savoir la quantite exist en stock
-                        $article_in_stock = Article::where('articles.id', $DetailsCommandes[$i]->id)
+                        $article_in_stock = Article::where('articles.id_article', $DetailsCommandes[$i]->id)
                             ->selectRaw('articles.stock_article as qnt_article_stock')
                             ->first();
                         if ($article_in_stock->qnt_article_stock - $article->qnt_article <= 0) {
@@ -423,18 +423,18 @@ class CommandeController extends Controller
                                 $query->where('commandes.id_client', $user->id)
                                     ->orwhere('commandes.id_client', $user->superviseur);
                             })
-                            ->where('detailscommandes.id_article', $request->articles[$i]['id'])
+                            ->where('detailscommandes.id_article', $request->articles[$i]['id_article'])
                             ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
                             ->first();
                         // that if means it's the first confirmed of the article
                         if ($article->qnt_article == null) {
-                            $article_in_stock = Article::where('articles.id', $request->articles[$i]['id'])
+                            $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
                                 ->selectRaw('articles.stock_article as qnt_article_stock')
                                 ->first();
                             $articles = $article_in_stock->qnt_article_stock;
                         } else {
                             //pour savoir la quantite exist en stock
-                            $article_in_stock = Article::where('articles.id', $request->articles[$i]['id'])
+                            $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
                                 ->selectRaw('articles.stock_article as qnt_article_stock')
                                 ->first();
                             $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
@@ -461,7 +461,7 @@ class CommandeController extends Controller
                         }
                         if ($exite_article) {
                             $detailscommandes[$i]->quantite_article = $request->articles[$i]['quantite'];
-                            $detailscommandes[$i]->id_article = $request->articles[$i]['id'];
+                            $detailscommandes[$i]->id_article = $request->articles[$i]['id_article'];
                             $statut = $detailscommandes[$i]->save();
                         } else {
                             DetailsCommandes::where('detailscommandes.id_commande', $request->id_commande)->where('detailscommandes.id_article', $detailscommandes[$i]->id_article)->delete();

@@ -20,7 +20,7 @@ class ArticleHistorique implements FromQuery,WithHeadings,WithColumnWidths,WithS
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function __construct(int $id)
+    public function __construct(string $id)
     {
         $this->id = $id;
     }
@@ -32,9 +32,9 @@ class ArticleHistorique implements FromQuery,WithHeadings,WithColumnWidths,WithS
         'nom_client_commande','adresse_client_commande','telephone_client_commande',
         'prix_commande','etat_commande'
         )
-        ->join('detailscommandes','detailscommandes.id_article','=','articles.id')
+        ->join('detailscommandes','detailscommandes.id_article','=','articles.id_article')
         ->Join('commandes','detailscommandes.id_commande','=','commandes.id_commande')
-        ->where('articles.id', $this->id)
+        ->where('articles.id_article', $this->id)
         ->where('commandes.etat_commande', 'DELIVERED');
     }
     public function headings(): array

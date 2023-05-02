@@ -19173,7 +19173,7 @@ code {
 
 /* Forms */
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 
 }
 
@@ -19575,7 +19575,9 @@ dl li {
   padding-left: 15px;
   padding-right: 15px;
 }
-
+span.w-32.avatar.circle.gd-error {
+  color: red;
+}
 .preview-list .preview-item .preview-item-content:first-child {
   padding-left: 0;
 }

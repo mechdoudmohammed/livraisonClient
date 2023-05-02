@@ -63,11 +63,11 @@
 
             <div class="row" style="border: 1px solid;display: flex;padding: 6px; text-align:center;justify-content: center;">
                 <div class="col-8" style="width: 60% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
-                    <b style="margin-right: 55px;">FJSKF1594DDSC </b>
-                    {!! DNS1D::getBarcodeHTML('FJSKF1594DDSC', 'C128',1,23) !!}
+                    <b style="margin-right: 55px;">{{$key->id_article}} </b>
+                    {!! DNS1D::getBarcodeHTML($key->id_article, 'C128',1,23) !!}
                 </div>
                 <div class="col-3" width='width: 25% !important;'>
-                    {!! DNS2D::getBarcodeHTML('FJSKF1594DDSC', 'QRCODE',3,3) !!}
+                    {!! DNS2D::getBarcodeHTML($key->id_article, 'QRCODE',3,3) !!}
                 </div>
 
             </div>
@@ -78,7 +78,7 @@
                     <tr>
                         <td style="width:250px">
 
-                            <p style="font-size: 12px;margin-bottom: 6px;">Article Id: {{$key->id}}
+                            <p style="font-size: 12px;margin-bottom: 6px;">Article Id: {{$key->id_article}}
 
                             </p>
                         </td>

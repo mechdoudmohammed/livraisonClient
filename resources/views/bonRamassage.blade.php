@@ -35,13 +35,13 @@
         }
 
         .invoice-box {
-          
+
             margin: auto;
             padding: 30px;
 
             font-size: 16px;
             line-height: 24px;
-            
+
         }
 
         .invoice-box table {
@@ -59,11 +59,13 @@
         .invoice-box table tr.top table td {
             padding-bottom: 20px;
         }
+
         .invoice-box table tr.top table td.title {
             font-size: 45px;
             line-height: 45px;
             color: #333;
         }
+
         .invoice-box table tr.heading td {
             background: #00b4c2;
             border-bottom: 1px solid #ddd;
@@ -124,6 +126,7 @@
             }
 
         }
+
     </style>
 </head>
 
@@ -134,8 +137,8 @@
                 <table>
                     <tr>
 
-                    <td class="title">
-                    <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
+                        <td class="title">
+                            <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
                         </td>
 
                         <td class='facture_info'>
@@ -148,6 +151,10 @@
                 </table>
             </td>
         </table>
+     
+        
+     
+
         <table>
             <tr class="information">
 
@@ -166,7 +173,7 @@
                     CNI: <b>{{$data->cin}}</b>
                 </td>
             </tr>
-    
+
 
 
         </table>
@@ -177,11 +184,11 @@
                 <td>Telephone</td>
                 <td>Ville</td>
                 <td>Prix Commande</td>
-                
+
 
             </tr>
             @foreach($data2 as $key)
-           
+
             <tr class="item">
                 <td>{{ $key->id_commande }}</td>
                 <td>{{ $key->nom_client_commande }}</td>
@@ -189,7 +196,7 @@
                 <td>{{ $key->ville_client }}</td>
                 <td>{{ $key->prix_commande }} Dhs</td>
 
-            @endforeach
+                @endforeach
 
 
         </table>
@@ -199,8 +206,8 @@
         <table>
             <tr class="information">
                 <td>Signature Client</td>
-                <td >Signature Responsable</td>
-                
+                <td>Signature Responsable</td>
+
 
             </tr>
 

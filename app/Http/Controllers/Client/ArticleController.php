@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
+use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
@@ -25,7 +26,7 @@ class ArticleController extends Controller
                         $query->where('articles.id_client', $user->id)
                             ->orwhere('articles.id_client', $user->superviseur);
                     })
-                    ->select('articles.id', 'articles.commentaire', 'articles.nom_article', 'articles.prix_article', 'articles.stock_article', 'articles.etat_article')
+                    ->select('articles.id_article', 'articles.commentaire', 'articles.nom_article', 'articles.prix_article', 'articles.stock_article', 'articles.etat_article')
                     ->orderBy('updated_at', 'desc')
                     ->paginate(20);
                 return response()->json([
@@ -50,19 +51,19 @@ class ArticleController extends Controller
                     })
                     ->where('articles.etat_article', 'En stock')
                     ->where('articles.stock_article', '>', 0)
-                    ->select('articles.id', 'articles.commentaire', 'articles.nom_article', 'articles.prix_article', 'articles.stock_article', 'articles.etat_article')
+                    ->select('articles.id_article', 'articles.commentaire', 'articles.nom_article', 'articles.prix_article', 'articles.stock_article', 'articles.etat_article')
                     ->orderBy('updated_at', 'desc')
                     ->get();
                 for ($i = 0; $i < count($articles); $i++) {
                     $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
                         ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
                         ->where('commandes.id_client', $user->id)
-                        ->where('detailscommandes.id_article', $articles[$i]->id)
+                        ->where('detailscommandes.id_article', $articles[$i]->id_article)
                         ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
                         ->first();
                     // that if means it's the first confirmed of the article
                     if ($article->qnt_article == null) {
-                        $article_in_stock = Article::where('articles.id', $articles[$i]->id)
+                        $article_in_stock = Article::where('articles.id_article', $articles[$i]->id_article)
                             ->selectRaw('articles.stock_article as qnt_article_stock')
                             ->first();
                         if ($article_in_stock->qnt_article_stock <= 0) {
@@ -71,7 +72,7 @@ class ArticleController extends Controller
                         }
                     } else {
                         //pour savoir la quantite exist en stock
-                        $article_in_stock = Article::where('articles.id', $articles[$i]->id)
+                        $article_in_stock = Article::where('articles.id_article', $articles[$i]->id_article)
                             ->selectRaw('articles.stock_article as qnt_article_stock')
                             ->first();
                         if ($article_in_stock->qnt_article_stock - $article->qnt_article <= 0) {
@@ -103,8 +104,10 @@ class ArticleController extends Controller
         try {
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
+                $id_article = substr($request->nom_article, 0, 4).'-'. $user->id .'-'.strtoupper(Str::random(6));
 
                 $statut = Article::create([
+                    "id_article"=>$id_article,
                     "nom_article" => $request->nom_article,
                     "commentaire" => $request->commentaire,
                     "prix_article" => $request->prix_article,
@@ -177,13 +180,13 @@ class ArticleController extends Controller
                         ->first();
                     // that if means it's the first confirmed of the article
                     if ($article->qnt_article == null) {
-                        $article_in_stock = Article::where('articles.id', $request[$i]['id'])
+                        $article_in_stock = Article::where('articles.id_article', $request[$i]['id'])
                             ->selectRaw('articles.stock_article as qnt_article_stock')
                             ->first();
                         $articles = $article_in_stock->qnt_article_stock;
                     } else {
                         //pour savoir la quantite exist en stock
-                        $article_in_stock = Article::where('articles.id', $request[$i]['id'])
+                        $article_in_stock = Article::where('articles.id_article', $request[$i]['id'])
                             ->selectRaw('articles.stock_article as qnt_article_stock')
                             ->first();
                         $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
@@ -216,9 +219,9 @@ class ArticleController extends Controller
                     ->join('clients', 'articles.id_client', '=', 'clients.id')
                     ->join('villes', 'clients.id_ville', '=', 'villes.id')
                     ->where('articles.id_client', $user->id)
-                    ->where('articles.id', $request->id)
+                    ->where('articles.id_article', $request->id)
                     ->select(
-                        'articles.id',
+                        'articles.id_article',
                         'clients.company',
                         'clients.website',
                         'clients.telephone',
@@ -253,12 +256,12 @@ class ArticleController extends Controller
         $user = auth('sanctum')->user();
         if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
             $articles = HistoriqueArticle::join('employes', 'employes.id', 'historiquearticles.id_employe')
-                ->join('articles', 'articles.id', 'historiquearticles.id_article')
+                ->join('articles', 'articles.id_article', 'historiquearticles.id_article')
                 ->where(function ($query) use ($user) {
                     $query->where('articles.id_client', $user->id)
                         ->orWhere('articles.id_client', $user->superviseur);
                 })
-                ->where('id_article', $id)
+                ->where('articles.id_article', $id)
                 ->selectRaw('historiquearticles.id,historiquearticles.description,historiquearticles.new_stock,historiquearticles.updated_at,employes.username')
                 ->get();
             return response()->json([

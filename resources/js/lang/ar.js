@@ -192,7 +192,7 @@ let message = {
     Relaunch_request: "إعادة إطلاق الطلب",
     Return_received_by_agency: "تم استلام الطلبية في الوكالة",
     Return_send: "تم إرسال الإرجاع",
-    Return_received_by_Ramasseur: "تم استلام الطلبية من الموزع",
+    Return_received_by_Ramasseur: "تم استلام الطلبية من المسؤول",
     Return_send_to_hometown: "تم إرسال الطلبية إلى مدينة الأصل",
     Email:'البريد الالكتروني',
     CIN: 'رقم البطاقة الوطنية',
@@ -233,6 +233,9 @@ let message = {
     Package_send_to_agency:'إرسال الطرد إلى الوكالة',
     Package_in_agency:'تم استلام الطرد من قبل الوكالة',
     Package_send_to_origin_city:'إرسال الطرد إلى مدينةالأصل',
+    Return_received_by_responsible:'تم إستلام الطرد من طرف المسؤول',
+
+
 };
 
 export default {
