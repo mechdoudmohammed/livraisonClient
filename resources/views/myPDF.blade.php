@@ -47,14 +47,14 @@
         @foreach($data as $key)
         <div class="col-6 sticker" style="margin:3px 1%;border:1.5px solid" v-for="(item, index) in getpackageClient" :key="index">
             <div class="row company" style="border: 1.5px solid;font-weight: 600;text-align: center;">
-                <table style="margin-left:6px">
+                <table style="margin-left:6px;margin-bottom:15px;margin-top:15px">
                     <tr>
                         <td style="width:150px ; padding:5px;">
-                            <img src="{{ public_path('/images/logoFiles.png') }}" width="120" height="50" />
+                            <img src="{{ public_path('/images/logoFiles.png') }}" width="120" height="45" />
                         </td>
                         <td style="width:320px;" class='facture_info'>
                             <b>ColiZone S.A.R.L</b><br />
-                            <b>MAG 4 N°4 IMMEUBLE 9 RESIDENCE ASSAFA<br> DHAR MAHRAZ FES</b><br />
+                            <b>Mag 4 Résidence Assafa Av. Al Joulane Fés</b><br />
                             <b>08 08 67 01 71</b><br />
 
                         </td>
@@ -66,10 +66,10 @@
             </div>
             <div class="row" style="border: 1.5px solid;display: flex;padding: 16px; text-align:center;justify-content: center;">
                 <div class="col-8" style="width: 70% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
-                    <b style="margin-right: 55px;">{{ $key->id_commande }}</b>
+                    <b>{{ $key->id_commande }}</b>
                     {!! DNS1D::getBarcodeHTML($key->id_commande, 'C128',1,30) !!}
                 </div>
-                <div class="col-3" width='width: 30% !important;'>
+                <div class="col-3" >
                     {!! DNS2D::getBarcodeHTML($key->id_commande, 'QRCODE',4,4) !!}
                 </div>
 
@@ -219,10 +219,10 @@
                         </td>
                         <td>
                             <b style="font-size: 14px;margin-bottom: 6px;">
-                                @if($key->adresse_store)
-                                {{$key->adresse_store}}
+                          @if($key->ville_client)
+                                {{$key->ville_client}}
                                 @else
-                                {{$key->adresse}}
+                                {{$key->store_ville}}
                                 @endif
     </b>
                         </td>

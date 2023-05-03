@@ -33,14 +33,14 @@
 
         <div style="border:2px solid ;width:100%;height:137mm" v-for="(item, index) in getpackageClient" :key="index">
             <div class="row company" style="border-top: 1px solid;font-weight: 600;text-align: center;">
-                <table style="margin-left:10px">
+                <table style="margin-left:10px;margin-bottom:15px;margin-top:15px">
                     <tr>
                         <td style="width:170px ; padding:5px;">
                             <img src="{{ public_path('/images/logoFiles2.png') }}" width="130" height="45" />
                         </td>
                         <td style="width:300px;" class='facture_info'>
                             <b>ColiZone S.A.R.L</b><br />
-                            <b>MAG 4 N°4 IMMEUBLE 9 RESIDENCE ASSAFA<br> DHAR MAHRAZ FES</b><br />
+                            <b>Mag 4 Résidence Assafa Av. Al Joulane Fés</b><br />
                             <b>08 08 67 01 71</b><br />
                         </td>
                     </tr>
@@ -51,10 +51,10 @@
             </div>
             <div class="row" style="border-top: 1px solid;display: flex;padding: 8px; text-align:center;justify-content: center;">
                 <div class="col-8" style="width: 70% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
-                    <b style="margin-right: 65px;margin-top:20px">{{ $key->id_commande }}</b>
+                    <b style="margin-right: 75px;margin-top:20px">{{ $key->id_commande }}</b>
                     {!! DNS1D::getBarcodeHTML($key->id_commande, 'C128',1,23) !!}
                 </div>
-                <div class="col-3" style="margin-left:10px !important;">
+                <div class="col-3" style="margin-left:15px !important;">
                     {!! DNS2D::getBarcodeHTML($key->id_commande, 'QRCODE',4,4) !!}
                 </div>
 
@@ -65,11 +65,11 @@
                     <tr>
                         <td style="width:330px">
                             <p style="font-size: 14px;margin-bottom: 1px;">
-                                {{$key->ville}}
+                               <b> {{$key->ville}}</b>
                             </p>
                         </td>
                         <td>
-                            <p style="font-size: 14px;margin-bottom:1px;">{{$key->nom_client_commande}}
+                            <p style="font-size: 14px;margin-bottom:1px;"><b>{{$key->nom_client_commande}}</b>
                             </p>
 
                         </td>
@@ -77,11 +77,11 @@
                     <tr>
                         <td>
                             <p style="font-size: 14px;margin-bottom: 1px;">
-                                {{$key->adresse_client_commande}}
+                               <b> {{$key->adresse_client_commande}}</b>
                             </p>
                         </td>
                         <td>
-                            <p style="font-size: 14px;margin-bottom: 1px;">{{$key->telephone_client_commande}}</p>
+                            <p style="font-size: 14px;margin-bottom: 1px;"><b>{{$key->telephone_client_commande}}<b></p>
 
                         </td>
                     </tr>
@@ -175,43 +175,43 @@
                 <table style="margin-left:20px;width: 100%;">
                     <tr>
                         <td style="width:250px">
-                            <p style="font-size: 14px;margin-bottom: 1px;">
+                            <b style="font-size: 14px;margin-bottom: 1px;">
 
                                 @if(isset($key->siteweb_store))
                                 {{$key->siteweb_store}}
                                 @else
                                 {{$key->website}}
                                 @endif
-                            </p>
+    </b>
                         </td>
                         <td>
-                            <p style="font-size: 14px;margin-bottom: 1px;">
+                            <b style="font-size: 14px;margin-bottom: 1px;">
                                 @if($key->nom_store)
                                 {{$key->nom_store}}
                                 @else
                                 {{$key->company}}
                                 @endif
-                            </p>
+    </b>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p style="font-size: 14px;margin-bottom: 1px;">
+                            <b style="font-size: 14px;margin-bottom: 1px;">
                                 @if($key->telephone_store)
                                 {{$key->telephone_store}}
                                 @else
                                 {{$key->telephone_client}}
                                 @endif
-                            </p>
+    </b>
                         </td>
                         <td>
-                            <p style="font-size: 14px;margin-bottom: 1px;">
-                                @if($key->adresse_store)
-                                {{$key->adresse_store}}
+                            <b style="font-size: 14px;margin-bottom: 1px;">
+                                @if($key->ville_client)
+                                {{$key->ville_client}}
                                 @else
-                                {{$key->adresse}}
+                                {{$key->store_ville}}
                                 @endif
-                            </p>
+    </b>
                         </td>
                     </tr>
                     <tr>
