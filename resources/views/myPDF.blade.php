@@ -49,10 +49,10 @@
             <div class="row company" style="border: 1.5px solid;font-weight: 600;text-align: center;">
                 <table style="margin-left:6px">
                     <tr>
-                        <td style="width:120px ; padding:5px;">
-                            <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
+                        <td style="width:150px ; padding:5px;">
+                            <img src="{{ public_path('/images/logoFiles.png') }}" width="120" height="50" />
                         </td>
-                        <td style="width:350px;" class='facture_info'>
+                        <td style="width:320px;" class='facture_info'>
                             <b>ColiZone S.A.R.L</b><br />
                             <b>MAG 4 N°4 IMMEUBLE 9 RESIDENCE ASSAFA<br> DHAR MAHRAZ FES</b><br />
                             <b>08 08 67 01 71</b><br />
@@ -79,24 +79,24 @@
                 <table style="margin-left:10px;margin-right:10px;">
                     <tr>
                         <td style="width:250px">
-                            <b style="font-size: 12px;margin-bottom: 2px;">
+                            <b style="font-size: 14px;margin-bottom: 2px;">
                                 {{$key->ville}}
     </b>
                         </td>
                         <td>
-                            <b style="font-size: 12px;margin-bottom: 2px;">{{$key->nom_client_commande}}
+                            <b style="font-size: 14px;margin-bottom: 2px;">{{$key->nom_client_commande}}
     </b>
 
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <b style="font-size: 12px;margin-bottom: 2px;">
+                            <b style="font-size: 14px;margin-bottom: 2px;">
                                 {{$key->adresse_client_commande}}
     </b>
                         </td>
                         <td>
-                            <b style="font-size: 12px;margin-bottom: 2px;">{{$key->telephone_client_commande}}</b>
+                            <b style="font-size: 14px;margin-bottom: 2px;">{{$key->telephone_client_commande}}</b>
 
                         </td>
                     </tr>
@@ -163,7 +163,7 @@
                 <table style="width: 100%;">
                     <tr>
                        
-                        <td style="text-align:center ;font-size: 12px;font-weight: 600;">
+                        <td style="text-align:center ;font-size: 14px;font-weight: 600;">
                             {{$key->additional_commentaire}}
                         </td>
                     </tr>
@@ -188,7 +188,7 @@
                 <table style="margin-left:10px;margin-right:10px;width: 100%;">
                     <tr>
                         <td style="width:250px">
-                            <b style="font-size: 12px;margin-bottom: 6px;">
+                            <b style="font-size: 14px;margin-bottom: 6px;">
 
                                 @if(isset($key->siteweb_store))
                                 {{$key->siteweb_store}}
@@ -198,7 +198,7 @@
     </b>
                         </td>
                         <td>
-                            <b style="font-size: 12px;margin-bottom: 6px;">
+                            <b style="font-size: 14px;margin-bottom: 6px;">
                                 @if($key->nom_store)
                                 {{$key->nom_store}}
                                 @else
@@ -209,7 +209,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <b style="font-size: 12px;margin-bottom: 6px;">
+                            <b style="font-size: 14px;margin-bottom: 6px;">
                                 @if($key->telephone_store)
                                 {{$key->telephone_store}}
                                 @else
@@ -218,7 +218,7 @@
     </b>
                         </td>
                         <td>
-                            <b style="font-size: 12px;margin-bottom: 6px;">
+                            <b style="font-size: 14px;margin-bottom: 6px;">
                                 @if($key->adresse_store)
                                 {{$key->adresse_store}}
                                 @else
@@ -228,7 +228,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align:center ;"><span style="font-size: 12px;font-weight: 600;text-align: center;">
+                        <td colspan="2" style="text-align:center ;"><span style="font-size: 14px;font-weight: 600;text-align: center;margin-right:15px">
                                 @if($key->nom_store)
                                 {{$key->nom_store}}
                                 @else
