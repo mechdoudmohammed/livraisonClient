@@ -138,14 +138,13 @@
                     <tr>
 
                         <td class="title">
-                            <img src="{{ public_path('/images/logoFiles.png') }}" width="70" height="70" />
+                            <img src="{{ public_path('/images/logoFiles.png') }}" width="160" height="70" />
                         </td>
 
                         <td class='facture_info'>
-                            <b>ColiZone S.A.R.L</b><br />
-                            <b>MAG 4 N°4 IMMEUBLE 9 RESIDENCE ASSAFA<br> DHAR MAHRAZ FES</b><br />
+                        <b>ColiZone S.A.R.L</b><br />
+                            <b>Mag 4 Résidence Assafa Av. Al Joulane Fés</b><br />
                             <b>08 08 67 01 71</b><br />
-                            <b>Contact@ColiZone.ma</b><br />
                         </td>
                     </tr>
                 </table>
@@ -159,10 +158,10 @@
             <tr class="information">
 
                 <td>
-                    Nom & prenom: <b>{{$data->nom}} {{$data->prenom}}</b>
+                    Nom & prenom : <b>{{$data->nom}} {{$data->prenom}}</b>
                 </td>
                 <td>
-                    Client N°: <b>{{$data->id}}</b>
+                    Client N° : <b>{{$data->id}}</b>
                 </td>
             </tr>
             <tr>
@@ -170,7 +169,7 @@
                     Adresse : <b>{{$data->adresse}}</b>
                 </td>
                 <td>
-                    CNI: <b>{{$data->cin}}</b>
+                    CNI : <b>{{$data->cin}}</b>
                 </td>
             </tr>
 
@@ -193,7 +192,7 @@
                 <td>{{ $key->id_commande }}</td>
                 <td>{{ $key->nom_client_commande }}</td>
                 <td>{{ $key->telephone_client_commande }}</td>
-                <td>{{ $key->ville_client }}</td>
+                <td>{{ $key->ville }}</td>
                 <td>{{ $key->prix_commande }} Dhs</td>
 
                 @endforeach

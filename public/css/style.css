@@ -693,8 +693,13 @@ input.input-search.vs-table--search-input {
     justify-content: initial !important;
 }
 div#vs2__combobox {
-    margin-top: 7px;
+    border-radius: 20px;
+    padding: 5px 7px;
+    text-align: center;
+    justify-content: center;
+    display: flex;
 }
+
 .dowload_model {
     float: right;
     margin: 8px 11px;

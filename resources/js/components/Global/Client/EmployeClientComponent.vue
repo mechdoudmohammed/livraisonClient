@@ -170,27 +170,33 @@
 
                                 </div>
                             </div>
-                          
+
                         </div>
                         <div class="form-group">
-                                <label for="cin">{{ $t('message.CIN') }}</label>
-                                <span class="text-danger"></span>
-                                <input type="text" class="form-control" id="cin" v-model="formData.cin" name="cin">
-                            </div>
-                            <div class="form-group">
-                                <label for="ribBank">{{ $t('message.RibBank') }}</label>
-                                <span class="text-danger"></span>
-                                <input type="text" class="form-control" id="ribBank" v-model="formData.ribBank"
-                                    name="ribBank">
-                            </div>
-                            <div class="form-group">
-                                <label for="id_bank">{{ $t('message.BankName') }}</label>
-                                <span class="text-danger"></span>
-                                <select class="form-control" id="id_bank" v-model="formData.id_bank">
-                                    <option name="id_bank" :value="bank.id_bank" v-for="bank in banks">{{ bank.nomBank }}
-                                    </option>
-                                </select>
-                            </div>
+                            <label for="cin">{{ $t('message.CIN') }}</label>
+                            <span class="text-danger"></span>
+                            <input type="text" class="form-control" id="cin" v-model="formData.cin" name="cin">
+                        </div>
+                        <div class="form-group">
+                            <label for="ribBank">{{ $t('message.RibBank') }}</label>
+                            <span class="text-danger"></span>
+                            <input type="text" class="form-control" id="ribBank" v-model="formData.ribBank" name="ribBank">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_bank">{{ $t('message.BankName') }}</label>
+                            <span class="text-danger"></span>
+                            <select class="form-control" id="id_bank" v-model="formData.id_bank">
+                                <option name="id_bank" :value="bank.id_bank" v-for="bank in banks">{{ bank.nomBank }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group" v-if="Client.stock == 1">
+                            <!-- <input class="form-check-input" type="checkbox" id="type_autorisation"
+                                v-model="formData.type_autorisation" name="type_autorisation"> -->
+                            <vs-checkbox color="danger" v-model="formData.stock" id="stock" name="stock">Stock</vs-checkbox>
+
+
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btn_cancel" class="btn btn-secondary" data-bs-dismiss="modal"><i
@@ -244,6 +250,7 @@ export default {
                 password: '',
                 id_ville: '',
                 selected_employe: '',
+                stock:'',
             },
             banks: '',
             ville: '',
@@ -372,6 +379,7 @@ export default {
                 password: '',
                 id_ville: '',
                 selected_employe: '',
+                stock:'',
             },
                 this.nom_err = '',
                 this.ville = ''

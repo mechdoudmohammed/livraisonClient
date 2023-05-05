@@ -44,7 +44,7 @@
                                 </button>
                                 <div class="search_bar">
                                     <vs-input :placeholder="$t('message.Search')"
-                                        v-model="formDataCherche.valeur_recherche" />
+                                        v-model="formDataCherche.valeur_recherche" @keyup.enter="chercher(formDataCherche3.selected_option3)" />
                                     <button class="btn-chercher" @click="chercher(formDataCherche3.selected_option3)">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
@@ -1579,7 +1579,7 @@ export default {
                     confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
-                    cancelButtonText: this.$t('message.Cancel')
+                    cancelButtonText: this.$t('message.Close')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -1597,7 +1597,7 @@ export default {
                     confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
-                    cancelButtonText: this.$t('message.Cancel')
+                    cancelButtonText: this.$t('message.Close')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.editStatutAxios(this.formData);
@@ -1615,7 +1615,7 @@ export default {
                     confirmButtonColor: '#08ab5f',
                     cancelButtonColor: "#d33",
                     confirmButtonText: this.$t('message.Yes_I_Confirme'),
-                    cancelButtonText: this.$t('message.Cancel')
+                    cancelButtonText: this.$t('message.Close')
                 }).then((result) => {
                     if (result.isConfirmed) {
                         this.formData.statut = button;

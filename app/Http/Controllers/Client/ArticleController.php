@@ -57,7 +57,10 @@ class ArticleController extends Controller
                 for ($i = 0; $i < count($articles); $i++) {
                     $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
                         ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
-                        ->where('commandes.id_client', $user->id)
+                        ->where(function ($query) use ($user) {
+                            $query->where('commandes.id_client', $user->id)
+                                ->orwhere('commandes.id_client', $user->superviseur);
+                        })
                         ->where('detailscommandes.id_article', $articles[$i]->id_article)
                         ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
                         ->first();

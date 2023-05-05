@@ -60,7 +60,7 @@
                   <div class="col-6">
                     <h3 class="mb-0">{{$t('message.My_account')}}</h3>
                   </div>
-                  <div class="col-6 activer-stock" v-if="Client.stock == 0">
+                  <div class="col-6 activer-stock" v-if="Client.stock == 0 && Client.role=='Client'">
                     <vs-button color="success" type="filled" @click.prevent="demandeActiverStock">
                       <i class="fa fa-check" aria-hidden="true"></i> {{$t('message.Activer_Stock')}}</vs-button>
                   </div>
@@ -81,7 +81,7 @@
                     {{ nom_err[0] }}
                   </div>
 
-                  <div class="pl-lg-4">
+                  <div class="pl-lg-4" v-if="Client.role=='Client'">
                     <div class="row">
                       <h6 class="heading-small text-muted mb-4 d-flex">{{$t('message.Whatsapp_Notification')}}
                          <vs-switch style="margin-left: 10px;" color="success" v-model="Client.notification_statut" /></h6>

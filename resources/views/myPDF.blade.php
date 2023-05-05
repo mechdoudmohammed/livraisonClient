@@ -65,9 +65,9 @@
 
             </div>
             <div class="row" style="border: 1.5px solid;display: flex;padding: 16px; text-align:center;justify-content: center;">
-                <div class="col-8" style="width: 70% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
-                    <b>{{ $key->id_commande }}</b>
-                    {!! DNS1D::getBarcodeHTML($key->id_commande, 'C128',1,30) !!}
+                <div class="col-9" style="width: 80% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
+                    <b style="margin-right: 15px">{{ $key->id_commande }}</b>
+                    {!! DNS1D::getBarcodeHTML($key->id_commande, 'C39',1,47) !!}
                 </div>
                 <div class="col-3" >
                     {!! DNS2D::getBarcodeHTML($key->id_commande, 'QRCODE',4,4) !!}
@@ -217,7 +217,7 @@
                                 @endif
     </b>
                         </td>
-                        <td>
+                        <!-- <td>
                             <b style="font-size: 14px;margin-bottom: 6px;">
                           @if($key->ville_client)
                                 {{$key->ville_client}}
@@ -225,7 +225,7 @@
                                 {{$key->store_ville}}
                                 @endif
     </b>
-                        </td>
+                        </td> -->
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center ;"><span style="font-size: 14px;font-weight: 600;text-align: center;margin-right:15px">

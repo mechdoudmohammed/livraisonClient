@@ -63,7 +63,7 @@ Route::middleware(['auth:client'])
         Route::get('receptionRetour/{id}', 'Client\CommandeController@receptionRetour');
         Route::get('checkBlackList/{telephone}', 'Client\ClientController@checkBlackList');
         
-        Route::post('updateEmploye', 'Client\ClientController@updateEmploye');
+        Route::post('updateEmploye', 'Client\EmployeClientController@updateEmploye');
         Route::post('FactureClient', 'Client\FactureController@index');
         Route::get('BlockStore/{id}', 'Client\StoreController@BlockStore');
         Route::post('modifierProfile', 'Client\ClientController@modifier');

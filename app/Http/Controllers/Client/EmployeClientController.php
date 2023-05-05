@@ -67,10 +67,12 @@ class EmployeClientController extends Controller
             if ($user->role == 'Client' && $user->statut == 'Active') {
 
 
-                if ($request->stock == 'true') {
-                    $request->stock = 1;
-                } else if ($request->stock == 'false') {
-                    $request->stock = 0;
+                if ($request->stock == 'true' && $user->stock==1) {
+                    $stock = 1;
+                } else if ($request->stock == 'false' && $user->stock==1) {
+                    $stock= 0;
+                }else{
+                    $stock=0;
                 }
                 $statut = Client::create([
                     'nom' => $request->nom,
@@ -82,7 +84,7 @@ class EmployeClientController extends Controller
                     'role' => 'EmployeClient',
                     'company' => $user->company,
                     'website' => $user->website,
-                    'stock' => $user->stock,
+                    'stock' =>  $stock,
                     'id_bank' => $request->id_bank,
                     'ribBank' => $request->ribBank,
                     'username' =>  $request->username,
@@ -141,7 +143,7 @@ class EmployeClientController extends Controller
                 $client = Client::join('villes', 'clients.id_ville', 'villes.id')->leftjoin('banques','clients.id_bank','banques.id')
                     ->where('clients.id', $id)
                     ->where('clients.superviseur', $user->id)
-                    ->selectRaw('clients.nom,clients.prenom,clients.telephone,clients.email,clients.cin,clients.ribBank,banques.nomBank,clients.username,villes.id as ville, villes.nom_ville,banques.id as id_bank')
+                    ->selectRaw('clients.stock,clients.nom,clients.prenom,clients.telephone,clients.email,clients.cin,clients.ribBank,banques.nomBank,clients.username,villes.id as ville, villes.nom_ville,banques.id as id_bank')
                     ->first();
                 return response()->json([
                     'data' => $client
@@ -153,20 +155,63 @@ class EmployeClientController extends Controller
             ]);
         }
     }
+    public function updateEmploye(Request $request)
+    {
 
-    public function updateCommande(Request $request)
-    {
-    }
-    public function destroy($id)
-    {
-    }
-    public function getPackage(Request $request)
-    {
-    }
-    public function historiqueCommande($id)
-    {
-    }
-    public function changeStatutCommande(Request $request)
-    {
+        $user = auth('sanctum')->user();
+        if ($user->role == 'Client' && $user->statut == 'Active') {
+            $this->validate($request, [
+                'nom' => 'required|String',
+                'prenom' => 'required|String',
+                'telephone' => 'required|String',
+                'cin' => 'nullable|String',
+                'ribBank' => 'nullable|String',
+                'username' => 'String',
+                'id_ville' => 'required',
+                'email' => 'required|unique:clients,email,' . $request->selected_employe,
+
+            ]);
+            
+            if ($request->stock == 'true' && $user->stock==1) {
+                $stock = 1;
+            } else if ($request->stock == 'false' && $user->stock==1) {
+                $stock = 0;
+            }else{
+                $stock=0;
+            }
+            $client = Client::where('id', $request->selected_employe)->where('superviseur', $user->id)->first();
+
+            $client->nom = $request->nom;
+            $client->prenom = $request->prenom;
+            $client->telephone = $request->telephone;
+            $client->id_bank = $request->id_bank;
+            $client->ribBank = $request->ribBank;
+            $client->id_ville = $request->id_ville;
+            $client->email = $request->username;
+            $client->username = $request->username;
+            $client->cin = $request->cin;
+            $client->email = $request->email;
+            $client->company = $request->company;
+            $client->website = $request->website;
+            $client->stock = $stock;
+            $client->username = $request->username;
+            $client->id_ville = $request->id_ville;
+
+            if ($request->password != '') {
+                $client->password = Hash::make($request->password);
+            }
+            $statut = $client->save();
+
+            if ($statut) {
+                event(new Registered($request));
+                return response()->json([
+                    'message' => 'Employe updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Erreur'
+                ]);
+            }
+        }
     }
 }

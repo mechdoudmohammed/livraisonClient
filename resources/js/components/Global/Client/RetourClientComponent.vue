@@ -29,7 +29,7 @@
                                 </vs-select>
 
                                 <div class="search_bar">
-                                    <vs-input :placeholder="$t('message.Search')" v-model="formDataCherche.valeur_recherche" />
+                                    <vs-input :placeholder="$t('message.Search')" v-model="formDataCherche.valeur_recherche" @keyup.enter="classifierBonRetour(formDataCherche3.selected_option3)"/>
                                     <button class="btn-chercher" @click="classifierBonRetour(formDataCherche3.selected_option3)">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>

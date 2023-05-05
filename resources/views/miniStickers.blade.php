@@ -31,7 +31,7 @@
     <section>
 
 
-        <div style="border:2px solid ;width:100%;height:137mm" v-for="(item, index) in getpackageClient" :key="index">
+        <div style="border:2px solid ;width:100%;height:134mm;max-height:134mm" v-for="(item, index) in getpackageClient" :key="index">
             <div class="row company" style="border-top: 1px solid;font-weight: 600;text-align: center;">
                 <table style="margin-left:10px;margin-bottom:15px;margin-top:15px">
                     <tr>
@@ -50,9 +50,9 @@
 
             </div>
             <div class="row" style="border-top: 1px solid;display: flex;padding: 8px; text-align:center;justify-content: center;">
-                <div class="col-8" style="width: 70% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
-                    <b style="margin-right: 75px;margin-top:20px">{{ $key->id_commande }}</b>
-                    {!! DNS1D::getBarcodeHTML($key->id_commande, 'C128',1,23) !!}
+                <div class="col-9" style="width: 70% !important;float: right;display: grid;justify-content: center;align-items: center;align-content: center;text-align: center;">
+                    <b style="margin-top:20px;margin-right: 50px">{{ $key->id_commande }}</b>
+                    {!! DNS1D::getBarcodeHTML($key->id_commande, 'C39',1,47) !!}
                 </div>
                 <div class="col-3" style="margin-left:15px !important;">
                     {!! DNS2D::getBarcodeHTML($key->id_commande, 'QRCODE',4,4) !!}
@@ -204,7 +204,7 @@
                                 @endif
     </b>
                         </td>
-                        <td>
+                        <!-- <td>
                             <b style="font-size: 14px;margin-bottom: 1px;">
                                 @if($key->ville_client)
                                 {{$key->ville_client}}
@@ -212,7 +212,7 @@
                                 {{$key->store_ville}}
                                 @endif
     </b>
-                        </td>
+                        </td> -->
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center ;"><span style="font-size: 14px;font-weight: 600;text-align: center;margin-right:20px">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Commande;
 use App\Models\Article;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
@@ -175,6 +176,10 @@ class FactureController extends Controller
                     ->select('commandes.id_commande', 'commandes.nom_client_commande', 'commandes.telephone_client_commande', 'commandes.prix_commande', 'villes.nom_ville as ville', 'clients.company', 'clients.telephone as telephone_client', 'villes2.nom_ville as ville_client')
                     ->orderBy('.commandes.updated_at', 'desc')
                     ->get();
+                    if($user->role == 'EmployeClient'){
+                        $user=Client::where('clients.id',$user->superviseur)->first();
+                    }
+
 
                 $data = ['data' => $user, 'data2' => $packageClient];
                 // return $data;

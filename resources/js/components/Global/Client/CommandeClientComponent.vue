@@ -79,7 +79,7 @@
                                 </button>
                                 <div class="search_bar">
                                     <vs-input :placeholder="$t('message.Search')"
-                                        v-model="formDataCherche.valeur_recherche" />
+                                        v-model="formDataCherche.valeur_recherche" @keyup.enter="chercher(formDataCherche3.selected_option3)" />
                                     <button class="btn-chercher" @click="chercher(formDataCherche3.selected_option3)">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
@@ -1381,6 +1381,7 @@ input[type="number"] {
     justify-content: center;
 
 }
+
 </style>
 <script>
 import axios from "axios";
@@ -2121,7 +2122,7 @@ export default {
                 }).finally(() => this.$vs.loading.close());
         },
         async updateCommande() {
-            document.getElementById('stockButton').style.display = 'none';
+
             this.formData.selected_type = this.selected_type;
             this.formData.articles = this.ListArticles;
             this.$vs.loading({ color: "#22c22b" });
@@ -2130,7 +2131,7 @@ export default {
                 .then((res) => {
                     this.message = res.data.message;
                     this.classifierCommande(this.formDataCherche3.selected_option3)
-                    document.getElementById("btn_cancel").click();
+                    $("#ajouterCommandeStock").modal('hide')
                     if (
                         this.message ==
                         "Erreur la quantité doit etre superieur de 0"
@@ -2157,6 +2158,7 @@ export default {
                     this.formData.fichierCommande = "";
                     this.nomFile = "";
                     this.initialiserFormData();
+
                 })
                 .catch((error) => {
                     if (error.response.status === 422) {
@@ -2175,11 +2177,13 @@ export default {
             (this.nom_err = ""), (this.errors = {}), this.getVilles();
             this.getStores();
             this.edit = btn_val;
+            $("#ajouterCommandeStock").modal("show");
             if (btn_val) {
                 await this.getCommande(tr.id_commande);
                 this.formData.selected_commande = tr.id_commande;
+              
             }
-            $("#ajouterCommandeStock").modal("show");
+          
         },
         checkCommandeStock(btn_val) {
             this.edit = btn_val;

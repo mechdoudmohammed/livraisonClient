@@ -139,7 +139,8 @@ class CommandeController extends Controller
 
                     $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
 
-                    $id_commande = $ville->pref_ville . '-' . $user->id . '-' . strtoupper(Str::random(6)). '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') ;
+                    $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
+
 
                     if ($user->role == 'EmployeClient') {
                         $id_client = $user->superviseur;
@@ -228,7 +229,9 @@ class CommandeController extends Controller
                             $id_client = $user->id;
                         }
                         $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                        $id_commande = $ville->pref_ville . '-' . $user->id . '-' . strtoupper(Str::random(6)). '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') ;
+                        $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
+
+
                         $statut = Commande::create([
                             "id_commande" => $id_commande,
                             "id_ville" => $request->ville_client_commande['id'],
@@ -284,7 +287,8 @@ class CommandeController extends Controller
                             $id_client = $user->id;
                         }
                         $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                        $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
+                        $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
+
                         $statut = Commande::create([
                             "id_commande" => $id_commande,
                             "id_ville" => $request->ville_client_commande['id'],
@@ -514,7 +518,7 @@ class CommandeController extends Controller
                     $commande = Commande::where('commandes.id_client', $user->id)->where('etat_commande', 'CREATED')->where('id_commande', $request->id_commande)->first();
                     if ($commande->id_ville != $ville->id) {
                         $commande->id_ville =  $ville->id;
-                        $id_commande = $ville->pref_ville . '-' . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . '-' . $user->id . '-' . strtoupper(Str::random(6));
+                        $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
                         $commande->id_commande = $id_commande;
                     }
 
@@ -630,10 +634,10 @@ class CommandeController extends Controller
                     $pdf = PDF::setOption('page-width', 105)
                         ->setOption('page-height', 105)
 
-                        ->setOption('margin-top', 1)
-                        ->setOption('margin-right', 1)
-                        ->setOption('margin-left', 1)
-                        ->setOption('margin-bottom', 1)
+                        ->setOption('margin-top', 2)
+                        ->setOption('margin-right', 2)
+                        ->setOption('margin-left', 2)
+                        ->setOption('margin-bottom', 2)
 
                         ->loadView('miniStickers', $data);
                 } else {
@@ -678,7 +682,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('commandes.id_bon_retour_client','commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -717,7 +721,7 @@ class CommandeController extends Controller
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->superviseur)
-                    ->select('commandes.id_bon_retour_client','commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
+                    ->select('commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -753,6 +757,11 @@ class CommandeController extends Controller
                 if (in_array($request->statut, array('ANNULER', 'RELANCER', 'CHANGERPRIX'))) {
                     $statut = $commande = Commande::where('commandes.id_commande', $request->id_commande)
                         ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER', 'CHANGERPRIX', 'INHOUSE', 'REPORTED', 'NOREPONSE', 'PROCESSING', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
+                        ->where(function ($query) use ($user) {
+                            $query->where('commandes.id_client', $user->id)
+                                ->Orwhere('commandes.id_client', $user->superviseur);
+                        })
+
                         ->first();
                 }
                 if ($statut) {
@@ -966,7 +975,10 @@ class CommandeController extends Controller
         $user = auth('sanctum')->user();
         if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
             $Package = Package::join('commandes', 'commandes.id_package', 'packages.id_package')
-                ->where('commandes.id_client', $user->id)
+                ->where(function ($query) use ($user) {
+                    $query->where('commandes.id_client', $user->id)
+                        ->orwhere('commandes.id_client', $user->superviseur);
+                })
                 ->where('packages.id_package', $id)
                 ->first();
             $Package->statut_package = 'Printed';
@@ -1010,12 +1022,12 @@ class CommandeController extends Controller
                     }
                     if ($commande->etat_commande == 'PROCESSING') {
                         $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
-                        $commande->prix_commande = $request->commentaire_commande;
+                        $commande->prix_commande = $request->prix_commande;
                         $commande->etat_commande = 'PROCESSING';
                     } else if ($commande->etat_commande == 'PICKUP') {
 
                         $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
-                        $commande->prix_commande = $request->commentaire_commande;
+                        $commande->prix_commande = $request->prix_commande;
                         $commande->etat_commande = 'PICKUP';
                     } else {
                         $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
@@ -1056,5 +1068,4 @@ class CommandeController extends Controller
             ]);
         }
     }
-
 }

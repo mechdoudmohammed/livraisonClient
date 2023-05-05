@@ -692,61 +692,7 @@ class ClientController extends Controller
             ]);
         }
     }
-    public function updateEmploye(Request $request)
-    {
 
-        $user = auth('sanctum')->user();
-        if ($user->role == 'Client' && $user->statut == 'Active') {
-            $this->validate($request, [
-                'nom' => 'required|String',
-                'prenom' => 'required|String',
-
-                'telephone' => 'required|String',
-                'cin' => 'String',
-                'company' => 'String',
-                'website' => 'String',
-                'ribBank' => 'String',
-                'username' => 'String',
-                'id_ville' => 'required',
-                'email' => 'required|unique:clients,email,' . $request->selected_employe,
-
-            ]);
-            $client = Client::where('id', $request->selected_employe)->where('superviseur', $user->id)->first();
-
-
-            $client->nom = $request->nom;
-            $client->prenom = $request->prenom;
-            $client->telephone = $request->telephone;
-            $client->id_bank = $request->id_bank;
-            $client->ribBank = $request->ribBank;
-            $client->id_ville = $request->id_ville;
-            $client->email = $request->username;
-            $client->username = $request->username;
-            $client->cin = $request->cin;
-            $client->email = $request->email;
-            $client->company = $request->company;
-            $client->website = $request->website;
-            $client->stock = $request->stock;
-            $client->username = $request->username;
-            $client->id_ville = $request->id_ville;
-
-            if ($request->password != '') {
-                $client->password = Hash::make($request->password);
-            }
-            $statut = $client->save();
-
-            if ($statut) {
-                event(new Registered($request));
-                return response()->json([
-                    'message' => 'Employe updated successfully'
-                ]);
-            } else {
-                return response()->json([
-                    'message' => 'Erreur'
-                ]);
-            }
-        }
-    }
 
     public function forgotPassword(Request $request)
     {
