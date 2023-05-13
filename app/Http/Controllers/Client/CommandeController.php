@@ -988,19 +988,15 @@ class CommandeController extends Controller
 
     public function updateCommandeInfo(Request $request)
     {
-
         $this->validate($request, [
             "adresse_client_commande" => 'required|string',
             "nom_client_commande" => 'required|string',
             "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
             "prix_commande" => "required|numeric",
         ]);
-
-
         $user = auth('sanctum')->user();
         try {
             if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-
                 $commande = Commande::where(function ($query) use ($user) {
                     $query->where('commandes.id_client', $user->id)
                         ->orwhere('commandes.id_client', $user->superviseur);

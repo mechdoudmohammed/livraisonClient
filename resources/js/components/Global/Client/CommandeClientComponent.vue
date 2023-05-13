@@ -455,7 +455,7 @@
                                 {{ $t('message.Upload') }}</label>
 
                             <div class="dowload_model">
-                                <vs-button color="danger" href="model/Model.xlsx" type="filled"><i class="fa fa-download"
+                                <vs-button color="danger" href="model/Model.xlsm" type="filled"><i class="fa fa-download"
                                         aria-hidden="true"></i>
                                     {{ $t('message.Model_Excel') }}</vs-button>
                             </div>

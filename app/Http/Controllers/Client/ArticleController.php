@@ -107,7 +107,7 @@ class ArticleController extends Controller
         try {
             $user = auth('sanctum')->user();
             if ($user->role == 'Client' && $user->statut == 'Active') {
-                $id_article = substr($request->nom_article, 0, 4).'-'. $user->id .'-'.strtoupper(Str::random(6));
+                $id_article =$user->id .chr(rand(65, 90)).strtoupper(Str::random(9));
 
                 $statut = Article::create([
                     "id_article"=>$id_article,
@@ -238,10 +238,10 @@ class ArticleController extends Controller
                     ->get();
 
                 $data = ['data' => $articles];
-                $pdf = PDF::loadView('article', $data)->setOption('margin-top', 1)
-                    ->setOption('margin-right', 1)
-                    ->setOption('margin-left', 1)
-                    ->setOption('margin-bottom', 1);;
+                $pdf = PDF::loadView('article', $data)->setOption('margin-top', 5)
+                    ->setOption('margin-right', 5)
+                    ->setOption('margin-left', 5)
+                    ->setOption('margin-bottom',5);;
                 return $pdf->stream('document.pdf');
             }
         } catch (Throwable $e) {
