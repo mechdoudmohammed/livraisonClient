@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Commande;
 use App\Models\Article;
+use App\Models\Packreductions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -100,8 +101,17 @@ class StatistiqueController extends Controller
 
         $user = auth('sanctum')->user();
         if ($user->role == 'Client') {
-
-
+            $reduction = Packreductions::join('clients', 'clients.id_pack', 'packreductions.id')->where('clients.id', $user->id)
+            ->selectRaw('packreductions.reduc_delivered,packreductions.reduc_canceled,packreductions.reduc_returned')
+            ->first();
+            $reduc_delivered = 0;
+            $reduc_returned = 0;
+            $reduc_canceled = 0;
+            if ($reduction) {
+                $reduc_delivered = $reduction->reduc_delivered;
+                $reduc_returned = $reduction->reduc_returned;
+                $reduc_canceled = $reduction->reduc_canceled;
+            }
             $RevenuOfMonth = DB::table("historiquecommandes")
                 ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
                 ->where('historiquecommandes.updated_at', '>', $date_debut)
@@ -134,11 +144,11 @@ class StatistiqueController extends Controller
             $fraisLivraison = 0;
             foreach ($Livraison as $commande) {
                 if ($commande->etat_commande == 'DELIVERED') {
-                    $fraisLivraison += $commande->prix_livraison_final;
+                    $fraisLivraison += ($commande->prix_livraison_final - $reduc_delivered);
                 } elseif ($commande->etat_commande == 'RETURNEDAG'  || $commande->etat_commande == 'RETURNEDEV' || $commande->etat_commande == 'RETURNEDRR' || $commande->etat_commande == 'RETURNED') {
-                    $fraisLivraison += $commande->prix_retour;
+                    $fraisLivraison += ($commande->prix_retour - $reduc_returned);
                 } elseif ($commande->etat_commande == 'CANCELEDAG'  || $commande->etat_commande == 'CANCELEDEV' || $commande->etat_commande == 'CANCELEDRR' || $commande->etat_commande == 'CANCELED') {
-                    $fraisLivraison += $commande->prix_refus;
+                    $fraisLivraison +=($commande->prix_refus - $reduc_canceled);
                 }
             }
 

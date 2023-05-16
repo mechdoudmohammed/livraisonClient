@@ -15,6 +15,7 @@ use App\Models\HistoriqueRamassage;
 use App\Models\Message;
 use App\Models\Notification;
 use App\Models\Package;
+use App\Models\Packreductions;
 use App\Models\Reclamation;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -123,7 +124,6 @@ class ClientController extends Controller
                 $client->email = $request->email;
                 $client->ribBank = $request->ribBank;
                 $client->id_bank = $request->id_bank;
-
             }
             $client->notification_statut = $request->notification_statut;
             $client->adresse = $request->adresse;
@@ -312,7 +312,7 @@ class ClientController extends Controller
                 if (count($request->all()) > 0) {
                     for ($i = 0; $i < count($request->all()); $i++) {
                         if ($request[$i]['type_commande'] == 'stock' && $request[$i]['etat_commande'] == 'CONFIRMED') {
-                            $statut2 =Commande::where(function ($query) use ($user) {
+                            $statut2 = Commande::where(function ($query) use ($user) {
                                 $query->where('commandes.id_client', $user->id)
                                     ->orwhere('commandes.id_client', $user->superviseur);
                             })
@@ -325,7 +325,7 @@ class ClientController extends Controller
                                 "id_client" => $user->id,
                             ]);
                         } else if ($request[$i]['type_commande'] == 'ramassage' && $request[$i]['etat_commande'] == 'CONFIRMED') {
-                            $statut =Commande::where(function ($query) use ($user) {
+                            $statut = Commande::where(function ($query) use ($user) {
                                 $query->where('commandes.id_client', $user->id)
                                     ->orwhere('commandes.id_client', $user->superviseur);
                             })
@@ -359,7 +359,6 @@ class ClientController extends Controller
                             'message' => 'Erreur'
                         ]);
                     }
-                    
                 } else {
                     $commandesStock = Commande::where(function ($query) use ($user) {
                         $query->where('commandes.id_client', $user->id)
@@ -407,7 +406,7 @@ class ClientController extends Controller
                             "id_client" => $user->id,
                         ]);
                     }
-                    if(count($commandesRamassage)>0){
+                    if (count($commandesRamassage) > 0) {
                         if ($user->role == 'Client') {
                             HistoriqueRamassage::create([
                                 "id_ville" => $user->id_ville,
@@ -700,8 +699,8 @@ class ClientController extends Controller
             'email' => 'required|email',
         ]);
 
-        $status = Password::broker('clients')->sendResetLink($request->only('email'),null,'client');
-        
+        $status = Password::broker('clients')->sendResetLink($request->only('email'), null, 'client');
+
 
         if ($status == Password::RESET_LINK_SENT) {
             return [
@@ -726,42 +725,35 @@ class ClientController extends Controller
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (Client $user, string $password) {
-                
+
                 $user->forceFill(['password' => Hash::make($password)])->setRememberToken(Str::random(60));
                 $user->save();
-     
+
                 event(new PasswordReset($user));
             }
         );
 
         if ($status == Password::PASSWORD_RESET) {
             return response([
-                'message'=> 'Password reset successfully'
+                'message' => 'Password reset successfully'
             ]);
         }
 
         return response([
-            'message'=> __($status)
+            'message' => __($status)
         ], 500);
-
     }
+    public function getMyPack()
+    {
 
+        $user = auth('sanctum')->user();
+        if ($user->role == 'Client' && $user->statut == 'Active') {
+            $Packreductions=Packreductions::join('clients','clients.id_pack','packreductions.id')->select('pack_name')->where('clients.id',$user->id)->first();
+            return response()->json([
+                'data' => $Packreductions
+            ]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
+     
+    }
 }

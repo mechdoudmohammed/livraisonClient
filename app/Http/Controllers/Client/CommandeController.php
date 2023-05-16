@@ -625,7 +625,7 @@ class CommandeController extends Controller
                             'store_ville.nom_ville as store_ville'
 
                         )
-                        ->orderBy('.commandes.updated_at', 'desc')
+                        ->orderBy('commandes.created_at', 'desc')
                         ->get();
                 }
                 $data = ['data' => $packageClient];
@@ -1064,4 +1064,6 @@ class CommandeController extends Controller
             ]);
         }
     }
+
+
 }

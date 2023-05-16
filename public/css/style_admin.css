@@ -20435,7 +20435,7 @@ span.w-32.avatar.circle.gd-error {
 }
 
 .sidebar .nav .nav-item {
-  padding: 0 2.25rem;
+  padding: 0 1.5rem;
   -webkit-transition-duration: 0.25s;
   transition-duration: 0.25s;
   transition-property: background;
@@ -20512,7 +20512,7 @@ span.w-32.avatar.circle.gd-error {
 
 .sidebar .nav .nav-item .nav-link .menu-title {
   display: inline-block;
-  font-size: 0.950rem;
+  font-size: 0.830rem;
   line-height: 1;
   vertical-align: middle;
   color: #052b4a;
@@ -20566,7 +20566,7 @@ span.w-32.avatar.circle.gd-error {
 }
 
 .sidebar .nav .nav-item.nav-profile .nav-link .nav-profile-text {
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 
 .rtl .sidebar .nav .nav-item.nav-profile .nav-link .nav-profile-text {

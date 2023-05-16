@@ -55,6 +55,7 @@ Route::middleware(['auth:client'])
         Route::apiResource('Notification', 'Client\NotificationClientController');
         Route::post('getEmployeClient', 'Client\EmployeClientController@index');
         Route::get('BlockEmployeClient/{id}', 'Client\EmployeClientController@BlockEmployeClient');
+        Route::get('getMyPack','Client\ClientController@getMyPack');
         Route::post('updateStore', 'Client\StoreController@updateStore');
         Route::get('changeFavorite/{id}', 'Client\StoreController@changeFavorite');
         Route::post('getReclamation', 'Client\ReclamationController@index');
