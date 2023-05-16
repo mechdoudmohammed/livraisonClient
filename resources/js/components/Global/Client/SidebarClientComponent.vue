@@ -30,6 +30,7 @@
                   <div class="circle"> <i class="fa fa-trophy"></i></div>
                   <div class="ribbon">Silver</div>
                 </div>
+
               </div>
 
               <!-- <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i> -->
@@ -225,7 +226,7 @@ export default {
       token: localStorage.getItem('token'),
       infoComplete: false,
       nbrColisDMsuivie: '',
-      pack: '',
+      pack: {pack_name:''},
     }
   },
   methods: {
