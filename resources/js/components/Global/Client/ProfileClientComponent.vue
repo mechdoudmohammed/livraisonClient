@@ -81,7 +81,7 @@
                     {{ nom_err[0] }}
                   </div>
 
-                  <div class="main-wrapper">
+                  <div class="main-wrapper" v-if="pack">
 
 
                     <div class="badge green" v-if="pack.pack_name=='diamond'">
@@ -267,7 +267,7 @@ export default {
         new_password: '',
 
       },
-      pack:'',
+      pack:{pack_name:''},
       banks: '',
       switch_notification: true,
     }
