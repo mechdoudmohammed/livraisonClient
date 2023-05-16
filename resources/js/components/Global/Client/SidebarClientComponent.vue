@@ -17,7 +17,7 @@
                 <span class="text-secondary text-small">{{ Client.company }}</span>
               </div>
 
-              <div class="main-wrapper">
+              <div class="main-wrapper" v-if="pack">
                 <div class="badge green" v-if="pack.pack_name == 'diamond'">
                   <div class="circle"> <i class="fa fa-gem"></i></div>
                   <div class="ribbon">Diamonde</div>
@@ -30,10 +30,11 @@
                   <div class="circle"> <i class="fa fa-trophy"></i></div>
                   <div class="ribbon">Silver</div>
                 </div>
-
+             
+               
               </div>
-
-              <!-- <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i> -->
+              <i class="mdi mdi-bookmark-check text-success nav-profile-badge" v-else></i>
+ 
             </a>
           </router-link>
         </li>
@@ -226,7 +227,7 @@ export default {
       token: localStorage.getItem('token'),
       infoComplete: false,
       nbrColisDMsuivie: '',
-      pack: {pack_name:''},
+      pack: { pack_name: '' },
     }
   },
   methods: {
@@ -267,13 +268,15 @@ export default {
 <style scoped>
 .main-wrapper {
   margin: -41px 0px 0px -17px;
-    text-align: end;
-    scale: 0.2;
-    height: 20px;
+  text-align: end;
+  scale: 0.2;
+  height: 20px;
 }
+
 li.nav-item.nav-profile {
-    max-height: 115px;
+  max-height: 115px;
 }
+
 .badge {
   position: relative;
   margin: 1.5em 3em;
