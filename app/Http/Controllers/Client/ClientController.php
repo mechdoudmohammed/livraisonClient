@@ -96,7 +96,7 @@ class ClientController extends Controller
 
         $user = auth('sanctum')->user();
         if ($user->role == 'Client' && $user->statut == 'Active') {
-            $client = Client::find($request->id);
+            $client = Client::find($user->id);
             if ($client->prenom != null && $client->nom != null && $client->cin != null) {
                 $this->validate($request, [
                     'adresse' => 'required|String',
@@ -136,6 +136,19 @@ class ClientController extends Controller
                 'message' => 'Client update successfully'
             ]);
         }
+        if ($user->role == 'EmployeClient' && $user->statut == 'Active') {
+            $this->validate($request, [
+                'telephone' => 'required|regex:/(0)[0-9]{9}$/',
+            ]);
+            $client = Client::find($user->id);
+            $client->telephone = $request->telephone;
+            $client->save();
+            return response()->json([
+                'message' => 'Client update successfully'
+            ]);
+        }
+
+
     }
     public function show($id)
     {

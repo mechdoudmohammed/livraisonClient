@@ -84,15 +84,15 @@
                   <div class="main-wrapper" v-if="pack">
 
 
-                    <div class="badge green" v-if="pack.pack_name=='diamond'">
+                    <div class="badge green" v-if="pack.pack_name == 'diamond'">
                       <div class="circle"> <i class="fa fa-gem"></i></div>
                       <div class="ribbon">Diamonde</div>
                     </div>
-                    <div class="badge gold" v-else-if="pack.pack_name=='gold'">
+                    <div class="badge gold" v-else-if="pack.pack_name == 'gold'">
                       <div class="circle"> <i class="fa fa-rocket"></i></div>
                       <div class="ribbon">Gold</div>
                     </div>
-                    <div class="badge silver" v-else-if="pack.pack_name=='silver'">
+                    <div class="badge silver" v-else-if="pack.pack_name == 'silver'">
                       <div class="circle"> <i class="fa fa-trophy"></i></div>
                       <div class="ribbon">Silver</div>
                     </div>
@@ -267,7 +267,7 @@ export default {
         new_password: '',
 
       },
-      pack:{pack_name:''},
+      pack: { pack_name: '' },
       banks: '',
       switch_notification: true,
     }
@@ -376,16 +376,20 @@ export default {
     axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
     this.getBanks();
     this.getMyPack();
-    if (this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null) {
+    console.log(this.Client);
+    if ((this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null) && this.Client.role == 'Client') {
 
+      this.showMsgInformation = false;
+
+    }else if((this.Client.nom != null && this.Client.prenom != null) && this.Client.role == 'EmployeClient'){
       this.showMsgInformation = false;
 
     }
 
   },
   mounted() {
-    if (this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null) {
-    
+    if ((this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null) && this.Client.role == 'Client') {
+
 
       var list;
       list = document.querySelectorAll(".disableChamps");
@@ -395,7 +399,19 @@ export default {
         list[i].style.color = '#fff';
 
       }
+    }else if((this.Client.nom != null && this.Client.prenom != null) && this.Client.role == 'EmployeClient'){
+      var list;
+      list = document.querySelectorAll(".disableChamps");
+      for (var i = 0; i < list.length; ++i) {
+        list[i].style.pointerEvents = 'none';
+        list[i].style.background = '#ff0000c9';
+        list[i].style.color = '#fff';
+
+      }
+
     }
+
+
   },
 
 }
@@ -706,5 +722,4 @@ hr {
   background: linear-gradient(to bottom right, #e6ce6a 0%, #b7892b 100%);
   color: #b7892b;
 }
-
 </style>
