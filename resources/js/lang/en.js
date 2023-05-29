@@ -231,11 +231,17 @@ let message = {
     Annuler: "Canceled",
     of: "of ",
     Package: "Package",
-    Close:'Close',
-    Package_send_to_agency:'Package send to agency',
-    Package_in_agency:'Package received by agency',
-    Package_send_to_origin_city:'Package send to origin city',
-    Return_received_by_responsible:'Return received by Responsible',
+    Close: "Close",
+    Package_send_to_agency: "Package send to agency",
+    Package_in_agency: "Package received by agency",
+    Package_send_to_origin_city: "Package send to origin city",
+    Return_received_by_responsible: "Return received by Responsible",
+    Price_must_be_greater_than_or_equal_to_0:
+        "The price must be greater than or equal to 0",
+    Price_must_be_lower_than_the_previous_price:
+        "The price must be lower than the previous price",
+    Insufficient_balance: "Insufficient Balance",
+    Insufficient_balance_text: "You have exceeded the allowed limit for placing orders with a value of 0 dirhams. Please contact the administration.",
     //=========================================================================================
     Model_Excel: "Model Excel",
     With_Sms: "With Sms",

@@ -239,7 +239,10 @@ let message = {
     Package_in_agency:'Colis reçu en agence',
     Package_send_to_origin_city:'Colis envoyé à la ville d\'origine',
     Return_received_by_responsible:'Retour reçu par le responsable',
-
+    Price_must_be_greater_than_or_equal_to_0:'Le prix doit être supérieur ou égal à 0',
+Price_must_be_lower_than_the_previous_price:'Le prix doit être inférieur au prix précédent',
+Insufficient_balance: "Solde insuffisant",
+Insufficient_balance_text: "Vous avez dépassé la limite autorisée pour passer des commandes d'une valeur de 0 dirhams. Veuillez contacter l'administration.",
 
 
 };

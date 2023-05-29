@@ -65,6 +65,21 @@ class CommandeController extends Controller
     {
 
         $user = auth('sanctum')->user();
+        $Balance = DB::table("factures")
+        ->where('factures.statut_facture', 'NOTPAID')
+        ->where('id_client',  $user->id)
+        ->selectRaw("IFNULL(sum(factures.total_facture - factures.frais_livraison_facture), 0) as balance")
+        ->first();
+
+        if ($Balance->balance < -1000) {
+            return response()->json([
+                'message' => 'Insufficient balance',
+                'balance'=>$Balance->balance
+            ]);
+        }
+
+
+
         if (isset($request->store)) {
 
             if (Is_string($request->store)) {
@@ -112,12 +127,9 @@ class CommandeController extends Controller
             ]);
         }
         if ($request->hasFile('fichierCommande')) {
-
-
             $import = new CommandesImport($id_store);
             Excel::import($import, request()->file('fichierCommande'));
             $array = $import->getArray();
-
             return response()->json([
                 'message' => $array[0]
             ]);

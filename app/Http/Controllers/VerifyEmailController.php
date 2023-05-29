@@ -25,8 +25,9 @@ class VerifyEmailController extends Controller
         }
         $user->statut='Active';
         $user->save();
-        return redirect(env('FRONT_URL') . '/email/verify/success');
+        return redirect(env('FRONT_URL') . '/dashboardClient');
     }
+
     public function resend(Request $request)
     {
 

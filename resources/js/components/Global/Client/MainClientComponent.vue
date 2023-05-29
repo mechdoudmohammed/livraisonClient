@@ -10,8 +10,32 @@
 
       <div v-for="annonce in annonces" class="mt-2">
         <vs-alert :active.sync="active1" :color="annonce.type_annonce.toLowerCase()" closable close-icon="close">
-          <div :dir="isArabic(annonce.text_annonce) ? 'rtl' : 'ltr'">{{ annonce.text_annonce }}</div>
+          <div :dir="isArabic(annonce.text_annonce) ? 'rtl' : 'ltr'" class="annonce">{{ annonce.text_annonce }}</div>
         </vs-alert>
+      </div>
+      <div class="row service-client">
+        <div class="col-3 service-client-col">
+          <h5>Imane El alami</h5>
+          <span>Réclamation</span><br>
+          <span><i class="fa fa-phone"></i> 06 33 14 81 84</span>
+        </div>
+        <div class="col-3 service-client-col">
+          <h5>Safouan Kharbouch</h5>
+          <span>Réclamation</span><br>
+          <span><i class="fa fa-phone"></i> 06 08 81 47 07</span>
+        </div>
+
+        <div class="col-3 service-client-col">
+          <h5>Siham Mahfoud</h5>
+          <span>Commercial</span><br>
+          <span><i class="fa fa-phone"></i> 06 09 92 03 89</span>
+        </div>
+        <div class="col-3 service-client-col">
+          <h5>Colizone</h5>
+          <span>Fix</span><br>
+          <span><i class="fa fa-phone"></i> 08 08 67 01 71</span>
+        </div>
+
       </div>
 
 
@@ -280,3 +304,35 @@ export default {
 }
 
 </script>
+<style scoped>
+.row.service-client {
+  padding: 17px;
+  background: #ebedf2;
+  border-radius: 15px;
+  margin: 15px 3px;
+  color: #5d5d5d;
+}
+
+h5 {
+  margin-bottom: 0px;
+}
+.annonce {
+    font-size: 18px;
+}
+
+@media only screen and (max-width: 600px) {
+  .row.service-client {
+    padding: 17px;
+    background: #ebedf2;
+    border-radius: 15px;
+    margin: 15px 3px;
+    color: #5d5d5d;
+  }
+
+  .service-client-col {
+    width: 100% !important;
+    margin-bottom: 26px;
+    border-bottom: 0.2px solid #cfd1d8;
+  }
+}
+</style>

@@ -101,6 +101,7 @@ class StatistiqueController extends Controller
 
         $user = auth('sanctum')->user();
         if ($user->role == 'Client') {
+
             $reduction = Packreductions::join('clients', 'clients.id_pack', 'packreductions.id')->where('clients.id', $user->id)
             ->selectRaw('packreductions.reduc_delivered,packreductions.reduc_canceled,packreductions.reduc_returned')
             ->first();

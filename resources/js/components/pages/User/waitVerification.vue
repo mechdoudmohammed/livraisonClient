@@ -27,7 +27,7 @@
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
             <!-- LOGO -->
             <tr>
-                <td bgcolor="#aba3f6" align="center">
+                <td bgcolor="#4791ff" align="center">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                         <tr>
                             <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
@@ -36,7 +36,7 @@
                 </td>
             </tr>
             <tr>
-                <td bgcolor="#aba3f6" align="center" style="padding: 0px 10px 0px 10px;">
+                <td bgcolor="#4791ff" align="center" style="padding: 0px 10px 0px 10px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                         <tr>
                             <td bgcolor="#ffffff" align="center" valign="top"
@@ -55,7 +55,8 @@
                         <tr>
                             <td bgcolor="#ffffff" align="left"
                                 style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                                <p style="margin: 0;">Veuillez-vous vérifier votre email pour valider votre compte.</p>
+                                <b style="margin: 0;">Veuillez-vous vérifier votre email pour valider votre compte.</b>
+                                <p style="margin: 0;">Si vous n’avez pas reçu votre e-mail de vérification, veuillez vérifier votre spam.</p>
                             </td>
                         </tr>
                         <tr>
@@ -65,9 +66,9 @@
                                         <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
                                             <table border="0" cellspacing="0" cellpadding="0">
                                                 <tr>
-                                                    <td align="center" style="border-radius: 3px;" bgcolor="#aba3f6">
+                                                    <td align="center" style="border-radius: 3px;" bgcolor="#4791ff">
                                                         <a @click.prevent="resend"
-                                                            style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #aba3f6; display: inline-block;">Revoyer
+                                                            style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #4791ff; display: inline-block;">Revoyer
                                                             le code</a>
                                                     </td>
                                                 </tr>
@@ -89,7 +90,7 @@
                                 style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                                 <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more
                                     help?</h2>
-                                <p style="margin: 0;"><a href="#" target="_blank" style="color: #aba3f6;">We&rsquo;re
+                                <p style="margin: 0;"><a href="https://api.whatsapp.com/send?phone=+212609920389&text=Salam,J'ai un problem avec l'inscription" target="_blank" style="color: #4791ff;">We&rsquo;re
                                         here to help you out</a></p>
                             </td>
                         </tr>

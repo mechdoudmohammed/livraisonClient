@@ -147,8 +147,6 @@ class ClientController extends Controller
                 'message' => 'Client update successfully'
             ]);
         }
-
-
     }
     public function show($id)
     {
@@ -194,6 +192,7 @@ class ClientController extends Controller
                 'email' => $request->email,
                 'id_ville' => $request->ville['id'],
                 'password' => Hash::make($request->password),
+                'statut' => 'Active',
             ]);
             //}
             if ($user) {
@@ -273,6 +272,19 @@ class ClientController extends Controller
     {
         try {
             $villes = DB::table('villes')->select('villes.id', 'villes.nom_ville as ville')->where('villes.statut', 'Active')->get();
+            return response()->json([
+                'data' => $villes
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erreur'
+            ]);
+        }
+    }
+    public function getVilleCommentaire($id)
+    {
+        try {
+            $villes = DB::table('villes')->select('commentaire_ville as commentaire')->where('villes.id', $id)->get();
             return response()->json([
                 'data' => $villes
             ]);
@@ -761,12 +773,10 @@ class ClientController extends Controller
 
         $user = auth('sanctum')->user();
         if ($user->role == 'Client' && $user->statut == 'Active') {
-            $Packreductions=Packreductions::join('clients','clients.id_pack','packreductions.id')->select('pack_name')->where('clients.id',$user->id)->first();
+            $Packreductions = Packreductions::join('clients', 'clients.id_pack', 'packreductions.id')->select('pack_name')->where('clients.id', $user->id)->first();
             return response()->json([
                 'data' => $Packreductions
             ]);
-
         }
-     
     }
 }

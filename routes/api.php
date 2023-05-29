@@ -56,6 +56,10 @@ Route::middleware(['auth:client'])
         Route::post('getEmployeClient', 'Client\EmployeClientController@index');
         Route::get('BlockEmployeClient/{id}', 'Client\EmployeClientController@BlockEmployeClient');
         Route::get('getMyPack','Client\ClientController@getMyPack');
+
+        Route::get('getVilleCommentaire/{id}','Client\ClientController@getVilleCommentaire');
+
+
         Route::post('updateStore', 'Client\StoreController@updateStore');
         Route::get('changeFavorite/{id}', 'Client\StoreController@changeFavorite');
         Route::post('getReclamation', 'Client\ReclamationController@index');

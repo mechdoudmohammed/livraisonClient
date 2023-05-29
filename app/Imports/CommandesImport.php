@@ -43,6 +43,19 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                         'type_autorisation'    => $row[5],
                     );
                     $user = auth('sanctum')->user();
+                    $Balance = DB::table("factures")
+                    ->where('factures.statut_facture', 'NOTPAID')
+                    ->where('id_client',  $user->id)
+                    ->selectRaw("IFNULL(sum(factures.total_facture - factures.frais_livraison_facture), 0) as balance")
+                    ->first();
+            
+                    if ($Balance->balance < -1000) {
+                        return response()->json([
+                            'message' => 'Insufficient balance',
+                            'balance'=>$Balance->balance
+                        ]);
+                    }
+            
                     $ville = DB::table('villes')
                         ->where("villes.nom_ville",$row[1])
                         ->select('villes.id', 'prix_livraison')->first();

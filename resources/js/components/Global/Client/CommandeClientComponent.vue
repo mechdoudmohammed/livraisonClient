@@ -78,8 +78,8 @@
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
                                 <div class="search_bar">
-                                    <vs-input :placeholder="$t('message.Search')"
-                                        v-model="formDataCherche.valeur_recherche" @keyup.enter="chercher(formDataCherche3.selected_option3)" />
+                                    <vs-input :placeholder="$t('message.Search')" v-model="formDataCherche.valeur_recherche"
+                                        @keyup.enter="chercher(formDataCherche3.selected_option3)" />
                                     <button class="btn-chercher" @click="chercher(formDataCherche3.selected_option3)">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
@@ -354,11 +354,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="ville_client">{{ $t('message.City') }}<span class="text-danger"> *</span></label>
+                            <label for="ville_client">{{ $t('message.City') }}<span class="text-danger"> *</span><span
+                                    v-if="commentaire_ville"> {{ commentaire_ville }}</span></label>
 
                             <v-select placeholder="Veuillez-vous selectionner une ville"
                                 v-model="formData.ville_client_commande" name="ville_client" :options="villes" label="ville"
-                                index="id" />
+                                index="id" @input="checkCommentCity(formData.ville_client_commande)" />
                         </div>
                         <div class="form-group" v-if="Object.keys(stores).length > 0">
                             <label for="ville_client">{{ $t('message.Store') }}</label>
@@ -814,7 +815,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                   
+
 
 
 
@@ -1005,7 +1006,9 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CANCELEDLV'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_agency') }}</span><br>
+                                                        <span class="commentaireCommande">{{
+                                                            $t('message.Package_send_to_agency')
+                                                        }}</span><br>
 
                                                         {{ $t('message.Order_canceled') }}
                                                         {{ $t('message.By') }}
@@ -1024,7 +1027,8 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CANCELEDAG'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_in_agency') }}</span><br>
+                                                        <span class="commentaireCommande">{{ $t('message.Package_in_agency')
+                                                        }}</span><br>
                                                         {{ $t('message.Order_canceled') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
@@ -1036,7 +1040,9 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CANCELEDEV'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_origin_city') }}</span><br>
+                                                        <span class="commentaireCommande">{{
+                                                            $t('message.Package_send_to_origin_city')
+                                                        }}</span><br>
 
                                                         {{ $t('message.Order_canceled') }}
                                                         {{ $t('message.By') }}
@@ -1049,7 +1055,8 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'CANCELEDRR'">
-                                                        <span class="commentaireCommande">{{$t('message.Return_received_by_responsible')}}</span><br>
+                                                        <span class="commentaireCommande">{{
+                                                            $t('message.Return_received_by_responsible') }}</span><br>
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1071,7 +1078,9 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDLV'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_agency') }}</span><br>
+                                                        <span class="commentaireCommande">{{
+                                                            $t('message.Package_send_to_agency')
+                                                        }}</span><br>
 
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
@@ -1083,7 +1092,8 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDAG'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_in_agency') }}</span><br>
+                                                        <span class="commentaireCommande">{{ $t('message.Package_in_agency')
+                                                        }}</span><br>
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1094,7 +1104,9 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDEV'">
-                                                        <span class="commentaireCommande">{{$t('message.Package_send_to_origin_city') }}</span><br>
+                                                        <span class="commentaireCommande">{{
+                                                            $t('message.Package_send_to_origin_city')
+                                                        }}</span><br>
 
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
@@ -1112,7 +1124,8 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'RETURNEDRR'">
-                                                        <span class="commentaireCommande">{{$t('message.Return_received_by_responsible')}}</span><br>
+                                                        <span class="commentaireCommande">{{
+                                                            $t('message.Return_received_by_responsible') }}</span><br>
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1293,7 +1306,7 @@
                                 </div>
 
                                 <div class="form-group row"
-                                    v-if="formDataUpdate.etat_commande == 'PROCESSING' || formDataUpdate.etat_commande == 'CHANGERPRIX' || formDataUpdate.etat_commande == 'RELANCER' || formDataUpdate.etat_commande == 'REPORTED' || formDataUpdate.etat_commande == 'RAMASSER'  || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'ENROUTE' || formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'INHOUSE' || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'ASSIGN'">
+                                    v-if="formDataUpdate.etat_commande == 'PROCESSING' || formDataUpdate.etat_commande == 'CHANGERPRIX' || formDataUpdate.etat_commande == 'RELANCER' || formDataUpdate.etat_commande == 'REPORTED' || formDataUpdate.etat_commande == 'RAMASSER' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'ENROUTE' || formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'INHOUSE' || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'ASSIGN'">
                                     <div class="col-6" style="display: flex;justify-content: center;">
                                         <button type="button" class="btn btn-danger" @click.prevent="editStatut('ANNULER')"
                                             style="min-width: 160px;">
@@ -1381,7 +1394,6 @@ input[type="number"] {
     justify-content: center;
 
 }
-
 </style>
 <script>
 import axios from "axios";
@@ -1485,6 +1497,7 @@ export default {
             historiqueFacture: [],
             stores: [],
             relaunch: '',
+            commentaire_ville: '',
         };
     },
     watch: {
@@ -1516,6 +1529,16 @@ export default {
         },
     },
     methods: {
+        async checkCommentCity(ville) {
+
+            await axios.get("/api/getVilleCommentaire/" + ville.id)
+                .then((res) => {
+                    this.commentaire_ville = res.data.data[0].commentaire;
+
+                })
+                .catch((error) => console.log(res))
+
+        },
         changeSelectedItem(item) {
             if (parseInt(item.value) == '20' && parseInt(item.value) >= this.totalOrders) {
                 return '1-' + this.totalOrders + ' ' + this.$t('message.of') + this.totalOrders;
@@ -1857,21 +1880,40 @@ export default {
                             this.message == "Le fichier depasse 100 row" || this.message == "Vous avez saisi un grand nombre de commandes pendant une journée !!"
                         ) {
                             var statut_icon = "danger";
+                            this.$vs.notify({
+                                text: this.message,
+                                color: statut_icon,
+                                position: "top-right",
+                                time: 4000,
+                            });
                         } else if (
                             this.message == "Les commandes created successfully"
                         ) {
                             this.message == this.$t('message.Orders_created_successfully');
                             var statut_icon = "success";
+                            this.$vs.notify({
+                                text: this.message,
+                                color: statut_icon,
+                                position: "top-right",
+                                time: 4000,
+                            });
+                        }
+                        else if (
+                            this.message == "Insufficient balance"
+                        ) {
+                            var statut_icon = "danger";
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: this.$t('message.Insufficient_balance'),
+                                html: this.$t('message.Insufficient_balance_text'),
+                                showConfirmButton: true,
+                            })
                         }
                         document.getElementById("btn_cancel").click();
                         this.initialiserFormData();
                         await this.classifierCommande(this.formDataCherche3.selected_option3)
-                        this.$vs.notify({
-                            text: this.message,
-                            color: statut_icon,
-                            position: "top-right",
-                            time: 4000,
-                        });
+
                     })
                     .catch((error) => {
                         if (error.response.status === 422) {
@@ -1899,7 +1941,6 @@ export default {
                 .finally(() => this.$vs.loading.close());
         },
         async addCommandeStock() {
-
             this.formData.articles = this.ListArticles;
             this.$vs.loading({ color: "#22c22b" });
             await axios
@@ -1912,22 +1953,49 @@ export default {
                         "Erreur la quantité doit etre superieur de 0"
                     ) {
                         var statut_icon = "warning";
+                        this.$vs.notify({
+                            title: this.message,
+                            color: statut_icon,
+                            position: "top-right",
+                            time: 8000,
+                        });
                     } else if (
                         this.message == "Erreur" ||
                         this.message == "Erreur la quantité entrer plus que le stock" || this.message == "Vous avez saisi un grand nombre de commandes pendant une journée !!"
                     ) {
                         var statut_icon = "danger";
-                    } else if (
+                        this.$vs.notify({
+                            title: this.message,
+                            color: statut_icon,
+                            position: "top-right",
+                            time: 8000,
+                        });
+                    }
+
+                    else if (
                         this.message == "commande created successfully"
                     ) {
                         var statut_icon = "success";
+                        this.$vs.notify({
+                            title: this.message,
+                            color: statut_icon,
+                            position: "top-right",
+                            time: 8000,
+                        });
                     }
-                    this.$vs.notify({
-                        title: this.message,
-                        color: statut_icon,
-                        position: "top-right",
-                        time: 4000,
-                    });
+                    else if (
+                        this.message == "Insufficient balance"
+                    ) {
+                        var statut_icon = "danger";
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: this.$t('message.Insufficient_balance'),
+                            html: this.$t('message.Insufficient_balance_text'),
+                            showConfirmButton: true,
+                        })
+                    }
+
                     this.initialiserFormData();
                     this.getArticles();
 
@@ -2098,7 +2166,7 @@ export default {
                     }
                     else if (res.data.message == 'Le prix doit etre superieur ou egale 0') {
                         this.$vs.notify({
-                            title: 'Le prix doit etre superieur ou egale 0',
+                            title: this.$t('message.Price_must_be_greater_than_or_equal_to_0'),
                             color: 'danger',
                             position: "top-right",
                             time: 8000,
@@ -2106,7 +2174,7 @@ export default {
                     }
                     else if (res.data.message == 'Le prix doit être inférieur au prix précédent') {
                         this.$vs.notify({
-                            title: 'Le prix doit être inférieur au prix précédent',
+                            title: this.$t('message.Price_must_be_lower_than_the_previous_price'),
                             color: 'danger',
                             position: "top-right",
                             time: 8000,
@@ -2181,9 +2249,9 @@ export default {
             if (btn_val) {
                 await this.getCommande(tr.id_commande);
                 this.formData.selected_commande = tr.id_commande;
-              
+
             }
-          
+
         },
         checkCommandeStock(btn_val) {
             this.edit = btn_val;
