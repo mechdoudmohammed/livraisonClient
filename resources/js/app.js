@@ -15,6 +15,8 @@ import en from "./lang/en";
 import fr from "./lang/fr";
 import ar from "./lang/ar";
 import VueI18n from "vue-i18n";
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 Vue.use(VueI18n);
 const messages = {
     en,

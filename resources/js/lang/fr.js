@@ -115,10 +115,10 @@ let message = {
     RETURNEDEV: "RETOURNÉ",
     RETURNEDRR: "RETOURNÉ",
 
-    CANCELEDLV:"REFUSÉ",
-    CANCELEDAG:"REFUSÉ",
-    CANCELEDEV:"REFUSÉ",
-    CANCELEDRR:"REFUSÉ",
+    CANCELEDLV: "REFUSÉ",
+    CANCELEDAG: "REFUSÉ",
+    CANCELEDEV: "REFUSÉ",
+    CANCELEDRR: "REFUSÉ",
 
     CANCELED: "REFUSÉ",
     ARCHIVED: "ARCHIVÉ",
@@ -128,7 +128,7 @@ let message = {
     RELANCE: "Relancé",
     CHANGERPRIX: "Changement de prix",
     Package_without_response: "Colis sans réponse",
-    Order_canceled: "Commande annulée",
+    Order_canceled: "Commande refusé",
     By: "Par",
     At: "À",
     To: "À",
@@ -230,20 +230,23 @@ let message = {
     Profile: "Profile",
     RELANCER: "RELANCER",
     Annuler: "Annulé",
-    of:'de ',
+    of: "de ",
     Package: "Package",
-    Close:'Fermer',
+    Close: "Fermer",
     Return_send_to_agency: "Retour envoyer à l'agence",
     Successfully: "Succès",
-    Package_send_to_agency:'Colis envoyé à l\'agence',
-    Package_in_agency:'Colis reçu en agence',
-    Package_send_to_origin_city:'Colis envoyé à la ville d\'origine',
-    Return_received_by_responsible:'Retour reçu par le responsable',
-    Price_must_be_greater_than_or_equal_to_0:'Le prix doit être supérieur ou égal à 0',
-Price_must_be_lower_than_the_previous_price:'Le prix doit être inférieur au prix précédent',
-Insufficient_balance: "Solde insuffisant",
-Insufficient_balance_text: "Vous avez dépassé la limite autorisée pour passer des commandes d'une valeur de 0 dirhams. Veuillez contacter l'administration.",
-
+    Package_send_to_agency: "Colis envoyé à l'agence",
+    Package_in_agency: "Colis reçu en agence",
+    Package_send_to_origin_city: "Colis envoyé à la ville d'origine",
+    Return_received_by_responsible: "Retour reçu par le responsable",
+    Price_must_be_greater_than_or_equal_to_0:
+        "Le prix doit être supérieur ou égal à 0",
+    Price_must_be_lower_than_the_previous_price:
+        "Le prix doit être inférieur au prix précédent",
+    Insufficient_balance: "Solde insuffisant",
+    Insufficient_balance_text:
+        "Solde insuffisant. Veuillez contacter l'administration.",
+        Order_received:'Colis reçu',
 
 };
 

@@ -146,7 +146,7 @@ let message = {
     Processe: "Processe",
     Create: "Create",
     Reporter: "Reporter",
-    Package_Ready_for_Delivery: "Package Ready for Delivery",
+    Package_Ready_for_Delivery: "Package Ready to deliver",
     Delivered: "Delivered",
     Package_is_ready_to_send: "Package is ready to send",
     Are_you_sure: "Are you sure?",
@@ -241,11 +241,11 @@ let message = {
     Price_must_be_lower_than_the_previous_price:
         "The price must be lower than the previous price",
     Insufficient_balance: "Insufficient Balance",
-    Insufficient_balance_text: "You have exceeded the allowed limit for placing orders with a value of 0 dirhams. Please contact the administration.",
-    //=========================================================================================
+    Insufficient_balance_text: "Insufficient Balance. Please contact the administration.",
     Model_Excel: "Model Excel",
     With_Sms: "With Sms",
     Receipt_id: "Receipt Id",
+    Order_received:'Order_received',
 };
 
 export default {

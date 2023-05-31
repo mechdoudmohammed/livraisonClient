@@ -118,7 +118,7 @@
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'HOME'">{{
                                             $t('message.HOME') }}</b>
                                         <b class="badge badge badge-gradient-info"
-                                            v-if="tr.etat_commande == 'CHANGERPRIX'">{{ $t('message.CHANGEPRIX') }}</b>
+                                            v-if="tr.etat_commande == 'CHANGERPRIX'">{{ $t('message.CHANGERPRIX') }}</b>
                                         <b class="badge badge badge-gradient-info" v-if="tr.etat_commande == 'INHOUSE'">{{
                                             $t('message.INHOUSE') }}</b>
                                         <b class="badge badge badge-gradient-primary"

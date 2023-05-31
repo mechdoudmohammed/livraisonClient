@@ -706,7 +706,7 @@
                                                     </div>
 
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande == 'COMMENTAIRE'">
                                                         <span class="commentaireCommande">{{ hCommande.commentaire_commande
                                                         }}</span>
@@ -720,7 +720,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.commentaire_commande && hCommande.etat_commande != 'COMMENTAIRE'">
 
                                                         <span class="commentaireCommande"
@@ -744,7 +744,7 @@
                                                         <span class="commentaireCommande" v-else>{{
                                                             hCommande.commentaire_commande }}</span>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'callLog'">
 
                                                         <span class="commentaireCommande"
@@ -805,7 +805,7 @@
 
                                                     </div>
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'NOREPONSE'">
                                                         {{ $t('message.Package_without_response') }} {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
@@ -819,7 +819,7 @@
 
 
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'ENROUTE'">
                                                         {{ $t('message.Package_sent_to') }}
                                                         <b>{{ hCommande.nom_ville }}</b>
@@ -830,7 +830,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RAMASSER'">
                                                         {{ $t('message.Package_PickUp') }}
                                                         {{ $t('message.By') }}
@@ -842,13 +842,13 @@
                                                     </div>
 
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'ASSIGN'">
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'DMSUIVIE'">
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
@@ -858,7 +858,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'INHOUSE'">
                                                         {{ $t('message.Package_is_ready_to_send') }}
                                                         {{ $t('message.By') }}
@@ -869,7 +869,7 @@
                                                         </b>
                                                     </div>
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'HOME'">
                                                         {{ $t('message.Package_is_in_Hub') }}
                                                         <b>{{ hCommande.nom_ville }}</b>
@@ -880,7 +880,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CONFIRMED'">
                                                         {{ $t('message.Confirmed') }} {{ $t('message.By') }}:
                                                         <b>{{ hCommande.clientUsername }}</b>
@@ -889,7 +889,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'PROCESSING'">
                                                         {{ $t('message.Processe') }} {{ $t('message.By') }}:
                                                         <b>{{ hCommande.clientUsername }}</b>
@@ -898,7 +898,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'PICKUP'">
 
                                                         {{ $t('message.PICKUP') }} {{ $t('message.By') }}:
@@ -918,7 +918,7 @@
                                                         </b>
                                                     </div>
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CREATED'">
                                                         {{ $t('message.Created') }} {{ $t('message.By') }}:
                                                         <b>
@@ -926,7 +926,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'ANNULER'">{{ $t('message.By') }}:
                                                         <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
                                                         }}</b>
@@ -936,7 +936,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'ANNULER_CL'">{{ $t('message.By')
                                                         }}:
                                                         <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
@@ -947,7 +947,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CHANGERPRIX'">
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
@@ -957,7 +957,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RELANCER'">
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.clientUsername">{{ hCommande.clientUsername
@@ -969,7 +969,7 @@
                                                         </b>
                                                     </div>
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'REPORTED'">
                                                         {{ $t('message.Reporter') }} {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
@@ -981,7 +981,7 @@
                                                         {{ $t('message.At') }}
                                                         {{ hCommande.updated_at }}
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'TRANSIT'">
                                                         {{ $t('message.Package_Ready_for_Delivery') }} {{ $t('message.By')
                                                         }}
@@ -993,7 +993,7 @@
                                                         {{ $t('message.At') }}
                                                         {{ hCommande.updated_at }}
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'DELIVERED'">
                                                         {{ $t('message.Delivered') }}
                                                         {{ $t('message.By') }}
@@ -1004,13 +1004,25 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CANCELEDLV'">
-                                                        <span class="commentaireCommande">{{
+                                                        <!-- <span class="commentaireCommande">{{
                                                             $t('message.Package_send_to_agency')
-                                                        }}</span><br>
+                                                        }}</span><br> -->
 
                                                         {{ $t('message.Order_canceled') }}
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                     
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-2"
+                                                        v-if="hCommande.etat_commande == 'CANCELEDAG'">
+                                                        {{ $t('message.Order_received') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1025,26 +1037,9 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'CANCELEDAG'">
-                                                        <span class="commentaireCommande">{{ $t('message.Package_in_agency')
-                                                        }}</span><br>
-                                                        {{ $t('message.Order_canceled') }}
-                                                        {{ $t('message.By') }}
-                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
-                                                        <b v-else>Service Client</b>
-                                                        <br>
-                                                        {{ $t('message.At') }}
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CANCELEDEV'">
-                                                        <span class="commentaireCommande">{{
-                                                            $t('message.Package_send_to_origin_city')
-                                                        }}</span><br>
-
-                                                        {{ $t('message.Order_canceled') }}
+                                                        {{ $t('message.Package_send_to_origin_city') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1053,10 +1048,9 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CANCELEDRR'">
-                                                        <span class="commentaireCommande">{{
-                                                            $t('message.Return_received_by_responsible') }}</span><br>
+                                                        {{$t('message.Return_received_by_responsible') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1065,7 +1059,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CANCELED'">
                                                         {{ $t('message.Order_canceled') }}
                                                         {{ $t('message.By') }}
@@ -1076,12 +1070,11 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RETURNEDLV'">
                                                         <span class="commentaireCommande">{{
                                                             $t('message.Package_send_to_agency')
                                                         }}</span><br>
-
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1090,24 +1083,9 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RETURNEDAG'">
-                                                        <span class="commentaireCommande">{{ $t('message.Package_in_agency')
-                                                        }}</span><br>
-                                                        {{ $t('message.By') }}
-                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
-                                                        <b v-else>Service Client</b>
-                                                        <br>
-                                                        {{ $t('message.At') }}
-                                                        <b>{{ hCommande.updated_at }}
-                                                        </b>
-                                                    </div>
-                                                    <div class="tl-date text-muted mt-1"
-                                                        v-if="hCommande.etat_commande == 'RETURNEDEV'">
-                                                        <span class="commentaireCommande">{{
-                                                            $t('message.Package_send_to_origin_city')
-                                                        }}</span><br>
-
+                                                        {{ $t('message.Package_in_agency')}}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1122,10 +1100,21 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
+                                                        v-if="hCommande.etat_commande == 'RETURNEDEV'">
+                                                        {{$t('message.Package_send_to_origin_city')}}
+                                                        {{ $t('message.By') }}
+                                                        <b v-if="hCommande.username">{{ hCommande.username }}</b>
+                                                        <b v-else>Service Client</b>
+                                                        <br>
+                                                       
+                                                        {{ $t('message.At') }}
+                                                        <b>{{ hCommande.updated_at }}
+                                                        </b>
+                                                    </div>
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RETURNEDRR'">
-                                                        <span class="commentaireCommande">{{
-                                                            $t('message.Return_received_by_responsible') }}</span><br>
+                                                        {{$t('message.Return_received_by_responsible') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1134,7 +1123,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RETURNED'">
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
@@ -1170,7 +1159,7 @@
                                                                 hCommande.statut_facture }}</b>
                                                     </div>
 
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.statut_facture == 'NOTPAID'">
                                                         {{ $t('message.Invoiced') }} {{ $t('message.By') }}:
                                                         <b v-if="hCommande.username ==
@@ -1186,7 +1175,7 @@
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
-                                                    <div class="tl-date text-muted mt-1"
+                                                    <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.statut_facture == 'PAID'">{{ $t('message.Paid') }}
                                                         {{ $t('message.By') }}:
                                                         <b v-if="hCommande.username == null">Service Facturation</b>

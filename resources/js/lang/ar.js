@@ -240,8 +240,9 @@ let message = {
     Price_must_be_lower_than_the_previous_price:
         "يجب أن يكون السعر أقل من السعر السابق",
     Insufficient_balance: "رصيد غير كاف",
-    Insufficient_balance_text:
-        "لقد تجاوزت الحد المسموح بيه لارسال الطلبيات بقيمة 0 درهم المرجو التواصل مع الادارة ",
+    Insufficient_balance_text:"رصيد غير كاف المرجو التواصل مع الادارة ",
+    Order_received:'تم إستلام الطرد',
+
 };
 
 export default {
