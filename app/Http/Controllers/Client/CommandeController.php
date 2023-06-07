@@ -132,6 +132,8 @@ class CommandeController extends Controller
         }
         if ($request->hasFile('fichierCommande')) {
             $import = new CommandesImport($id_store);
+
+            
             Excel::import($import, request()->file('fichierCommande'));
             $array = $import->getArray();
             return response()->json([

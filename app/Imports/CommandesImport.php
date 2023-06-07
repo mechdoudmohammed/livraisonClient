@@ -88,7 +88,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                         "etat_commande" => "CREATED",
                         'type_autorisation' => $row[5],
                         "id_client" => $id_client,
-                        "prix_livraison_final" => $prix_livraison,
+                        "prix_livraison_final" => floatval($prix_livraison),
                         'id_employe_client' => $id_employe_client,
                     ]);
                     HistoriqueCommande::create([
