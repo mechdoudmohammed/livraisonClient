@@ -1628,7 +1628,7 @@ export default {
                     }
 
                     text +=
-                        "<tr><td><b>" + this.$t('message.Destination') + "</b></td></tr>" +
+                        "<tr><td style='min-width: 135px;'><b>" + this.$t('message.Destination') + "</b></td></tr>" +
                         "</td></tr><tr><td>" + this.$t('message.Order_id') + " :</td><td>" +
                         this.commande.id_commande +
                         "</td></tr>";
