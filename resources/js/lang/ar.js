@@ -242,6 +242,7 @@ let message = {
     Insufficient_balance: "رصيد غير كاف",
     Insufficient_balance_text:"رصيد غير كاف المرجو التواصل مع الادارة ",
     Order_received:'تم إستلام الطرد',
+    id_intern:'رقم الطرد',
 
 };
 

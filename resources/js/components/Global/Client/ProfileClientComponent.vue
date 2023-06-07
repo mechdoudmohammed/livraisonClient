@@ -376,7 +376,6 @@ export default {
     axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
     this.getBanks();
     this.getMyPack();
-    console.log(this.Client);
     if ((this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null) && this.Client.role == 'Client') {
 
       this.showMsgInformation = false;

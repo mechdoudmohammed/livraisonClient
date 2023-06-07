@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\Agence;
 use App\Models\Commande;
 use App\Models\HistoriqueCommande;
 use App\Models\Ville;
@@ -68,8 +69,16 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                     } else if ($user->role == 'Client') {
                         $id_client = $user->id;
                     }
+                    $agence = Agence::where('id_ville', $user->id_ville)->first();
+                    $prix_livraison = $ville->prix_livraison;
+                    if ($agence) {
+                        if ($user->id_ville == $agence->id_ville && $ville->id==$agence->id_ville) {
+                            $prix_livraison = $ville->prix_livraison_meme_ville;
+                        }
+                    }
                     Commande::create([
                         "id_commande" => $id_commande,
+                        "id_commande_intern" => $row[6],
                         "id_ville" =>  $ville->id,
                         "id_store" => $this->store,
                         "nom_client_commande" => $row[0],
@@ -79,7 +88,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                         "etat_commande" => "CREATED",
                         'type_autorisation' => $row[5],
                         "id_client" => $id_client,
-                        "prix_livraison_final" => $ville->prix_livraison,
+                        "prix_livraison_final" => $prix_livraison,
                         'id_employe_client' => $id_employe_client,
                     ]);
                     HistoriqueCommande::create([

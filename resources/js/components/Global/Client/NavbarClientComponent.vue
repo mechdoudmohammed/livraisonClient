@@ -55,7 +55,8 @@
 
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
             aria-labelledby="notificationDropdown">
-            <h6 class="p-3 mb-0" v-if="Client.language == 'ar'" style="float: right;">{{ $t('message.Notifications') }}</h6>
+            <h6 class="p-3 mb-0" v-if="Client.language == 'ar'" style="float: right;">{{ $t('message.Notifications') }}
+            </h6>
             <h6 class="p-3 mb-0" v-else>{{ $t('message.Notifications') }}</h6>
 
 
@@ -102,12 +103,12 @@
           <div id='profileDropdownplus' class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
             <router-link to="/profile">
               <a class="dropdown-item">
-                <i class="mdi mdi-cached me-2 text-success"></i> {{$t('message.Profile')}} </a>
+                <i class="mdi mdi-cached me-2 text-success"></i> {{ $t('message.Profile') }} </a>
             </router-link>
             <div class="dropdown-divider"></div>
 
             <a class="dropdown-item" @click="logout">
-              <i class="mdi mdi-logout me-2 text-primary"></i> {{$t('message.Signout')}} </a>
+              <i class="mdi mdi-logout me-2 text-primary"></i> {{ $t('message.Signout') }} </a>
           </div>
         </li>
         <li class="nav-item dropdown" ref="myElement">
@@ -120,6 +121,9 @@
             </div>
             <div class="selected-lang" v-else-if="Client.language == 'ar'" @click="displayDropdownLang">
               <img src="https://img.icons8.com/color/32/morocco.png" style="margin-right: 4px;width: 23px;">العربية
+            </div>
+            <div class="selected-lang" v-else @click="displayDropdownLang">
+              <img src="https://img.icons8.com/color/32/great-britain.png" style="margin-right: 4px;width: 23px;">English
             </div>
             <ul id="dropdownLang">
               <li>
@@ -172,7 +176,7 @@ export default {
             position: "top-right",
           });
           localStorage.setItem('locale', lang);
-      location.reload();
+          location.reload();
         } else {
           this.$vs.notify({
             title: this.$t('message.error'),
@@ -185,7 +189,7 @@ export default {
         console.log(errors)
       })
 
- 
+
     },
     async getNotification() {
       await axios.get('api/Notification').then((response) => {
@@ -242,7 +246,7 @@ export default {
       })
     },
     async handleClickOutside(event) {
-    
+
       if (!this.$refs.myElement.contains(event.target)) {
         document.getElementById('dropdownLang').style.display = 'none';
       }
@@ -257,13 +261,15 @@ export default {
   beforeMount() {
     this.getNotification();
 
+    localStorage.setItem('locale', this.Client.language);
+
   },
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside);
   },
   async mounted() {
 
-
+    
 
     $(function () {
       $('[data-toggle="offcanvas"]').on("click", function () {
@@ -314,9 +320,10 @@ export default {
 </script>
 <style scoped>
 h6.preview-subject.font-weight-normal.mb-1 {
-    font-weight: 600;
-    font-size: 15px;
+  font-weight: 600;
+  font-size: 15px;
 }
+
 .lang-menu {
   font-weight: bold;
   display: flex;

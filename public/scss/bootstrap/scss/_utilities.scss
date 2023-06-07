@@ -426,11 +426,7 @@ $utilities: map-merge(
     // scss-docs-end utils-spacing
     // Text
     // scss-docs-start utils-text
-    "font-family": (
-      property: font-family,
-      class: font,
-      values: (monospace: var(--#{$variable-prefix}font-monospace))
-    ),
+
     "font-size": (
       rfs: true,
       property: font-size,

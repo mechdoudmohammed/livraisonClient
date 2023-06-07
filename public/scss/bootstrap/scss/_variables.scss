@@ -420,7 +420,7 @@ $font-family-sans-serif:      system-ui, -apple-system, "Segoe UI", Roboto, "Hel
 $font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 // stylelint-enable value-keyword-case
 $font-family-base:            var(--#{$variable-prefix}font-sans-serif) !default;
-$font-family-code:            var(--#{$variable-prefix}font-monospace) !default;
+
 
 // $font-size-root effects the value of `rem`, which is used for as well font sizes, paddings and margins
 // $font-size-base effects the font size of the body text
@@ -905,7 +905,6 @@ $zindex-fixed:                      1030 !default;
 $zindex-modal-backdrop:             1040 !default;
 $zindex-offcanvas:                  1050 !default;
 $zindex-modal:                      1060 !default;
-$zindex-popover:                    1070 !default;
 $zindex-tooltip:                    1080 !default;
 // scss-docs-end zindex-stack
 
@@ -1159,34 +1158,6 @@ $form-feedback-tooltip-opacity:       $tooltip-opacity !default;
 $form-feedback-tooltip-border-radius: $tooltip-border-radius !default;
 // scss-docs-start tooltip-feedback-variables
 
-
-// Popovers
-
-// scss-docs-start popover-variables
-$popover-font-size:                 $font-size-sm !default;
-$popover-bg:                        $white !default;
-$popover-max-width:                 276px !default;
-$popover-border-width:              $border-width !default;
-$popover-border-color:              rgba($black, .2) !default;
-$popover-border-radius:             $border-radius-lg !default;
-$popover-inner-border-radius:       subtract($popover-border-radius, $popover-border-width) !default;
-$popover-box-shadow:                $box-shadow !default;
-
-$popover-header-bg:                 shade-color($popover-bg, 6%) !default;
-$popover-header-color:              $headings-color !default;
-$popover-header-padding-y:          .5rem !default;
-$popover-header-padding-x:          $spacer !default;
-
-$popover-body-color:                $body-color !default;
-$popover-body-padding-y:            $spacer !default;
-$popover-body-padding-x:            $spacer !default;
-
-$popover-arrow-width:               1rem !default;
-$popover-arrow-height:              .5rem !default;
-$popover-arrow-color:               $popover-bg !default;
-
-$popover-arrow-outer-color:         fade-in($popover-border-color, .05) !default;
-// scss-docs-end popover-variables
 
 
 // Toasts

@@ -247,6 +247,7 @@ let message = {
     Insufficient_balance_text:
         "Solde insuffisant. Veuillez contacter l'administration.",
         Order_received:'Colis reçu',
+        id_intern:'id intern',
 
 };
 

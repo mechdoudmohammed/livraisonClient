@@ -350,7 +350,6 @@
     font-size: 12px;
     font-weight: 600;
     color: #012970;
-    font-family: "Poppins", sans-serif;
 }
 
 .statistique {

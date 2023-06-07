@@ -112,36 +112,6 @@
   }
 }
 
-// Readonly controls as plain text
-//
-// Apply class to a readonly input to make it appear like regular plain
-// text (without any border, background color, focus indicator)
-
-.form-control-plaintext {
-  display: block;
-  width: 100%;
-  padding: $input-padding-y 0;
-  margin-bottom: 0; // match inputs if this class comes on inputs with default margins
-  line-height: $input-line-height;
-  color: $input-plaintext-color;
-  background-color: transparent;
-  border: solid transparent;
-  border-width: $input-border-width 0;
-
-  &.form-control-sm,
-  &.form-control-lg {
-    padding-right: 0;
-    padding-left: 0;
-  }
-}
-
-// Form control sizing
-//
-// Build on `.form-control` with modifier classes to decrease or increase the
-// height and font-size of form controls.
-//
-// Repeated in `_input_group.scss` to avoid Sass extend issues.
-
 .form-control-sm {
   min-height: $input-height-sm;
   padding: $input-padding-y-sm $input-padding-x-sm;

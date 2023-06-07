@@ -246,6 +246,7 @@ let message = {
     With_Sms: "With Sms",
     Receipt_id: "Receipt Id",
     Order_received:'Order_received',
+    id_intern:'id intern',
 };
 
 export default {

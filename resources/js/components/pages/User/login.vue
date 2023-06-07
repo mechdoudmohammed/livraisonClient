@@ -463,7 +463,7 @@ export default {
           this.$vs.loading({ color: "#22c22b" });
           axios.post('api/forgot-password', { 'email': result.value })
             .then(res => {
-              console.log(res.data);
+
               this.$vs.notify({
                 time: 8000,
                 title: res.data.status,

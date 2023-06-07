@@ -353,6 +353,12 @@
 
                             </div>
                         </div>
+                        <div class="form-group" v-if="Client.id_intern_statut == 1">
+                            <label for="id_commande_intern">{{ $t('message.id_intern') }}</label>
+
+                            <input type="text" class="form-control" id="id_commande_intern	" v-model="formData.id_commande_intern"
+                                name="id_commande_intern" />
+                        </div>
                         <div class="form-group">
                             <label for="ville_client">{{ $t('message.City') }}<span class="text-danger"> *</span><span
                                     v-if="commentaire_ville"> {{ commentaire_ville }}</span></label>
@@ -1414,6 +1420,7 @@ export default {
             formData: {
                 id_commande: '',
                 ville_client_commande: "",
+                id_commande_intern:'',
                 nom_client_commande: "",
                 adresse_client_commande: "",
                 telephone_client_commande: "",
@@ -1497,6 +1504,7 @@ export default {
             this.nom_err = "";
             this.formData = {
                 ville_client_commande: "",
+                id_commande_intern:'',
                 nom_client_commande: "",
                 adresse_client_commande: "",
                 telephone_client_commande: "",
@@ -2254,6 +2262,7 @@ export default {
                 (this.errors = {}),
                 (this.formData = {
                     ville_client_commande: "",
+                    id_commande_intern:'',
                     nom_client_commande: "",
                     adresse_client_commande: "",
                     telephone_client_commande: "",
@@ -2290,6 +2299,7 @@ export default {
                 (this.stock_quantite = ""),
                 (this.formData = {
                     ville_client_commande: "",
+                    id_commande_intern:'',
                     nom_client_commande: "",
                     adresse_client_commande: "",
                     telephone_client_commande: "",

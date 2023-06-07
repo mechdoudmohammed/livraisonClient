@@ -29,6 +29,7 @@ async function myAsyncFunction() {
     await axios.get('api/client').then((response) => {
     
         currentUser = response.data;
+      
     }).catch((errors) => {
         if (errors.response.status === 401) {
             localStorage.removeItem('token');

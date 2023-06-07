@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CommandesImport;
+use App\Models\Agence;
 use App\Models\DetailsCommandes;
 use App\Models\Notification;
 use App\Models\Package;
@@ -63,18 +64,21 @@ class CommandeController extends Controller
     }
     public function store(Request $request)
     {
-
         $user = auth('sanctum')->user();
+        $agence = Agence::where('id_ville', $user->id_ville)->first();
+
+       
+       
         $Balance = DB::table("factures")
-        ->where('factures.statut_facture', 'NOTPAID')
-        ->where('id_client',  $user->id)
-        ->selectRaw("IFNULL(sum(factures.total_facture - factures.frais_livraison_facture), 0) as balance")
-        ->first();
+            ->where('factures.statut_facture', 'NOTPAID')
+            ->where('id_client',  $user->id)
+            ->selectRaw("IFNULL(sum(factures.total_facture - factures.frais_livraison_facture), 0) as balance")
+            ->first();
 
         if ($Balance->balance < -1000) {
             return response()->json([
                 'message' => 'Insufficient balance',
-                'balance'=>$Balance->balance
+                'balance' => $Balance->balance
             ]);
         }
 
@@ -151,6 +155,7 @@ class CommandeController extends Controller
 
                     $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
 
+
                     $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
 
 
@@ -160,15 +165,29 @@ class CommandeController extends Controller
                     } else if ($user->role == 'Client') {
                         $id_client = $user->id;
                     }
+                    $agence = Agence::where('id_ville', $user->id_ville)->first();
+                    
+                    $prix_livraison = $ville->prix_livraison;
+                    if ($agence) {
+                        if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id'] == $agence->id_ville) {
+                            $prix_livraison = $ville->prix_livraison_meme_ville;
+                        }
+                    }
+
+
+
+
+
                     $statut = Commande::create([
                         "id_commande" =>  $id_commande,
+                        "id_commande_intern" => $request->id_commande_intern,
                         "id_ville" => $request->ville_client_commande['id'],
                         "id_store" => $id_store,
                         "nom_client_commande" => $request->nom_client_commande,
                         "adresse_client_commande" => $request->adresse_client_commande,
                         "telephone_client_commande" => $request->telephone_client_commande,
                         "prix_commande" => $request->prix_commande,
-                        "prix_livraison_final" => $ville->prix_livraison,
+                        "prix_livraison_final" => $prix_livraison,
                         "etat_commande" => "CREATED",
                         "id_client" => $id_client,
                         "additional_commentaire" => $request->additional_commentaire,
@@ -243,9 +262,17 @@ class CommandeController extends Controller
                         $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
                         $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
 
-
+                        $agence = Agence::where('id_ville', $user->id_ville)->first();
+                    
+                        $prix_livraison = $ville->prix_livraison;
+                        if ($agence) {
+                            if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id']==$agence->id_ville) {
+                                $prix_livraison = $ville->prix_livraison_meme_ville;
+                            }
+                        }
                         $statut = Commande::create([
                             "id_commande" => $id_commande,
+                            "id_commande_intern" => $request->id_commande_intern,
                             "id_ville" => $request->ville_client_commande['id'],
                             "nom_client_commande" => $request->nom_client_commande,
                             "adresse_client_commande" => $request->adresse_client_commande,
@@ -253,7 +280,7 @@ class CommandeController extends Controller
                             "prix_commande" => $request->prix_commande,
                             "etat_commande" => "CREATED",
                             "id_client" => $id_client,
-                            "prix_livraison_final" => $ville->prix_livraison,
+                            "prix_livraison_final" => $prix_livraison,
                             "additional_commentaire" => $request->additional_commentaire,
                             "type_autorisation" => $type_autorisation,
                             "type_commande" => 'stock',
@@ -300,15 +327,22 @@ class CommandeController extends Controller
                         }
                         $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
                         $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
-
+                        $agence = Agence::where('id_ville', $user->id_ville)->first();
+                        $prix_livraison = $ville->prix_livraison;
+                        if ($agence) {
+                            if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id'] == $agence->id_ville) {
+                                $prix_livraison = $ville->prix_livraison_meme_ville;
+                            }
+                        }
                         $statut = Commande::create([
                             "id_commande" => $id_commande,
+                            "id_commande_intern" => $request->id_commande_intern,
                             "id_ville" => $request->ville_client_commande['id'],
                             "nom_client_commande" => $request->nom_client_commande,
                             "adresse_client_commande" => $request->adresse_client_commande,
                             "telephone_client_commande" => $request->telephone_client_commande,
                             "prix_commande" => $request->prix_commande,
-                            "prix_livraison_final" => $ville->prix_livraison,
+                            "prix_livraison_final" => $prix_livraison,
                             "etat_commande" => "CREATED",
                             "id_client" => $id_client,
                             "type_autorisation" => $type_autorisation,
@@ -501,15 +535,23 @@ class CommandeController extends Controller
                     }
 
                     if ($statut) {
+                        $agence = Agence::where('id_ville', $user->id_ville)->first();
+                        $prix_livraison = $ville->prix_livraison;
+                        if ($agence) {
+                            if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id']==$agence->id_ville) {
+                                $prix_livraison = $ville->prix_livraison_meme_ville;
+                            }
+                        }
 
                         $commande = Commande::where('commandes.id_client', $user->id)->where('etat_commande', 'CREATED')->where('id_commande', $request->id_commande)->first();
                         $commande->id_ville =  $ville->id;
                         $commande->nom_client_commande = $request->nom_client_commande;
+                        $commande->id_commande_inten = $request->id_commande_inten;
                         $commande->adresse_client_commande = $request->adresse_client_commande;
                         $commande->telephone_client_commande = $request->telephone_client_commande;
                         $commande->prix_commande = $request->prix_commande;
                         $commande->additional_commentaire = $request->additional_commentaire;
-                        $commande->prix_livraison_final = $ville->prix_livraison;
+                        $commande->prix_livraison_final = $prix_livraison;
                         $commande->type_autorisation = $type_autorisation;
                         $statut = $commande->save();
                     }
@@ -533,13 +575,21 @@ class CommandeController extends Controller
                         $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
                         $commande->id_commande = $id_commande;
                     }
+                    $agence = Agence::where('id_ville', $user->id_ville)->first();
+                    $prix_livraison = $ville->prix_livraison;
+                    if ($agence) {
+                        if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id']==$agence->id_ville) {
+                            $prix_livraison = $ville->prix_livraison_meme_ville;
+                        }
+                    }
 
                     $commande->nom_client_commande = $request->nom_client_commande;
+                    $commande->id_commande_inten = $request->id_commande_inten;
                     $commande->adresse_client_commande = $request->adresse_client_commande;
                     $commande->telephone_client_commande = $request->telephone_client_commande;
                     $commande->prix_commande = $request->prix_commande;
                     $commande->additional_commentaire = $request->additional_commentaire;
-                    $commande->prix_livraison_final = $ville->prix_livraison;
+                    $commande->prix_livraison_final = $prix_livraison;
                     $commande->type_autorisation = $type_autorisation;
                     $statut = $commande->save();
                     if ($statut) {
@@ -587,6 +637,7 @@ class CommandeController extends Controller
                         ->join('villes', 'commandes.id_ville', '=', 'villes.id')
                         ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
                         ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
+                        ->join('zones','zones.id','villes.id_zone')
                         ->leftjoin('villes as store_ville', 'stores.id_ville', '=', 'store_ville.id')
                         ->where(function ($query) use ($user) {
                             $query->where('commandes.id_client', $user->id)
@@ -596,6 +647,7 @@ class CommandeController extends Controller
                         ->select(
                             'commandes.*',
                             'villes.nom_ville as ville',
+                            'zones.nom_zone',
                             'clients.company',
                             'clients.adresse',
                             'clients.website',
@@ -614,6 +666,7 @@ class CommandeController extends Controller
                     $packageClient = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
                         ->join('clients as superviseur', 'superviseur.id', '=', 'commandes.id_client')
                         ->join('villes', 'commandes.id_ville', '=', 'villes.id')
+                        ->join('zones','zones.id','villes.id_zone')
                         ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
                         ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
                         ->leftjoin('villes as store_ville', 'stores.id_ville', '=', 'store_ville.id')
@@ -625,6 +678,7 @@ class CommandeController extends Controller
                         ->select(
                             'commandes.*',
                             'villes.nom_ville as ville',
+                            'zones.nom_zone',
                             'superviseur.company',
                             'superviseur.adresse',
                             'superviseur.website',
@@ -873,7 +927,7 @@ class CommandeController extends Controller
                         ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
                         ->where('id_client', $user->id)
                         ->where('id_bon_retour_client', 'LIKE', "%$request->valeur_recherche%")
-                        ->orderBy('bonretourclients.updated_at','desc')
+                        ->orderBy('bonretourclients.updated_at', 'desc')
                         ->paginate($_GET['count_nbr']);
                 } else if ($request->selected_option == 'id_commande' && $request->valeur_recherche != '') {
                     $commandes = DB::table('bonretourclients')
@@ -881,13 +935,13 @@ class CommandeController extends Controller
                         ->selectRaw('bonretourclients.id_bon_retour_client,bonretourclients.statut_bonRetourClient,bonretourclients.nbrColis_bonRetourClient,bonretourclients.updated_at')
                         ->where('bonretourclients.id_client', $user->id)
                         ->where('commandes.id_commande', 'LIKE', "%$request->valeur_recherche%")
-                        ->orderBy('bonretourclients.updated_at','desc')
+                        ->orderBy('bonretourclients.updated_at', 'desc')
                         ->paginate($_GET['count_nbr']);
                 } else {
                     $commandes = DB::table('bonretourclients')
                         ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
                         ->where('id_client', $user->id)
-                        ->orderBy('bonretourclients.updated_at','desc')
+                        ->orderBy('bonretourclients.updated_at', 'desc')
                         ->paginate($_GET['count_nbr']);
                 }
 
@@ -1040,11 +1094,17 @@ class CommandeController extends Controller
                         $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
                         $commande->prix_commande = $request->prix_commande;
                         $commande->etat_commande = 'PICKUP';
+                    } else if ($commande->etat_commande == 'ENROUTE') {
+                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
+                        $commande->prix_commande = $request->prix_commande;
+                        $commande->etat_commande = 'ENROUTE';
                     } else {
                         $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
                         $commande->prix_commande = $request->prix_commande;
                         $commande->etat_commande = $etat_commande;
                     }
+
+
                     $statut = $commande->save();
                 } else if ($request->adresse_client_commande != $commande->adresse_client_commande) {
                     $commande->adresse_client_commande = $request->adresse_client_commande;
@@ -1079,6 +1139,4 @@ class CommandeController extends Controller
             ]);
         }
     }
-
-
 }

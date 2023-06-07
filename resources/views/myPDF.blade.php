@@ -81,7 +81,7 @@
                         <td style="width:250px">
                             <b style="font-size: 14px;margin-bottom: 2px;">
                                 {{$key->ville}}
-    </b>
+    </b><b style='font-size:11px'>(Hub-{{$key->nom_zone}})</b>
                         </td>
                         <td>
                             <b style="font-size: 14px;margin-bottom: 2px;">{{$key->nom_client_commande}}
