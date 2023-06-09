@@ -78,7 +78,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                     }
                     Commande::create([
                         "id_commande" => $id_commande,
-                        "id_commande_intern" => $row[6],
+                        // "id_commande_intern" => $row[7],
                         "id_ville" =>  $ville->id,
                         "id_store" => $this->store,
                         "nom_client_commande" => $row[0],
