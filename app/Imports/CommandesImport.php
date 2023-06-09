@@ -87,6 +87,7 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
                         "prix_commande" => $row[4],
                         "etat_commande" => "CREATED",
                         'type_autorisation' => $row[5],
+                        "additional_commentaire" => $row[6],
                         "id_client" => $id_client,
                         "prix_livraison_final" => floatval($prix_livraison),
                         'id_employe_client' => $id_employe_client,
@@ -131,8 +132,8 @@ class CommandesImport implements ToArray, SkipsEmptyRows, WithStartRow, WithVali
     public function customValidationMessages()
     {
         return [
-            '1.in' => 'Please check City name or (write City in small character)',
-            '5.in' => 'The field need to be \'allow\' or \'deny\'',
+            '1.in' => 'Veuillez vérifier le nom de la ville ou (écrivez la ville en petits caractères)',
+            '5.in' => 'Le champ doit être \'allow\' ou \'deny\'',
         ];
     }
     public function sheets(): array

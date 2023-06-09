@@ -38,8 +38,8 @@ class CommandeController extends Controller
                     ->whereIn('historiquecommandes.commentaire_commande', ["Pas de réponse", "Retours envoye vers agence"])
                     ->groupBy('id_commande');
                 $commandes = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                    ->join('villes', 'commandes.id_ville', '=', 'villes.id')
-                    ->join('stores', 'stores.id', '=', 'commandes.id_store')
+                    ->leftjoin('villes', 'commandes.id_ville', '=', 'villes.id')
+                    ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
                     ->leftjoin('factures', 'commandes.id_facture', 'factures.id_facture')
                     ->where(function ($query) use ($user) {
                         $query->where('commandes.id_client', $user->id)

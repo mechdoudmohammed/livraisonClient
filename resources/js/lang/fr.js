@@ -206,7 +206,7 @@ let message = {
     New_Password: "Nouveau mot de passe",
     Update: "Mettre à jour",
     My_account: "Mon compte",
-    Activer_Stock: "Activer les stocks",
+    Activer_Stock: "Activer le stock",
     Please_complete_your_information_before_using_the_system:
         "Veuillez compléter vos informations avant d'utiliser le système",
     Whatsapp_Notification: "Notification Whatsapp",
