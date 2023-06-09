@@ -359,19 +359,33 @@
                             <input type="text" class="form-control" id="id_commande_intern	" v-model="formData.id_commande_intern"
                                 name="id_commande_intern" />
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" v-if="Object.keys(villes).length > 0">
                             <label for="ville_client">{{ $t('message.City') }}<span class="text-danger"> *</span><span
                                     v-if="commentaire_ville"> {{ commentaire_ville }}</span></label>
 
                             <v-select placeholder="Veuillez-vous selectionner une ville"
-                                v-model="formData.ville_client_commande" name="ville_client" :options="villes" label="ville"
+                                v-model="formData.ville_client_commande" name="ville_client"
+                                 :options="villes" label="ville"
                                 index="id" @input="checkCommentCity(formData.ville_client_commande)" />
+
+
                         </div>
+                        
                         <div class="form-group" v-if="Object.keys(stores).length > 0">
-                            <label for="ville_client">{{ $t('message.Store') }}</label>
+                            <label for="store">{{ $t('message.Store') }}</label>
+
+
+
                             <v-select placeholder="Veuillez-vous selectionner un Store" v-model="formData.store"
                                 name="store" :options="stores" label="nom_store" index="id" />
+
+
+
                         </div>
+
+
+
+
                         <div class="form-group">
                             <label for="nom_client">{{ $t('message.Name') }}<span class="text-danger"> *</span></label>
 
