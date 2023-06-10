@@ -14,23 +14,23 @@
         </vs-alert>
       </div>
       <div class="row service-client">
-        <div class="col-3 service-client-col">
+        <!-- <div class="col-3 service-client-col">
           <h5>Imane El alami</h5>
           <span>Réclamation</span><br>
           <span><i class="fa fa-phone"></i> 06 33 14 81 84</span>
-        </div>
-        <div class="col-3 service-client-col">
-          <h5>Safouan Kharbouch</h5>
+        </div> -->
+        <div class="col-4 service-client-col">
+          <h5>Mohammed</h5>
           <span>Réclamation</span><br>
           <span><i class="fa fa-phone"></i> 06 08 81 47 07</span>
         </div>
 
-        <div class="col-3 service-client-col">
-          <h5>Siham Mahfoud</h5>
+        <div class="col-4 service-client-col">
+          <h5>Yassine</h5>
           <span>Commercial</span><br>
           <span><i class="fa fa-phone"></i> 06 09 92 03 89</span>
         </div>
-        <div class="col-3 service-client-col">
+        <div class="col-4 service-client-col">
           <h5>Colizone</h5>
           <span>Fix</span><br>
           <span><i class="fa fa-phone"></i> 08 08 67 01 71</span>
