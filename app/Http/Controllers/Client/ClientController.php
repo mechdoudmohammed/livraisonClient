@@ -101,7 +101,7 @@ class ClientController extends Controller
                 $this->validate($request, [
                     'adresse' => 'required|String',
                     'company' => 'required|String',
-                    'website' => 'required|String',
+                    'website' => 'nullable|String',
                     'ribBank' => 'required|String',
                     'email' => 'required|max:150|unique:clients,email,' . $user->id,
                     'telephone' => 'required|regex:/(0)[0-9]{9}$/',
@@ -113,7 +113,7 @@ class ClientController extends Controller
                     'adresse' => 'required|String',
                     'cin' => 'required|String',
                     'company' => 'required|String',
-                    'website' => 'required|String',
+                    'website' => 'nullable|String',
                     'ribBank' => 'required|String',
                     'email' => 'required|max:150|unique:clients,email,' . $user->id,
                     'telephone' => 'required|regex:/(0)[0-9]{9}$/',

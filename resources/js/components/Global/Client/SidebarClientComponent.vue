@@ -251,7 +251,7 @@ export default {
   async beforeMount() {
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-    if (this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null && this.Client.ribBank != null && this.Client.company != null && this.Client.website != null && this.Client.adresse != null) {
+    if (this.Client.nom != null && this.Client.prenom != null && this.Client.cin != null && this.Client.ribBank != null && this.Client.company != null && this.Client.adresse != null) {
       this.infoComplete = true;
       this.getMyPack();
     }
