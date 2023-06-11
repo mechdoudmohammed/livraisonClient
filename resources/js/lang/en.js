@@ -244,7 +244,7 @@ let message = {
     Insufficient_balance_text: "Insufficient Balance. Please contact the administration.",
     Model_Excel: "Model Excel",
     With_Sms: "With Sms",
-    Receipt_id: "Receipt Id",
+    Receipt_id: "Receipt id",
     Order_received:'Order_received',
     id_intern:'id intern',
 };
