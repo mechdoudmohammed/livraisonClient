@@ -22,7 +22,7 @@
         <div class="col-4 service-client-col">
           <h5>Mohammed</h5>
           <span>Réclamation</span><br>
-          <span><i class="fa fa-phone"></i> 06 08 81 47 07</span>
+          <span><i class="fa fa-phone"></i> 06 07 83 51 52</span>
         </div>
 
         <div class="col-4 service-client-col">

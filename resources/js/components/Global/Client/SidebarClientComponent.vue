@@ -30,6 +30,10 @@
                   <div class="circle"> <i class="fa fa-trophy"></i></div>
                   <div class="ribbon">Silver</div>
                 </div>
+                <div class="badge green" v-else>
+                      <div class="circle"> <i class="fa fa-gem"></i></div>
+                      <div class="ribbon">Personnalisé</div>
+              </div>
              
                
               </div>
