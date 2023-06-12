@@ -17,7 +17,7 @@
                 <span class="text-secondary text-small">{{ Client.company }}</span>
               </div>
 
-              <div class="main-wrapper" v-if="pack">
+              <div class="main-wrapper" v-if="pack!=null">
                 <div class="badge green" v-if="pack.pack_name == 'diamond'">
                   <div class="circle"> <i class="fa fa-gem"></i></div>
                   <div class="ribbon">Diamonde</div>
@@ -30,10 +30,10 @@
                   <div class="circle"> <i class="fa fa-trophy"></i></div>
                   <div class="ribbon">Silver</div>
                 </div>
-                <div class="badge green" v-else>
+                <div class="badge green" v-else-if="pack.pack_name != 'silver' && pack.pack_name == 'gold' && pack.pack_name == 'diamond'">
                       <div class="circle"> <i class="fa fa-gem"></i></div>
                       <div class="ribbon">Personnalisé</div>
-              </div>
+                    </div>
              
                
               </div>
