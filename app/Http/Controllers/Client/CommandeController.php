@@ -548,7 +548,7 @@ class CommandeController extends Controller
                         $commande = Commande::where('commandes.id_client', $user->id)->where('etat_commande', 'CREATED')->where('id_commande', $request->id_commande)->first();
                         $commande->id_ville =  $ville->id;
                         $commande->nom_client_commande = $request->nom_client_commande;
-                        $commande->id_commande_inten = $request->id_commande_inten;
+                        $commande->id_commande_intern = $request->id_commande_intern;
                         $commande->adresse_client_commande = $request->adresse_client_commande;
                         $commande->telephone_client_commande = $request->telephone_client_commande;
                         $commande->prix_commande = $request->prix_commande;
@@ -586,7 +586,7 @@ class CommandeController extends Controller
                     }
 
                     $commande->nom_client_commande = $request->nom_client_commande;
-                    $commande->id_commande_inten = $request->id_commande_inten;
+                    $commande->id_commande_intern = $request->id_commande_intern;
                     $commande->adresse_client_commande = $request->adresse_client_commande;
                     $commande->telephone_client_commande = $request->telephone_client_commande;
                     $commande->prix_commande = $request->prix_commande;
