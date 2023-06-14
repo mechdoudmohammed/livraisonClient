@@ -356,21 +356,20 @@
                         <div class="form-group" v-if="Client.id_intern_statut == 1">
                             <label for="id_commande_intern">{{ $t('message.id_intern') }}</label>
 
-                            <input type="text" class="form-control" id="id_commande_intern	" v-model="formData.id_commande_intern"
-                                name="id_commande_intern" />
+                            <input type="text" class="form-control" id="id_commande_intern	"
+                                v-model="formData.id_commande_intern" name="id_commande_intern" />
                         </div>
                         <div class="form-group" v-if="Object.keys(villes).length > 0">
                             <label for="ville_client">{{ $t('message.City') }}<span class="text-danger"> *</span><span
                                     v-if="commentaire_ville"> {{ commentaire_ville }}</span></label>
 
                             <v-select placeholder="Veuillez-vous selectionner une ville"
-                                v-model="formData.ville_client_commande" name="ville_client"
-                                 :options="villes" label="ville"
+                                v-model="formData.ville_client_commande" name="ville_client" :options="villes" label="ville"
                                 index="id" @input="checkCommentCity(formData.ville_client_commande)" />
 
 
                         </div>
-                        
+
                         <div class="form-group" v-if="Object.keys(stores).length > 0">
                             <label for="store">{{ $t('message.Store') }}</label>
 
@@ -1035,7 +1034,7 @@
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
                                                         <br>
-                                                     
+
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
@@ -1070,7 +1069,7 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'CANCELEDRR'">
-                                                        {{$t('message.Return_received_by_responsible') }}
+                                                        {{ $t('message.Return_received_by_responsible') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1105,7 +1104,7 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RETURNEDAG'">
-                                                        {{ $t('message.Package_in_agency')}}
+                                                        {{ $t('message.Package_in_agency') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1122,19 +1121,19 @@
                                                     </div>
                                                     <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RETURNEDEV'">
-                                                        {{$t('message.Package_send_to_origin_city')}}
+                                                        {{ $t('message.Package_send_to_origin_city') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
                                                         <br>
-                                                       
+
                                                         {{ $t('message.At') }}
                                                         <b>{{ hCommande.updated_at }}
                                                         </b>
                                                     </div>
                                                     <div class="tl-date text-muted mt-2"
                                                         v-if="hCommande.etat_commande == 'RETURNEDRR'">
-                                                        {{$t('message.Return_received_by_responsible') }}
+                                                        {{ $t('message.Return_received_by_responsible') }}
                                                         {{ $t('message.By') }}
                                                         <b v-if="hCommande.username">{{ hCommande.username }}</b>
                                                         <b v-else>Service Client</b>
@@ -1434,7 +1433,7 @@ export default {
             formData: {
                 id_commande: '',
                 ville_client_commande: "",
-                id_commande_intern:'',
+                id_commande_intern: '',
                 nom_client_commande: "",
                 adresse_client_commande: "",
                 telephone_client_commande: "",
@@ -1518,7 +1517,7 @@ export default {
             this.nom_err = "";
             this.formData = {
                 ville_client_commande: "",
-                id_commande_intern:'',
+                id_commande_intern: '',
                 nom_client_commande: "",
                 adresse_client_commande: "",
                 telephone_client_commande: "",
@@ -2276,7 +2275,7 @@ export default {
                 (this.errors = {}),
                 (this.formData = {
                     ville_client_commande: "",
-                    id_commande_intern:'',
+                    id_commande_intern: '',
                     nom_client_commande: "",
                     adresse_client_commande: "",
                     telephone_client_commande: "",
@@ -2313,7 +2312,7 @@ export default {
                 (this.stock_quantite = ""),
                 (this.formData = {
                     ville_client_commande: "",
-                    id_commande_intern:'',
+                    id_commande_intern: '',
                     nom_client_commande: "",
                     adresse_client_commande: "",
                     telephone_client_commande: "",

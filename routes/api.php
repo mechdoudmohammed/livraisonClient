@@ -92,6 +92,7 @@ Route::middleware(['auth:client'])
         Route::get('showPackage', 'Client\ClientController@showPackage');
         Route::post('getPackage', 'Client\CommandeController@getPackage');
         Route::post('bonRamassage', 'Client\FactureController@bonRamassage');
+        
         Route::get('getFacture/{id}', 'Client\FactureController@getFacture');
         Route::post('downloadStickerArticle', 'Client\ArticleController@downloadSticker');
         Route::get('historiqueCommande/{id}', 'Client\CommandeController@historiqueCommande');

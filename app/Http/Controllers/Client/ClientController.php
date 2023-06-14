@@ -471,7 +471,6 @@ class ClientController extends Controller
             $user = auth('sanctum')->user();
             $statut = false;
             for ($i = 0; $i < count($request->all()); $i++) {
-
                 if ($request[$i]['etat_commande'] == 'CREATED' && $request[$i]['type_commande'] == 'stock') {
                     $commande_client = DetailsCommandes::join('commandes', 'commandes.id_commande', 'detailscommandes.id_commande')
                         ->join('clients', 'commandes.id_client', '=', 'clients.id')
@@ -481,32 +480,32 @@ class ClientController extends Controller
                         ->selectRaw('commandes.id_commande,id_article,quantite_article,type_commande')
                         ->get();
                     //pour savoir le nombre des articles deja confirmer
-                    for ($n = 0; $n < count($commande_client); $n++) {
-                        $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
-                            ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
-                            ->where('commandes.id_client', $user->id)
-                            ->where('detailscommandes.id_article', $commande_client[$n]->id_article)
-                            ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
-                            ->first();
-                        // that if means it's the first confirmed of the article
-                        if ($article->qnt_article == null) {
-                            $article_in_stock = Article::where('articles.id_article', $commande_client[$n]->id_article)
-                                ->selectRaw('articles.stock_article as qnt_article_stock')
-                                ->first();
-                            $articles = $article_in_stock->qnt_article_stock;
-                        } else {
-                            //pour savoir la quantite exist en stock
-                            $article_in_stock = Article::where('articles.id_article', $commande_client[$n]->id_article)
-                                ->selectRaw('articles.stock_article as qnt_article_stock')
-                                ->first();
-                            $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
-                        }
-                        if ($commande_client[$n]->quantite_article > (int)$articles) {
-                            return response()->json([
-                                'message' => 'Quantity not available in:' . $commande_client[$n]->id_commande
-                            ]);
-                        }
-                    }
+                    // for ($n = 0; $n < count($commande_client); $n++) {
+                    //     $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
+                    //         ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
+                    //         ->where('commandes.id_client', $user->id)
+                    //         ->where('detailscommandes.id_article', $commande_client[$n]->id_article)
+                    //         ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
+                    //         ->first();
+                    //     // that if means it's the first confirmed of the article
+                    //     if ($article->qnt_article == null) {
+                    //         $article_in_stock = Article::where('articles.id_article', $commande_client[$n]->id_article)
+                    //             ->selectRaw('articles.stock_article as qnt_article_stock')
+                    //             ->first();
+                    //         $articles = $article_in_stock->qnt_article_stock;
+                    //     } else {
+                    //         //pour savoir la quantite exist en stock
+                    //         $article_in_stock = Article::where('articles.id_article', $commande_client[$n]->id_article)
+                    //             ->selectRaw('articles.stock_article as qnt_article_stock')
+                    //             ->first();
+                    //         $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
+                    //     }
+                    //     if ($commande_client[$n]->quantite_article > (int)$articles) {
+                    //         return response()->json([
+                    //             'message' => 'Quantity not available in:' . $commande_client[$n]->id_commande
+                    //         ]);
+                    //     }
+                    // }
 
                     $commande = Commande::where('commandes.id_commande', $request[$i]['id_commande'])->first();
                     $commande->etat_commande = 'CONFIRMED';

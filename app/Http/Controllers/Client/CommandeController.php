@@ -660,7 +660,6 @@ class CommandeController extends Controller
                             'stores.telephone_store',
                             'stores.adresse_store',
                             'store_ville.nom_ville as store_ville'
-
                         )
                         ->orderBy('commandes.updated_at', 'desc')
                         ->get();

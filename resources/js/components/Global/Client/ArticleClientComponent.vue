@@ -75,9 +75,11 @@
                                         <button type="button" class="btn btn-danger"
                                             @click.prevent="downloadSticker(tr.id_article )"><i
                                                 class="fa fa-download"></i></button>
+                                                
                                  <button type="button" class="btn btn-success" 
                                                 v-if="tr.etat_article == 'En stock'"
                                     @click="downloadHistoriqueArticle(tr.id_article )"><i class="fa fa-file-excel"></i></button>
+
                                     <button type="button" class="btn btn-history" data-bs-toggle="modal"
                                             data-bs-target="#showArticleHistory" @click.prevent="getHistoriqueArticles(tr.id_article )">
                                             <i class="fa fa-history"></i>
