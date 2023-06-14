@@ -54,36 +54,36 @@ class ArticleController extends Controller
                     ->select('articles.id_article', 'articles.commentaire', 'articles.nom_article', 'articles.prix_article', 'articles.stock_article', 'articles.etat_article')
                     ->orderBy('updated_at', 'desc')
                     ->get();
-                // for ($i = 0; $i < count($articles); $i++) {
-                //     $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
-                //         ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
-                //         ->where(function ($query) use ($user) {
-                //             $query->where('commandes.id_client', $user->id)
-                //                 ->orwhere('commandes.id_client', $user->superviseur);
-                //         })
-                //         ->where('detailscommandes.id_article', $articles[$i]->id_article)
-                //         ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
-                //         ->first();
-                //     // that if means it's the first confirmed of the article
-                //     if ($article->qnt_article == null) {
-                //         $article_in_stock = Article::where('articles.id_article', $articles[$i]->id_article)
-                //             ->selectRaw('articles.stock_article as qnt_article_stock')
-                //             ->first();
-                //         if ($article_in_stock->qnt_article_stock <= 0) {
-                //         } else {
-                //             $articles[$i]->qnt = $article_in_stock->qnt_article_stock;
-                //         }
-                //     } else {
-                //         //pour savoir la quantite exist en stock
-                //         $article_in_stock = Article::where('articles.id_article', $articles[$i]->id_article)
-                //             ->selectRaw('articles.stock_article as qnt_article_stock')
-                //             ->first();
-                //         if ($article_in_stock->qnt_article_stock - $article->qnt_article <= 0) {
-                //         } else {
-                //             $articles[$i]->qnt = $article_in_stock->qnt_article_stock - $article->qnt_article;
-                //         }
-                //     }
-                // }
+                for ($i = 0; $i < count($articles); $i++) {
+                    $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
+                        ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
+                        ->where(function ($query) use ($user) {
+                            $query->where('commandes.id_client', $user->id)
+                                ->orwhere('commandes.id_client', $user->superviseur);
+                        })
+                        ->where('detailscommandes.id_article', $articles[$i]->id_article)
+                        ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
+                        ->first();
+                    // that if means it's the first confirmed of the article
+                    if ($article->qnt_article == null) {
+                        $article_in_stock = Article::where('articles.id_article', $articles[$i]->id_article)
+                            ->selectRaw('articles.stock_article as qnt_article_stock')
+                            ->first();
+                        if ($article_in_stock->qnt_article_stock <= 0) {
+                        } else {
+                            $articles[$i]->qnt = $article_in_stock->qnt_article_stock;
+                        }
+                    } else {
+                        //pour savoir la quantite exist en stock
+                        $article_in_stock = Article::where('articles.id_article', $articles[$i]->id_article)
+                            ->selectRaw('articles.stock_article as qnt_article_stock')
+                            ->first();
+                        if ($article_in_stock->qnt_article_stock - $article->qnt_article <= 0) {
+                        } else {
+                            $articles[$i]->qnt = $article_in_stock->qnt_article_stock - $article->qnt_article;
+                        }
+                    }
+                }
 
                 return response()->json([
                     'data' => $articles,

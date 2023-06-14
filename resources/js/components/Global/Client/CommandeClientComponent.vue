@@ -338,7 +338,7 @@
                                             <div class="col-6 quantite_colm">
                                                 <label for="quantite_article"><b class="badge badge badge-gradient-info">{{
                                                     $t('message.Quantity_available') }}
-                                                        :<span v-if="x.qnt">{{ x.qnt }}</span><span
+                                                        :<span v-if="x.stock_article">{{ x.stock_article}}</span><span
                                                             v-else>0</span></b></label>
                                             </div>
                                             <div class="col-6">
