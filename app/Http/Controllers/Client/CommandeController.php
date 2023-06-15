@@ -747,9 +747,10 @@ class CommandeController extends Controller
                     ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
 
                     ->join('villes', 'commandes.id_ville', 'villes.id')
+                    ->leftjoin('zones','zones.id','villes.id_zone')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->id)
-                    ->select('commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
+                    ->select('zones.nom_zone','commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 
@@ -784,11 +785,11 @@ class CommandeController extends Controller
                     ->leftjoin('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
                     ->leftjoin('clients', 'historiquecommandes.id_client', '=', 'clients.id')
                     ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
-
+                    ->leftjoin('zones','zones.id','villes.id_zone')
                     ->join('villes', 'commandes.id_ville', 'villes.id')
                     ->where('historiquecommandes.id_commande', $id)
                     ->where('commandes.id_client', $user->superviseur)
-                    ->select('commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
+                    ->select('zones.nom_zone','commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
                     ->orderBy('historiquecommandes.updated_at', 'asc')
                     ->get();
 

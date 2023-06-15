@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Commande;
 use App\Models\Article;
 use App\Models\Client;
+use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
@@ -22,7 +23,7 @@ class FactureController extends Controller
             if ($user->role == 'Client' && $user->statut == 'Active') {
                 if ($request->selected_option == "id_facture" && $request->valeur_recherche != '') {
 
-                        $clients = DB::table('factures')
+                    $clients = DB::table('factures')
                         ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
                         ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')
                         ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
@@ -32,21 +33,19 @@ class FactureController extends Controller
                         ->orderBy('factures.updated_at', 'desc')
                         ->selectRaw('factures.updated_at,factures.type_facture,factures.total_facture,factures.frais_livraison_facture,count(factures.id_facture) as nombre_commande,factures.statut_facture,factures.id_facture')
                         ->paginate($_GET['count_nbr']);
-                }
-                else if ($request->selected_option == "id_commande" && $request->valeur_recherche != '') {
+                } else if ($request->selected_option == "id_commande" && $request->valeur_recherche != '') {
 
                     $clients = DB::table('factures')
-                    ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
-                    ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')
-                    ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
-                    ->where('factures.id_client', $user->id)
-                    ->where('commandes.id_commande', 'LIKE', "%{$request->valeur_recherche}%")
-                    ->groupBy('factures.id_facture')
-                    ->orderBy('factures.updated_at', 'desc')
-                    ->selectRaw('factures.updated_at,factures.type_facture,factures.total_facture,factures.frais_livraison_facture,count(factures.id_facture) as nombre_commande,factures.statut_facture,factures.id_facture')
-                    ->paginate($_GET['count_nbr']);
-            }
-                else {
+                        ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
+                        ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')
+                        ->whereIn('factures.statut_facture', ['NOTPAID', 'PAID'])
+                        ->where('factures.id_client', $user->id)
+                        ->where('commandes.id_commande', 'LIKE', "%{$request->valeur_recherche}%")
+                        ->groupBy('factures.id_facture')
+                        ->orderBy('factures.updated_at', 'desc')
+                        ->selectRaw('factures.updated_at,factures.type_facture,factures.total_facture,factures.frais_livraison_facture,count(factures.id_facture) as nombre_commande,factures.statut_facture,factures.id_facture')
+                        ->paginate($_GET['count_nbr']);
+                } else {
                     $clients = DB::table('factures')
                         ->leftjoin('commandes', 'commandes.id_facture', 'factures.id_facture')
                         ->leftjoin('manualfactures', 'manualfactures.id_facture', 'factures.id_facture')
@@ -168,20 +167,27 @@ class FactureController extends Controller
                     ->join('clients', 'commandes.id_client', '=', 'clients.id')
                     ->join('villes', 'commandes.id_ville', '=', 'villes.id')
                     ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
+                    ->join('packages', 'packages.id_package', 'commandes.id_package')
                     ->where(function ($query) use ($user) {
                         $query->where('commandes.id_client', $user->id)
                             ->orwhere('commandes.id_client', $user->superviseur);
                     })
                     ->where('commandes.id_package', $request->id)
                     ->select('commandes.id_commande', 'commandes.nom_client_commande', 'commandes.telephone_client_commande', 'commandes.prix_commande', 'villes.nom_ville as ville', 'clients.company', 'clients.telephone as telephone_client', 'villes2.nom_ville as ville_client')
-                    ->orderBy('.commandes.updated_at', 'desc')
+                    ->orderBy('commandes.updated_at', 'desc')
                     ->get();
-                    if($user->role == 'EmployeClient'){
-                        $user=Client::where('clients.id',$user->superviseur)->first();
-                    }
 
 
-                $data = ['data' => $user, 'data2' => $packageClient];
+
+                $packages = Package::where('id_package',$request->id)->select('packages.updated_at as date_bon_ramassage')->first();
+
+
+                if ($user->role == 'EmployeClient') {
+                    $user = Client::where('clients.id', $user->superviseur)->first();
+                }
+
+
+                $data = ['data' => $user, 'data2' => $packageClient, 'pack' => $packages];
                 // return $data;
 
 

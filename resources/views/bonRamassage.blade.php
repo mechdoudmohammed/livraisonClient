@@ -172,6 +172,12 @@
                     CNI : <b>{{$data->cin}}</b>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    Date : <b>{{$pack->date_bon_ramassage}}</b>
+                </td>
+                
+            </tr>
 
 
 

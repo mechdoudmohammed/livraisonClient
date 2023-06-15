@@ -614,7 +614,7 @@
                                                     <div class="tl-date text-muted mt-1"
                                                         v-if="hCommande.etat_commande == 'HOME'">
                                                         {{ $t('message.Package_is_in_Hub') }}
-                                                        <b>{{ hCommande.nom_ville }}</b>
+                                                        <b>{{ hCommande.nom_zone }}</b>
                                                         <!-- with
                                                         <b>{{ hCommande.username }}</b> -->
                                                         <br />
