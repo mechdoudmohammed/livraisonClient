@@ -1314,16 +1314,18 @@
                                 </div>
 
                                 <div class="form-group row"
-                                    v-if="formDataUpdate.etat_commande == 'PROCESSING' || formDataUpdate.etat_commande == 'CHANGERPRIX' || formDataUpdate.etat_commande == 'RELANCER' || formDataUpdate.etat_commande == 'REPORTED' || formDataUpdate.etat_commande == 'RAMASSER' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'ENROUTE' || formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'INHOUSE' || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'ASSIGN'">
+                                    v-if="formDataUpdate.etat_commande == 'PROCESSING' || formDataUpdate.etat_commande == 'NOREPONSE' || formDataUpdate.etat_commande == 'CHANGERPRIX' || formDataUpdate.etat_commande == 'RELANCER' || formDataUpdate.etat_commande == 'REPORTED' || formDataUpdate.etat_commande == 'RAMASSER' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'ENROUTE' || formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'INHOUSE' || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'ASSIGN'">
                                     <div class="col-6" style="display: flex;justify-content: center;">
                                         <button type="button" class="btn btn-danger" @click.prevent="editStatut('ANNULER')"
                                             style="min-width: 160px;">
                                             <i class="fa fa-times"></i> {{ $t('message.Annuler') }}
                                         </button>
                                     </div>
+                   
                                     <div class="col-6" style="display: flex;justify-content: center;"
-                                        v-if="(formDataUpdate.etat_commande == 'TRANSIT' || formDataUpdate.etat_commande == 'NOREPONSE' || formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'REPORTED'
-                                            || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'CHANGERPRIX') && relaunch">
+                                        v-if="(formDataUpdate.etat_commande == 'NOREPONSE' || formDataUpdate.etat_commande == 'TRANSIT' || 
+                                         formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'REPORTED'
+                                        || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'CHANGERPRIX') && relaunch">
                                         <button type="button" class="btn btn-info" @click.prevent="editStatut('RELANCER')"
                                             style="min-width: 160px;">
                                             <i class="fas fa-clock"></i>
@@ -2400,6 +2402,7 @@ export default {
             }
         },
         async reclamationCommande(tr) {
+            console.log(tr);
             this.formDataUpdate.prix_commande = tr.prix_commande;
             this.formDataUpdate.adresse_client_commande = tr.adresse_client_commande;
             this.formDataUpdate.id_commande = tr.id_commande;
