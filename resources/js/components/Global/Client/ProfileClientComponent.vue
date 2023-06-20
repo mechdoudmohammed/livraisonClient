@@ -233,6 +233,17 @@
                         </div>
                       </div>
                     </div>
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-group focused">
+                          <label class="form-control-label" for="input-city2">{{ $t('message.Telephone_store') }}<span
+                              class="text-danger"> *</span></label>
+                          <input type="text" id="input-city2" class="form-control form-control-alternative"
+                            v-model="Client.telephone_store">
+                        </div>
+                      </div>
+                   
+                    </div>
                   </div>
 
 

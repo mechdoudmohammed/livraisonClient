@@ -192,7 +192,7 @@ class StatistiqueController extends Controller
 
             $colisTauxLivraison = DB::table("commandes")
                 ->where('id_client', $user->id)
-                ->whereNotIn('etat_commande', ['CREATED', 'CONFIRMED', 'PROCESSING', 'PICKUP'])
+                ->whereNotIn('commandes.etat_commande', ['CREATED', 'CONFIRMED', 'PROCESSING', 'PICKUP','INHOUSE','HOME','ENROUTE'])
                 ->where('updated_at', '>', $date_debut)
                 ->where('updated_at', '<', $date_fin)
                 ->selectRaw("count(id_commande) as nbrColis")

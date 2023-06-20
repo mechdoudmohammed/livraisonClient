@@ -651,13 +651,14 @@ class CommandeController extends Controller
                             'villes.nom_ville as ville',
                             'zones.nom_zone',
                             'clients.company',
+                            'clients.telephone_store',
                             'clients.adresse',
                             'clients.website',
                             'clients.telephone as telephone_client',
                             'villes2.nom_ville as ville_client',
                             'stores.nom_store',
                             'stores.siteweb_store',
-                            'stores.telephone_store',
+                            'stores.telephone_store as tele_store',
                             'stores.adresse_store',
                             'store_ville.nom_ville as store_ville'
                         )
@@ -679,6 +680,7 @@ class CommandeController extends Controller
                         ->select(
                             'commandes.*',
                             'villes.nom_ville as ville',
+                            'clients.telephone_store',
                             'zones.nom_zone',
                             'superviseur.company',
                             'superviseur.adresse',
@@ -687,7 +689,7 @@ class CommandeController extends Controller
                             'villes2.nom_ville as ville_client',
                             'stores.nom_store',
                             'stores.siteweb_store',
-                            'stores.telephone_store',
+                            'stores.telephone_store as tele_store',
                             'stores.adresse_store',
                             'store_ville.nom_ville as store_ville'
 
@@ -696,7 +698,7 @@ class CommandeController extends Controller
                         ->get();
                 }
                 $data = ['data' => $packageClient];
-
+           
                 if (isset($request->type) && $request->type == 'smallStickers') {
                     $pdf = PDF::setOption('page-width', 105)
                         ->setOption('page-height', 105)

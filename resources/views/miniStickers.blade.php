@@ -93,9 +93,9 @@
                     <table>
                         <tr>
                             @if($key->type_autorisation =='allow')
-                            <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-ouverture.png') }}" width="25" height="25" /></td>
+                            <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-ouverture.png') }}" width="30" height="30" /></td>
                             @else
-                            <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-close.png') }}" width="25" height="25" /></td>
+                            <td style="font-size: 15px;text-align: center;"><img src="{{ public_path('/images/colis-close.png') }}" width="30" height="30" /></td>
                             @endif
                         </tr>
                         <tr>
@@ -197,7 +197,9 @@
                     <tr>
                         <td>
                             <b style="font-size: 14px;margin-bottom: 1px;">
-                                @if($key->telephone_store)
+                            @if($key->tele_store)
+                                {{$key->tele_store}}
+                                @elseif($key->telephone_store)
                                 {{$key->telephone_store}}
                                 @else
                                 {{$key->telephone_client}}

@@ -216,8 +216,8 @@ let message = {
     First_name: "First name",
     Bank_Information: "Bank Information",
     ICE: "ICE",
-    Company_Information: "Company Information",
-    Company: "Company",
+    Company_Information: "Store Information",
+    Company: "Store",
     New: "New",
     Article_History: "Article History",
     Printed: "Printed",
@@ -247,6 +247,7 @@ let message = {
     Receipt_id: "Receipt id",
     Order_received:'Order_received',
     id_intern:'id intern',
+    Telephone_store:'Store Phone',
 };
 
 export default {

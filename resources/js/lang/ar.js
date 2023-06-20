@@ -211,8 +211,8 @@ let message = {
     First_name: "الاسم الأول",
     Bank_Information: "معلومات البنك",
     ICE: "ICE",
-    Company_Information: "معلومات الشركة",
-    Company: "الشركة",
+    Company_Information: "معلومات المتجر",
+    Company: "المتجر",
     New: "جديد",
     Printed: "مطبوع",
     Article_History: "أرشيف المنتوج",
@@ -243,6 +243,7 @@ let message = {
     Insufficient_balance_text:"رصيد غير كاف المرجو التواصل مع الادارة ",
     Order_received:'تم إستلام الطرد',
     id_intern:'رقم الطرد',
+    Telephone_store:'رقم هاتف المتجر',
 
 };
 

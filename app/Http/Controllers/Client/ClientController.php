@@ -117,6 +117,8 @@ class ClientController extends Controller
                     'ribBank' => 'required|String',
                     'email' => 'required|max:150|unique:clients,email,' . $user->id,
                     'telephone' => 'required|regex:/(0)[0-9]{9}$/',
+                    'telephone_store' => 'required|regex:/(0)[0-9]{9}$/',
+                    
                 ]);
                 $client->nom = $request->nom;
                 $client->prenom = $request->prenom;
@@ -128,8 +130,10 @@ class ClientController extends Controller
             $client->notification_statut = $request->notification_statut;
             $client->adresse = $request->adresse;
             $client->telephone = $request->telephone;
+            $client->telephone_store = $request->telephone_store;
             $client->company = $request->company;
             $client->website = $request->website;
+
 
             $client->save();
             return response()->json([

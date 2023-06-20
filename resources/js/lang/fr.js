@@ -215,8 +215,8 @@ let message = {
     First_name: "Prénom",
     Bank_Information: "Informations bancaires",
     ICE: "ICE",
-    Company_Information: "Informations sur l'entreprise",
-    Company: "Entreprise",
+    Company_Information: "Informations sur le magasin",
+    Company: "Magasin",
     New: "Nouveaux",
     Printed: "Imprimé",
     Article_History: "Article Historique",
@@ -248,6 +248,7 @@ let message = {
         "Solde insuffisant. Veuillez contacter l'administration.",
         Order_received:'Colis reçu',
         id_intern:'id intern',
+        Telephone_store:'Telephone magasin',
 
 };
 
