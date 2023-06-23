@@ -651,13 +651,14 @@ class CommandeController extends Controller
                             'villes.nom_ville as ville',
                             'zones.nom_zone',
                             'clients.company',
-                            'clients.telephone_store',
+                         
                             'clients.adresse',
                             'clients.website',
                             'clients.telephone as telephone_client',
                             'villes2.nom_ville as ville_client',
                             'stores.nom_store',
                             'stores.siteweb_store',
+                            'clients.telephone_store',
                             'stores.telephone_store as tele_store',
                             'stores.adresse_store',
                             'store_ville.nom_ville as store_ville'
