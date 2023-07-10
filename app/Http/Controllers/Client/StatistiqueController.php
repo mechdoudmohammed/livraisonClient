@@ -150,53 +150,59 @@ class StatistiqueController extends Controller
                 }
             }
 
-            $deliverdCommande = DB::table("historiquecommandes")
-                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
-                ->where('historiquecommandes.updated_at', '>', $date_debut)
-                ->where('historiquecommandes.updated_at', '<', $date_fin)
-                ->whereIn('historiquecommandes.etat_commande', ['DELIVERED'])
+
+
+                $deliverdCommande = DB::table("commandes")
+                ->where('commandes.updated_at', '>', $date_debut)
+                ->where('commandes.updated_at', '<', $date_fin)
+                ->whereIn('commandes.etat_commande', ['DELIVERED'])
                 ->where('commandes.id_client', $user->id)
-                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
-                ->first();
-            $returnedCommande = DB::table("historiquecommandes")
-                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
-                ->where('historiquecommandes.updated_at', '>', $date_debut)
-                ->where('historiquecommandes.updated_at', '<', $date_fin)
-                ->whereIn('historiquecommandes.etat_commande', ['RETURNEDAG', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR', 'RETURNED'])
-                ->where('commandes.id_client', $user->id)
-                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
-                ->first();
-            $canceledCommande = DB::table("historiquecommandes")
-                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
-                ->where('historiquecommandes.updated_at', '>', $date_debut)
-                ->where('historiquecommandes.updated_at', '<', $date_fin)
-                ->whereIn('historiquecommandes.etat_commande', ['CANCELEDAG', 'CANCELEDLV', 'CANCELEDEV', 'CANCELEDRR', 'CANCELED'])
-                ->where('commandes.id_client', $user->id)
-                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
-                ->first();
-            $suivieCommande = DB::table("historiquecommandes")
-                ->join('commandes', 'commandes.id_commande', 'historiquecommandes.id_commande')
-                ->where('historiquecommandes.updated_at', '>', $date_debut)
-                ->where('historiquecommandes.updated_at', '<', $date_fin)
-                ->whereIn('historiquecommandes.etat_commande', ['DMSUIVIE'])
-                ->where('commandes.id_client', $user->id)
-                ->selectRaw("count(historiquecommandes.id_commande) as nbrColis")
-                ->first();
-            $colisEnCours = DB::table("commandes")
-                ->where('id_client', $user->id)
-                ->whereIn('etat_commande', ['CANCELEDLV', 'CANCELEDAG', 'CANCELEDEV', 'CANCELED', 'CANCELEDRR', 'RELANCER', 'DMSUIVIE', 'ENROUTE', 'TRANSIT', 'REPORTED', 'ANNULER_CL', 'ANNULER', 'INHOUSE', 'HOME', 'ASSIGN', 'NOREPONSE', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR',])
-                ->where('updated_at', '>', $date_debut)
-                ->where('updated_at', '<', $date_fin)
-                ->selectRaw("count(id_commande) as nbrColis")
+                ->selectRaw("count(commandes.id_commande) as nbrColis")
                 ->first();
 
-            $colisTauxLivraison = DB::table("commandes")
-                ->where('id_client', $user->id)
-                ->whereNotIn('commandes.etat_commande', ['CREATED', 'CONFIRMED', 'PROCESSING', 'PICKUP','INHOUSE','HOME','ENROUTE'])
-                ->where('updated_at', '>', $date_debut)
-                ->where('updated_at', '<', $date_fin)
-                ->selectRaw("count(id_commande) as nbrColis")
+                $returnedCommande = DB::table("commandes")
+                ->where('commandes.updated_at', '>', $date_debut)
+                ->where('commandes.updated_at', '<', $date_fin)
+                ->whereIn('commandes.etat_commande', ['RETURNEDAG', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR', 'RETURNED'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("count(commandes.id_commande) as nbrColis")
                 ->first();
+
+                $canceledCommande = DB::table("commandes")
+                ->where('commandes.updated_at', '>', $date_debut)
+                ->where('commandes.updated_at', '<', $date_fin)
+                ->whereIn('commandes.etat_commande', ['CANCELEDAG', 'CANCELEDLV', 'CANCELEDEV', 'CANCELEDRR', 'CANCELED'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("count(commandes.id_commande) as nbrColis")
+                ->first();
+
+                $suivieCommande = DB::table("commandes")
+                ->where('commandes.updated_at', '>', $date_debut)
+                ->where('commandes.updated_at', '<', $date_fin)
+                ->whereIn('commandes.etat_commande', ['DMSUIVIE'])
+                ->where('commandes.id_client', $user->id)
+                ->selectRaw("count(commandes.id_commande) as nbrColis")
+                ->first();
+
+
+
+                $colisEnCours = DB::table("commandes")
+                ->where('id_client', $user->id)
+                ->whereIn('etat_commande', ['CANCELEDLV', 'CANCELEDAG', 'CANCELEDEV', 'CANCELED', 'CANCELEDRR', 'RELANCER', 'DMSUIVIE', 'ENROUTE', 'TRANSIT', 'REPORTED', 'ANNULER_CL', 'ANNULER', 'INHOUSE', 'HOME', 'ASSIGN', 'NOREPONSE', 'RETURNEDLV', 'RETURNEDEV', 'RETURNEDRR',])
+                ->where('commandes.created_at', '>', $date_debut)
+                ->where('commandes.created_at', '<', $date_fin)
+                ->selectRaw("count(commandes.id_commande) as nbrColis")
+                ->first();
+
+                $colisTauxLivraison = DB::table("commandes")
+                ->where('id_client', $user->id)
+                ->whereNotIn('commandes.etat_commande', ['CREATED', 'CONFIRMED', 'PROCESSING', 'PICKUP'])
+                ->where('commandes.created_at', '>', $date_debut)
+                ->where('commandes.created_at', '<', $date_fin)
+                ->selectRaw("count(commandes.id_commande) as nbrColis")
+                ->first();
+
+
 
             $tauxLivraison = 0;
             if ($colisTauxLivraison->nbrColis != 0) {
