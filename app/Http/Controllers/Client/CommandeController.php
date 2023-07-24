@@ -65,9 +65,9 @@ class CommandeController extends Controller
     public function store(Request $request)
     {
 
-        return response()->json([
-            'message' => 'Erreur'
-        ]);
+        // return response()->json([
+        //     'message' => 'Erreur'
+        // ]);
         $user = auth('sanctum')->user();
         $agence = Agence::where('id_ville', $user->id_ville)->first();
 
