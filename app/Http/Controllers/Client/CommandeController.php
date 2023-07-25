@@ -68,6 +68,7 @@ class CommandeController extends Controller
         // return response()->json([
         //     'message' => 'Erreur'
         // ]);
+        //hhh
         $user = auth('sanctum')->user();
         $agence = Agence::where('id_ville', $user->id_ville)->first();
 
