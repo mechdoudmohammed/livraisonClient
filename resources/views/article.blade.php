@@ -52,8 +52,8 @@
                             <img src="{{ public_path('/images/logoFiles2.png') }}" width="150" height="55" />
                         </td>
                         <td style="width:600px;" class='facture_info'>
-                            <b>ColiZone S.A.R.L</b><br />
-                            <b>Mag 4 Résidence Assafa Av. Al Joulane Fés</b><br />
+                            <b>ColiZone</b><br />
+                            <b>Mag 4 Hub Fés</b><br />
                             <b>08 08 67 01 71</b><br />
                         </td>
                     </tr>
@@ -66,9 +66,9 @@
             <div class="row" style="border: 1.5px solid;display: flex;padding: 16px;">
                 <div class="col-9" style="width: 80% !important;float: right;display: grid;">
                     <b style="margin-left: 20px;font-size:19px">{{$key->id_article}} </b>
-              
+
                       {!! DNS1D::getBarcodeHTML($key->id_article, 'C39',2,67) !!}
-    
+
                 </div>
                 <div class="col-3" width='width: 25% !important;'>
                     {!! DNS2D::getBarcodeHTML($key->id_article, 'QRCODE',5,5) !!}

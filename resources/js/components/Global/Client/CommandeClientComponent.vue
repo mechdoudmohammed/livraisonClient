@@ -1321,9 +1321,9 @@
                                             <i class="fa fa-times"></i> {{ $t('message.Annuler') }}
                                         </button>
                                     </div>
-                   
+
                                     <div class="col-6" style="display: flex;justify-content: center;"
-                                        v-if="(formDataUpdate.etat_commande == 'NOREPONSE' || formDataUpdate.etat_commande == 'TRANSIT' || 
+                                        v-if="(formDataUpdate.etat_commande == 'NOREPONSE' || formDataUpdate.etat_commande == 'TRANSIT' ||
                                          formDataUpdate.etat_commande == 'DMSUIVIE' || formDataUpdate.etat_commande == 'REPORTED'
                                         || formDataUpdate.etat_commande == 'HOME' || formDataUpdate.etat_commande == 'CHANGERPRIX') && relaunch">
                                         <button type="button" class="btn btn-info" @click.prevent="editStatut('RELANCER')"
@@ -1349,6 +1349,8 @@
         </div>
     </div>
 </template>
+
+
 <style scoped>
 input[type="number"] {
     border-radius: 21px;
@@ -1405,6 +1407,8 @@ input[type="number"] {
 
 }
 </style>
+
+
 <script>
 import axios from "axios";
 import { TimeAgo } from "vue2-timeago";

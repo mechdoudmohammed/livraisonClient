@@ -16664,7 +16664,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\ninput[type=\"number\"][data-v-be805a18] {\n    border-radius: 21px;\n    text-align: center;\n    border: 1px solid #198ae3;\n    padding: 0px 7px;\n    width: 40%;\n    margin-left: 23px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\ninput[type=\"number\"][data-v-be805a18] {\r\n    border-radius: 21px;\r\n    text-align: center;\r\n    border: 1px solid #198ae3;\r\n    padding: 0px 7px;\r\n    width: 40%;\r\n    margin-left: 23px;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -16712,7 +16712,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.stretch-card>.card[data-v-3063bfe7] {\n    width: 100%;\n    min-width: 100%;\n    height: 100%;\n}\n.card-title[data-v-3063bfe7] {\n    padding: 15px 0 15px 0;\n    font-size: 12px;\n    font-weight: 600;\n    color: #012970;\n}\n.statistique[data-v-3063bfe7] {\n    width: 50%;\n}\n.statistiqueRow[data-v-3063bfe7] {\n    display: flex;\n}\n@media only screen and (max-width: 1400px) {\n.statistique[data-v-3063bfe7] {\n        width: 100%;\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.stretch-card>.card[data-v-3063bfe7] {\r\n    width: 100%;\r\n    min-width: 100%;\r\n    height: 100%;\n}\n.card-title[data-v-3063bfe7] {\r\n    padding: 15px 0 15px 0;\r\n    font-size: 12px;\r\n    font-weight: 600;\r\n    color: #012970;\n}\n.statistique[data-v-3063bfe7] {\r\n    width: 50%;\n}\n.statistiqueRow[data-v-3063bfe7] {\r\n    display: flex;\n}\n@media only screen and (max-width: 1400px) {\n.statistique[data-v-3063bfe7] {\r\n        width: 100%;\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -16760,7 +16760,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\ninput[type=\"number\"][data-v-082c2d94] {\n    border-radius: 21px;\n    text-align: center;\n    border: 1px solid #198ae3;\n    padding: 0px 7px;\n    width: 40%;\n    margin-left: 23px;\n}\n@media only screen and (max-width: 768px) {\ndiv#btn-top-package[data-v-082c2d94] {\n        justify-content: flex-end;\n}\n.chercher[data-v-082c2d94] {\n        display: flex;\n        flex-wrap: wrap;\n        margin-bottom: 12px;\n}\n.con-select[data-v-082c2d94] {\n        margin-left: 0px;\n        margin-top: 5px;\n        width: 6% !important;\n        min-width: 139px;\n        margin-right: 18px;\n}\n.btn-sync[data-v-082c2d94] {\n        border-radius: 31px;\n        color: #198ae3;\n        width: 41px;\n        min-width: 39px;\n        border: 1px solid #198ae3;\n        margin-left: 0px;\n        background: transparent;\n        margin-top: 5px;\n}\n.search_bar[data-v-082c2d94] {\n        width: auto;\n        display: flex;\n        margin-top: 5px;\n        margin-left: 0px;\n}\n}\n.form-group.row[data-v-082c2d94] {\n    align-items: flex-end;\n    justify-content: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\ninput[type=\"number\"][data-v-082c2d94] {\r\n    border-radius: 21px;\r\n    text-align: center;\r\n    border: 1px solid #198ae3;\r\n    padding: 0px 7px;\r\n    width: 40%;\r\n    margin-left: 23px;\n}\n@media only screen and (max-width: 768px) {\ndiv#btn-top-package[data-v-082c2d94] {\r\n        justify-content: flex-end;\n}\n.chercher[data-v-082c2d94] {\r\n        display: flex;\r\n        flex-wrap: wrap;\r\n        margin-bottom: 12px;\n}\n.con-select[data-v-082c2d94] {\r\n        margin-left: 0px;\r\n        margin-top: 5px;\r\n        width: 6% !important;\r\n        min-width: 139px;\r\n        margin-right: 18px;\n}\n.btn-sync[data-v-082c2d94] {\r\n        border-radius: 31px;\r\n        color: #198ae3;\r\n        width: 41px;\r\n        min-width: 39px;\r\n        border: 1px solid #198ae3;\r\n        margin-left: 0px;\r\n        background: transparent;\r\n        margin-top: 5px;\n}\n.search_bar[data-v-082c2d94] {\r\n        width: auto;\r\n        display: flex;\r\n        margin-top: 5px;\r\n        margin-left: 0px;\n}\n}\n.form-group.row[data-v-082c2d94] {\r\n    align-items: flex-end;\r\n    justify-content: center;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

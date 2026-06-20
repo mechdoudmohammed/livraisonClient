@@ -27,6 +27,10 @@
 </head>
 
 <body>
+@php
+
+@endphp
+
     @foreach($data as $key)
     <section>
 
@@ -39,8 +43,8 @@
                             <img src="{{ public_path('/images/logoFiles2.png') }}" width="130" height="45" />
                         </td>
                         <td style="width:300px;" class='facture_info'>
-                            <b>ColiZone S.A.R.L</b><br />
-                            <b>Mag 4 Résidence Assafa Av. Al Joulane Fés</b><br />
+                            <b>ColiZone</b><br />
+                            <b>Mag 4 Hub Fés</b><br />
                             <b>08 08 67 01 71</b><br />
                         </td>
                     </tr>

@@ -54,6 +54,7 @@
   --bs-body-line-height: 1.5;
   --bs-body-color: #343a40;
   --bs-body-bg: #fff;
+
 }
 
 *,
@@ -6750,7 +6751,7 @@ button.btn.btn-warning:hover {
 
 .p-0 {
   padding: 0 !important;
-  
+
 }
 
 .p-1 {
@@ -15482,7 +15483,7 @@ span.w-32.avatar.circle.gd-error {
    position: absolute;
   font-size: 0.9rem;
   margin-top: 0;
-  padding: 0; 
+  padding: 0;
 }
 
 .rtl .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu.navbar-dropdown {

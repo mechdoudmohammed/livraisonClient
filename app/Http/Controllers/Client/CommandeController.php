@@ -3,1152 +3,1028 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-
-use App\Models\Commande;
-use App\Models\Article;
-use App\Models\HistoriqueCommande;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CommandesImport;
 use App\Models\Agence;
+use App\Models\Article;
+use App\Models\Commande;
 use App\Models\DetailsCommandes;
+use App\Models\HistoriqueCommande;
 use App\Models\Notification;
 use App\Models\Package;
 use App\Models\Store;
 use App\Models\Ville;
-use Laravel\Sanctum\PersonalAccessToken;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Carbon\Carbon;
-use Hamcrest\Type\IsString;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Psy\Command\HistoryCommand;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class CommandeController extends Controller
 {
+    // -------------------------------------------------------------------------
+    // Helpers privés
+    // -------------------------------------------------------------------------
+
+    /**
+     * Retourne l'utilisateur authentifié via Sanctum.
+     */
+    private function authUser()
+    {
+        return auth('sanctum')->user();
+    }
+
+    /**
+     * Vérifie que l'utilisateur est Client ou EmployeClient et actif.
+     */
+    private function isAuthorized($user, bool $clientOnly = false): bool
+    {
+        if ($clientOnly) {
+            return $user->role === 'Client' && $user->statut === 'Active';
+        }
+
+        return in_array($user->role, ['Client', 'EmployeClient']) && $user->statut === 'Active';
+    }
+
+    /**
+     * Résout l'id_client et l'id_employe_client selon le rôle.
+     */
+    private function resolveClientIds($user): array
+    {
+        if ($user->role === 'EmployeClient') {
+            return ['id_client' => $user->superviseur, 'id_employe_client' => $user->id];
+        }
+
+        return ['id_client' => $user->id, 'id_employe_client' => null];
+    }
+
+    /**
+     * Clause where pour filtrer les commandes appartenant au client ou à son superviseur.
+     */
+    private function scopeClientOrSupervisor($query, $user)
+    {
+        return $query->where(function ($q) use ($user) {
+            $q->where('commandes.id_client', $user->id)
+              ->orWhere('commandes.id_client', $user->superviseur);
+        });
+    }
+
+    /**
+     * Calcule le prix de livraison (même ville ou standard).
+     */
+    private function resolvePrixLivraison(Ville $ville, $user): float
+    {
+        $agence = Agence::where('id_ville', $user->id_ville)->first();
+
+        if ($agence && $user->id_ville == $agence->id_ville && $ville->id == $agence->id_ville) {
+            return $ville->prix_livraison_meme_ville;
+        }
+
+        return $ville->prix_livraison;
+    }
+
+    /**
+     * Génère un identifiant unique de commande.
+     */
+    private function generateIdCommande(Ville $ville, $user): string
+    {
+        return $ville->pref_ville
+            . Carbon::now()->format('d')
+            . Carbon::now()->format('m')
+            . Carbon::now()->format('y')
+            . $user->id
+            . chr(rand(65, 90))
+            . strtoupper(Str::random(3));
+    }
+
+    /**
+     * Résout le store et retourne son id, ou null s'il n'est pas fourni.
+     * Retourne false si le store ne appartient pas au client.
+     */
+    private function resolveStoreId(Request $request, $user)
+    {
+        if (!isset($request->store)) {
+            return null;
+        }
+
+        $storeId = is_string($request->store) ? $request->store : $request->store['id'];
+
+        $store = Store::where('id', $storeId)
+            ->where(function ($q) use ($user) {
+                $q->where('id_client', $user->id)
+                  ->orWhere('id_client', $user->superviseur);
+            })->first();
+
+        return $store ? $storeId : false;
+    }
+
+    /**
+     * Résout le type d'autorisation.
+     */
+    private function resolveTypeAutorisation(Request $request): string
+    {
+        if (isset($request->type_autorisation) && $request->type_autorisation) {
+            return 'deny';
+        }
+
+        return 'allow';
+    }
+
+    /**
+     * Construit le sous-query pour l'historique des commandes (commentaires spéciaux).
+     */
+    private function buildHistoriqueSubQuery()
+    {
+        $sub = HistoriqueCommande::orderBy('updated_at', 'desc');
+
+        return DB::table(DB::raw("({$sub->toSql()}) as historiquecommandes"))
+            ->whereIn('historiquecommandes.commentaire_commande', ['Pas de réponse', 'Retours envoye vers agence'])
+            ->groupBy('id_commande');
+    }
+
+    /**
+     * Valide les règles de validation standard d'une commande.
+     */
+    private function validateCommandeRequest(Request $request): void
+    {
+        $this->validate($request, [
+            'ville_client_commande'      => 'required',
+            'nom_client_commande'        => 'required|string',
+            'adresse_client_commande'    => 'required|string',
+            'telephone_client_commande'  => 'required|regex:/(0)[0-9]{9}$/',
+            'prix_commande'              => 'required|numeric',
+            'additional_commentaire'     => 'nullable|string',
+        ]);
+    }
+
+    /**
+     * Vérifie le stock disponible pour une liste d'articles.
+     * Retourne une réponse JSON d'erreur si invalide, sinon null.
+     */
+    private function checkArticlesStock(array $articles, $user)
+    {
+        foreach ($articles as $item) {
+            $confirmed = Commande::where('commandes.etat_commande', 'CONFIRMED')
+                ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
+                ->where(function ($q) use ($user) {
+                    $q->where('commandes.id_client', $user->id)
+                      ->orWhere('commandes.id_client', $user->superviseur);
+                })
+                ->where('detailscommandes.id_article', $item['id_article'])
+                ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
+                ->first();
+
+            $stockTotal = Article::where('id_article', $item['id_article'])
+                ->value('stock_article');
+
+            $available = $confirmed->qnt_article === null
+                ? $stockTotal
+                : $stockTotal - $confirmed->qnt_article;
+
+            if ($item['quantite'] <= 0) {
+                return response()->json(['message' => 'Erreur la quantité doit etre superieur de 0']);
+            }
+
+            if ($item['quantite'] > (int) $available) {
+                return response()->json(['message' => 'Erreur la quantité entrer plus que le stock']);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Crée une commande et son historique initial.
+     */
+    private function createCommande(array $data, string $id_commande, $user): bool
+    {
+        $statut = Commande::create(array_merge($data, [
+            'id_commande'  => $id_commande,
+            'etat_commande' => 'CREATED',
+        ]));
+
+        if ($statut) {
+            HistoriqueCommande::create([
+                'id_commande'  => $id_commande,
+                'etat_commande' => 'CREATED',
+                'id_client'    => $user->id,
+            ]);
+        }
+
+        return (bool) $statut;
+    }
+
+    /**
+     * Retourne une réponse JSON de succès ou d'erreur selon le booléen.
+     */
+    private function jsonStatus(bool $success, string $successMsg = 'Successfully', string $errorMsg = 'Erreur')
+    {
+        return response()->json([
+            'message' => $success ? $successMsg : $errorMsg,
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Actions du contrôleur
+    // -------------------------------------------------------------------------
+
+    /**
+     * Liste paginée des commandes du client.
+     */
     public function index()
     {
         try {
-            $user = auth('sanctum')->user();
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                $sub = HistoriqueCommande::orderBy('updated_at', 'desc');
-                $historiquecommandes = DB::table(DB::raw("({$sub->toSql()}) as historiquecommandes"))
-                    ->whereIn('historiquecommandes.commentaire_commande', ["Pas de réponse", "Retours envoye vers agence"])
-                    ->groupBy('id_commande');
-                $commandes = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                    ->leftjoin('villes', 'commandes.id_ville', '=', 'villes.id')
-                    ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
-                    ->leftjoin('factures', 'commandes.id_facture', 'factures.id_facture')
-                    ->where(function ($query) use ($user) {
-                        $query->where('commandes.id_client', $user->id)
-                            ->orwhere('commandes.id_client', $user->superviseur);
-                    })
-                    ->leftjoinSub($historiquecommandes, 'historiquecommandes', function ($join) {
-                        $join->on('commandes.id_commande', '=', 'historiquecommandes.id_commande');
-                    })
-                    ->selectRaw('statut_facture,commandes.id_commande,commandes.nom_client_commande,commandes.type_commande,stores.nom_store,commandes.id_package,	
-                    commandes.telephone_client_commande,commandes.prix_commande,commandes.etat_commande,commandes.updated_at,villes.nom_ville as ville_client_commande,historiquecommandes.commentaire_commande')
-                    ->orderBy('commandes.updated_at', 'desc')
-                    ->paginate($_GET['count_nbr']);
-                return response()->json([
-                    'data' => $commandes
-                ]);
+            $user = $this->authUser();
+
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $historiquecommandes = $this->buildHistoriqueSubQuery();
+
+            $commandes = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
+                ->leftJoin('villes', 'commandes.id_ville', '=', 'villes.id')
+                ->leftJoin('stores', 'stores.id', '=', 'commandes.id_store')
+                ->leftJoin('factures', 'commandes.id_facture', 'factures.id_facture')
+                ->leftJoinSub($historiquecommandes, 'historiquecommandes', function ($join) {
+                    $join->on('commandes.id_commande', '=', 'historiquecommandes.id_commande');
+                })
+                ->where(fn($q) => $this->scopeClientOrSupervisor($q, $user))
+                ->selectRaw('
+                    statut_facture, commandes.id_commande, commandes.nom_client_commande,
+                    commandes.type_commande, stores.nom_store, commandes.id_package,
+                    commandes.telephone_client_commande, commandes.prix_commande,
+                    commandes.etat_commande, commandes.updated_at,
+                    villes.nom_ville as ville_client_commande,
+                    historiquecommandes.commentaire_commande
+                ')
+                ->orderBy('commandes.updated_at', 'desc')
+                ->paginate(request('count_nbr'));
+
+            return response()->json(['data' => $commandes]);
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Créer une nouvelle commande (simple, stock, ou import Excel).
+     */
     public function store(Request $request)
     {
+        $user = $this->authUser();
 
-        return response()->json([
-            'message' => 'Erreur'
-        ]);
-        
-        $user = auth('sanctum')->user();
-        $agence = Agence::where('id_ville', $user->id_ville)->first();
-
-       
-       
-        $Balance = DB::table("factures")
-            ->where('factures.statut_facture', 'NOTPAID')
-            ->where('id_client',  $user->id)
-            ->selectRaw("IFNULL(sum(factures.total_facture - factures.frais_livraison_facture), 0) as balance")
+        // Vérification du solde
+        $balance = DB::table('factures')
+            ->where('statut_facture', 'NOTPAID')
+            ->where('id_client', $user->id)
+            ->selectRaw('IFNULL(sum(total_facture - frais_livraison_facture), 0) as balance')
             ->first();
 
-        if ($Balance->balance < -1000) {
-            return response()->json([
-                'message' => 'Insufficient balance',
-                'balance' => $Balance->balance
-            ]);
+        if ($balance->balance < -1000) {
+            return response()->json(['message' => 'Insufficient balance', 'balance' => $balance->balance]);
         }
 
-
-
-        if (isset($request->store)) {
-
-            if (Is_string($request->store)) {
-
-                $store = Store::where('id', $request->store)->where(function ($query) use ($user) {
-                    $query->where('id_client', $user->id)
-                        ->orwhere('id_client', $user->superviseur);
-                })->first();
-                if (!$store) {
-                    return response()->json([
-                        'message' => 'Erreur le store n\'est pas de vous'
-                    ]);
-                } else {
-                    $id_store = $store->id;
-                }
-            } else {
-                $store = Store::where('id', $request->store['id'])->where(function ($query) use ($user) {
-                    $query->where('id_client', $user->id)
-                        ->orwhere('id_client', $user->superviseur);
-                })->first();
-
-                if (!$store) {
-                    return response()->json([
-                        'message' => 'Erreur le store n\'est pas de vous'
-                    ]);
-                } else {
-                    $id_store = $request->store['id'];
-                }
-            }
-        } else {
-            $id_store = null;
+        // Résolution du store
+        $id_store = $this->resolveStoreId($request, $user);
+        if ($id_store === false) {
+            return response()->json(['message' => "Erreur le store n'est pas de vous"]);
         }
-        if (isset($request->type_autorisation)) {
-            if ($request->type_autorisation) {
-                $type_autorisation = 'deny';
-            } else {
-                $type_autorisation = 'allow';
-            }
-        } else {
-            $type_autorisation = 'allow';
+
+        $type_autorisation = $this->resolveTypeAutorisation($request);
+
+        // Import Excel
+        if ($request->typeCommande === 'excel') {
+            $this->validate($request, ['fichierCommande' => 'required|mimes:xlsx|max:1000']);
         }
-        if (isset($request->typeCommande) && $request->typeCommande == 'excel') {
-            $this->validate($request, [
-                'fichierCommande' => 'required|mimes:xlsx|max:1000',
-            ]);
-        }
+
         if ($request->hasFile('fichierCommande')) {
             $import = new CommandesImport($id_store);
-
-            
-            Excel::import($import, request()->file('fichierCommande'));
-            $array = $import->getArray();
-            return response()->json([
-                'message' => $array[0]
-            ]);
+            Excel::import($import, $request->file('fichierCommande'));
+            return response()->json(['message' => $import->getArray()[0]]);
         }
-        if (($user->role == 'Client' || $user->role == 'EmployeClient') && $user->statut == 'Active') {
-            $nbrCommandeToday = Commande::where('id_client', $user->id)->whereDate('created_at', Carbon::today())->count();
-            if ($nbrCommandeToday < 2000) {
 
-                $id_employe_client = null;
-                if ($user->stock == 0) {
-                    $this->validate($request, [
-                        "ville_client_commande" => 'required',
-                        "nom_client_commande" => "required|string",
-                        "adresse_client_commande" => 'required|string',
-                        "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
-                        "prix_commande" => "required|numeric",
-                        "additional_commentaire" => "nullable|string",
-                    ]);
+        if (!$this->isAuthorized($user)) {
+            return response()->json(['message' => 'Non autorisé'], 403);
+        }
 
-                    $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
+        $nbrCommandeToday = Commande::where('id_client', $user->id)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
 
+        if ($nbrCommandeToday >= 2000) {
+            return response()->json(['message' => 'Vous avez saisi un grand nombre de commandes pendant une journée !!']);
+        }
 
-                    $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
+        $this->validateCommandeRequest($request);
 
+        $ville         = Ville::find($request->ville_client_commande['id']);
+        $id_commande   = $this->generateIdCommande($ville, $user);
+        $prix_livraison = $this->resolvePrixLivraison($ville, $user);
+        ['id_client' => $id_client, 'id_employe_client' => $id_employe_client] = $this->resolveClientIds($user);
 
-                    if ($user->role == 'EmployeClient') {
-                        $id_client = $user->superviseur;
-                        $id_employe_client = $user->id;
-                    } else if ($user->role == 'Client') {
-                        $id_client = $user->id;
-                    }
-                    $agence = Agence::where('id_ville', $user->id_ville)->first();
-                    
-                    $prix_livraison = $ville->prix_livraison;
-                    if ($agence) {
-                        if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id'] == $agence->id_ville) {
-                            $prix_livraison = $ville->prix_livraison_meme_ville;
-                        }
-                    }
+        $baseData = [
+            'id_commande_intern'         => $request->id_commande_intern,
+            'id_ville'                   => $ville->id,
+            'id_store'                   => $id_store,
+            'nom_client_commande'        => $request->nom_client_commande,
+            'adresse_client_commande'    => $request->adresse_client_commande,
+            'telephone_client_commande'  => $request->telephone_client_commande,
+            'prix_commande'              => $request->prix_commande,
+            'prix_livraison_final'       => $prix_livraison,
+            'id_client'                  => $id_client,
+            'additional_commentaire'     => $request->additional_commentaire,
+            'type_autorisation'          => $type_autorisation,
+            'id_employe_client'          => $id_employe_client,
+        ];
 
-
-
-
-
-                    $statut = Commande::create([
-                        "id_commande" =>  $id_commande,
-                        "id_commande_intern" => $request->id_commande_intern,
-                        "id_ville" => $request->ville_client_commande['id'],
-                        "id_store" => $id_store,
-                        "nom_client_commande" => $request->nom_client_commande,
-                        "adresse_client_commande" => $request->adresse_client_commande,
-                        "telephone_client_commande" => $request->telephone_client_commande,
-                        "prix_commande" => $request->prix_commande,
-                        "prix_livraison_final" => $prix_livraison,
-                        "etat_commande" => "CREATED",
-                        "id_client" => $id_client,
-                        "additional_commentaire" => $request->additional_commentaire,
-                        "type_autorisation" => $type_autorisation,
-                        'id_employe_client' => $id_employe_client,
-
-                    ]);
-                    HistoriqueCommande::create([
-                        "id_commande" =>  $id_commande,
-                        "etat_commande" => 'CREATED',
-                        "id_client" => $user->id,
-                    ]);
-                    if ($statut) {
-                        return response()->json([
-                            'message' => 'commande created successfully'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'message' => 'Erreur'
-                        ]);
-                    }
-                } elseif ($user->stock == 1) {
-                    if (isset($request->articles) && count($request->articles) > 0) {
-                        $this->validate($request, [
-                            "ville_client_commande" => 'required',
-                            "nom_client_commande" => "required|string",
-                            "adresse_client_commande" => 'required|string',
-                            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
-                            "prix_commande" => "required|numeric",
-                            "additional_commentaire" => "nullable|string",
-                        ]);
-                        for ($i = 0; $i < count($request->articles); $i++) {
-                            //pour savoir le nombre des articles deja confirmer
-                            $article = Commande::where('commandes.etat_commande', 'CONFIRMED')
-                                ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
-                                ->where(function ($query) use ($user) {
-                                    $query->where('commandes.id_client', $user->id)
-                                        ->orwhere('commandes.id_client', $user->superviseur);
-                                })
-                                ->where('detailscommandes.id_article', $request->articles[$i]['id_article'])
-                                ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
-                                ->first();
-                            // that if means it's the first confirmed of the article
-                            if ($article->qnt_article == null) {
-                                $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
-                                    ->selectRaw('articles.stock_article as qnt_article_stock')
-                                    ->first();
-                                $articles = $article_in_stock->qnt_article_stock;
-                            } else {
-                                //pour savoir la quantite exist en stock
-                                $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
-                                    ->selectRaw('articles.stock_article as qnt_article_stock')
-                                    ->first();
-                                $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
-                            }
-                            if ($request->articles[$i]['quantite'] <= 0) {
-                                return response()->json([
-                                    'message' => 'Erreur la quantité doit etre superieur de 0'
-                                ]);
-                            } elseif ($request->articles[$i]['quantite'] > (int)$articles) {
-                                return response()->json([
-                                    'message' => 'Erreur la quantité entrer plus que le stock'
-                                ]);
-                            }
-                        }
-                        if ($user->role == 'EmployeClient') {
-                            $id_client = $user->superviseur;
-                            $id_employe_client = $user->id;
-                        } else if ($user->role == 'Client') {
-                            $id_client = $user->id;
-                        }
-                        $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                        $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
-
-                        $agence = Agence::where('id_ville', $user->id_ville)->first();
-                    
-                        $prix_livraison = $ville->prix_livraison;
-                        if ($agence) {
-                            if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id']==$agence->id_ville) {
-                                $prix_livraison = $ville->prix_livraison_meme_ville;
-                            }
-                        }
-                        $statut = Commande::create([
-                            "id_commande" => $id_commande,
-                            "id_commande_intern" => $request->id_commande_intern,
-                            "id_ville" => $request->ville_client_commande['id'],
-                            "nom_client_commande" => $request->nom_client_commande,
-                            "adresse_client_commande" => $request->adresse_client_commande,
-                            "telephone_client_commande" => $request->telephone_client_commande,
-                            "prix_commande" => $request->prix_commande,
-                            "etat_commande" => "CREATED",
-                            "id_client" => $id_client,
-                            "prix_livraison_final" => $prix_livraison,
-                            "additional_commentaire" => $request->additional_commentaire,
-                            "type_autorisation" => $type_autorisation,
-                            "type_commande" => 'stock',
-                            "id_store" => $id_store,
-                            'id_employe_client' => $id_employe_client,
-
-                        ]);
-                        HistoriqueCommande::create([
-                            "id_commande" =>  $id_commande,
-                            "etat_commande" => 'CREATED',
-                            "id_client" => $user->id,
-                        ]);
-                        for ($i = 0; $i < count($request->articles); $i++) {
-                            DetailsCommandes::create([
-                                "id_commande" =>  $id_commande,
-                                "id_article" => $request->articles[$i]['id_article'],
-                                "quantite_article" => $request->articles[$i]['quantite'],
-                            ]);
-                        }
-                        if ($statut) {
-                            return response()->json([
-                                'message' => 'commande created successfully'
-                            ]);
-                        } else {
-                            return response()->json([
-                                'message' => 'Erreur'
-                            ]);
-                        }
-                    } else {
-                        $this->validate($request, [
-                            "ville_client_commande" => 'required',
-                            "nom_client_commande" => "required|string",
-                            "adresse_client_commande" => 'required|string',
-                            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
-                            "prix_commande" => "required|numeric",
-                            "additional_commentaire" => "nullable|string",
-
-                        ]);
-                        if ($user->role == 'EmployeClient') {
-                            $id_client = $user->superviseur;
-                            $id_employe_client = $user->id;
-                        } else if ($user->role == 'Client') {
-                            $id_client = $user->id;
-                        }
-                        $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
-                        $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
-                        $agence = Agence::where('id_ville', $user->id_ville)->first();
-                        $prix_livraison = $ville->prix_livraison;
-                        if ($agence) {
-                            if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id'] == $agence->id_ville) {
-                                $prix_livraison = $ville->prix_livraison_meme_ville;
-                            }
-                        }
-                        $statut = Commande::create([
-                            "id_commande" => $id_commande,
-                            "id_commande_intern" => $request->id_commande_intern,
-                            "id_ville" => $request->ville_client_commande['id'],
-                            "nom_client_commande" => $request->nom_client_commande,
-                            "adresse_client_commande" => $request->adresse_client_commande,
-                            "telephone_client_commande" => $request->telephone_client_commande,
-                            "prix_commande" => $request->prix_commande,
-                            "prix_livraison_final" => $prix_livraison,
-                            "etat_commande" => "CREATED",
-                            "id_client" => $id_client,
-                            "type_autorisation" => $type_autorisation,
-                            "additional_commentaire" => $request->additional_commentaire,
-                            "id_store" => $id_store,
-                            'id_employe_client' => $id_employe_client,
-                        ]);
-                        HistoriqueCommande::create([
-                            "id_commande" =>  $id_commande,
-                            "etat_commande" => 'CREATED',
-                            "id_client" => $user->id,
-                        ]);
-                        if ($statut) {
-                            return response()->json([
-                                'message' => 'commande created successfully'
-                            ]);
-                        } else {
-                            return response()->json([
-                                'message' => 'Erreur'
-                            ]);
-                        }
-                    }
-                }
-            } else {
-                return response()->json([
-                    'message' => 'Vous avez saisi un grand nombre de commandes pendant une journée !!'
-                ]);
+        // Commande avec stock et articles
+        if ($user->stock == 1 && isset($request->articles) && count($request->articles) > 0) {
+            $stockError = $this->checkArticlesStock($request->articles, $user);
+            if ($stockError) {
+                return $stockError;
             }
+
+            $created = $this->createCommande(
+                array_merge($baseData, ['type_commande' => 'stock']),
+                $id_commande,
+                $user
+            );
+
+            if ($created) {
+                foreach ($request->articles as $article) {
+                    DetailsCommandes::create([
+                        'id_commande'     => $id_commande,
+                        'id_article'      => $article['id_article'],
+                        'quantite_article' => $article['quantite'],
+                    ]);
+                }
+            }
+
+            return $this->jsonStatus($created, 'commande created successfully');
         }
+
+        // Commande simple (stock = 0 ou stock = 1 sans articles)
+        $created = $this->createCommande($baseData, $id_commande, $user);
+
+        return $this->jsonStatus($created, 'commande created successfully');
     }
+
+    /**
+     * Affiche les détails d'une commande avec le stock disponible par article.
+     */
     public function show($id)
     {
         try {
-            $user = auth('sanctum')->user();
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                $commande = Commande::join('villes', 'commandes.id_ville', '=', 'villes.id')
-                    ->leftjoin('detailscommandes', 'commandes.id_commande', 'detailscommandes.id_commande')
-                    ->leftjoin('articles', 'articles.id_article', 'detailscommandes.id_article')
-                    ->leftjoin('employes', 'commandes.responsable', 'employes.id')
-                    ->leftjoin('stores', 'commandes.id_store', 'stores.id')
-                    ->leftjoin('clients', 'clients.id', 'commandes.id_client')
-                    ->where('commandes.id_commande', $id)
-                    ->selectRaw('additional_commentaire,telephone_client_commande,adresse_client_commande,etat_commande,type_commande,employes.nom,employes.prenom,employes.telephone as telephone_responsable,stores.nom_store,clients.company,
-                commandes.id_commande,villes.nom_ville,nom_client_commande,prix_commande,commandes.id_package,
-                telephone_client_commande,commandes.prix_livraison_final,
-                type_autorisation,commandes.updated_at,villes.id as ville_client_commande,articles.nom_article')
-                    ->first();
-                $DetailsCommandes = DetailsCommandes::leftjoin('articles', 'articles.id_article', 'detailscommandes.id_article')
-                    ->where('detailscommandes.id_commande', $id)
-                    ->selectRaw('quantite_article as quantite,articles.id_article as id,articles.nom_article')
-                    ->get();
-                for ($i = 0; $i < count($DetailsCommandes); $i++) {
-                    $article = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
-                        ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
-                        ->where(function ($query) use ($user) {
-                            $query->where('commandes.id_client', $user->id)
-                                ->orwhere('commandes.id_client', $user->superviseur);
-                        })
-                        ->where('detailscommandes.id_article', $DetailsCommandes[$i]->id)
-                        ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
-                        ->first();
-                    // that if means it's the first confirmed of the article
-                    if ($article->qnt_article == null) {
-                        $article_in_stock = Article::where('articles.id_article', $DetailsCommandes[$i]->id)
-                            ->selectRaw('articles.stock_article as qnt_article_stock')
-                            ->first();
-                        if ($article_in_stock->qnt_article_stock <= 0) {
-                        } else {
-                            $DetailsCommandes[$i]->qnt = $article_in_stock->qnt_article_stock;
-                        }
-                    } else {
-                        //pour savoir la quantite exist en stock
-                        $article_in_stock = Article::where('articles.id_article', $DetailsCommandes[$i]->id)
-                            ->selectRaw('articles.stock_article as qnt_article_stock')
-                            ->first();
-                        if ($article_in_stock->qnt_article_stock - $article->qnt_article <= 0) {
-                        } else {
-                            $DetailsCommandes[$i]->qnt = $article_in_stock->qnt_article_stock - $article->qnt_article;
-                        }
-                    }
-                }
+            $user = $this->authUser();
 
-
-                return response()->json([
-                    'data' => $commande,
-                    'data2' => $DetailsCommandes
-                ]);
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $commande = Commande::join('villes', 'commandes.id_ville', '=', 'villes.id')
+                ->leftJoin('detailscommandes', 'commandes.id_commande', 'detailscommandes.id_commande')
+                ->leftJoin('articles', 'articles.id_article', 'detailscommandes.id_article')
+                ->leftJoin('employes', 'commandes.responsable', 'employes.id')
+                ->leftJoin('stores', 'commandes.id_store', 'stores.id')
+                ->leftJoin('clients', 'clients.id', 'commandes.id_client')
+                ->where('commandes.id_commande', $id)
+                ->selectRaw('
+                    additional_commentaire, telephone_client_commande, adresse_client_commande,
+                    etat_commande, type_commande, employes.nom, employes.prenom,
+                    employes.telephone as telephone_responsable, stores.nom_store, clients.company,
+                    commandes.id_commande, villes.nom_ville, nom_client_commande,
+                    prix_commande, commandes.id_package, telephone_client_commande,
+                    commandes.prix_livraison_final, type_autorisation, commandes.updated_at,
+                    villes.id as ville_client_commande, articles.nom_article
+                ')
+                ->first();
+
+            $detailsCommandes = DetailsCommandes::leftJoin('articles', 'articles.id_article', 'detailscommandes.id_article')
+                ->where('detailscommandes.id_commande', $id)
+                ->selectRaw('quantite_article as quantite, articles.id_article as id, articles.nom_article')
+                ->get();
+
+            foreach ($detailsCommandes as $detail) {
+                $confirmed = Commande::whereIn('commandes.etat_commande', ['CONFIRMED', 'PROCESSING', 'PICKUP', 'INHOUSE'])
+                    ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
+                    ->where(fn($q) => $this->scopeClientOrSupervisor($q, $user))
+                    ->where('detailscommandes.id_article', $detail->id)
+                    ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
+                    ->first();
+
+                $stockTotal = Article::where('id_article', $detail->id)->value('stock_article');
+                $available  = $confirmed->qnt_article === null
+                    ? $stockTotal
+                    : $stockTotal - $confirmed->qnt_article;
+
+                if ($available > 0) {
+                    $detail->qnt = $available;
+                }
+            }
+
+            return response()->json(['data' => $commande, 'data2' => $detailsCommandes]);
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Met à jour une commande CREATED (données complètes + articles si stock).
+     */
     public function updateCommande(Request $request)
     {
+        $this->validateCommandeRequest($request);
 
-        $this->validate($request, [
-            "ville_client_commande" => 'required',
-            "nom_client_commande" => "required|string",
-            "adresse_client_commande" => 'required|string',
-            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
-            "prix_commande" => "required|numeric",
-            "additional_commentaire" => "nullable|string",
-        ]);
-        $user = auth('sanctum')->user();
+        $user = $this->authUser();
+
         try {
-            if ($user->role == 'Client' && $user->statut == 'Active') {
-                if (isset($request->type_autorisation)) {
-                    if ($request->type_autorisation) {
-                        $type_autorisation = 'deny';
-                    } else {
-                        $type_autorisation = 'allow';
-                    }
-                } else {
-                    $type_autorisation = 'allow';
+            if (!$this->isAuthorized($user, clientOnly: true)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
+            }
+
+            $type_autorisation = $this->resolveTypeAutorisation($request);
+            $ville             = Ville::find($request->ville_client_commande['id']);
+
+            // Mise à jour avec articles (mode stock)
+            if (isset($request->articles) && count($request->articles) > 0 && $request->selected_type == true) {
+                $stockError = $this->checkArticlesStock($request->articles, $user);
+                if ($stockError) {
+                    return $stockError;
                 }
 
-                $ville = Ville::where('id', $request->ville_client_commande['id'])->first();
+                $existingDetails = DetailsCommandes::where('id_commande', $request->id_commande)->get();
 
-                if (isset($request->articles) && count($request->articles) > 0 && $request->selected_type == true) {
-                    //pour savoir le nombre des articles deja confirmer
-                    for ($i = 0; $i < count($request->articles); $i++) {
-                        //pour savoir le nombre des articles deja confirmer
-                        $article = Commande::where('commandes.etat_commande', 'CONFIRMED')
-                            ->join('detailscommandes', 'detailscommandes.id_commande', 'commandes.id_commande')
-                            ->where(function ($query) use ($user) {
-                                $query->where('commandes.id_client', $user->id)
-                                    ->orwhere('commandes.id_client', $user->superviseur);
-                            })
-                            ->where('detailscommandes.id_article', $request->articles[$i]['id_article'])
-                            ->selectRaw('sum(detailscommandes.quantite_article) as qnt_article')
-                            ->first();
-                        // that if means it's the first confirmed of the article
-                        if ($article->qnt_article == null) {
-                            $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
-                                ->selectRaw('articles.stock_article as qnt_article_stock')
-                                ->first();
-                            $articles = $article_in_stock->qnt_article_stock;
-                        } else {
-                            //pour savoir la quantite exist en stock
-                            $article_in_stock = Article::where('articles.id_article', $request->articles[$i]['id_article'])
-                                ->selectRaw('articles.stock_article as qnt_article_stock')
-                                ->first();
-                            $articles = $article_in_stock->qnt_article_stock - $article->qnt_article;
-                        }
-                        if ($request->articles[$i]['quantite'] <= 0) {
-                            return response()->json([
-                                'message' => 'Erreur la quantité doit etre superieur de 0'
-                            ]);
-                        } elseif ($request->articles[$i]['quantite'] > (int)$articles) {
-                            return response()->json([
-                                'message' => 'Erreur la quantité entrer plus que le stock'
-                            ]);
-                        }
-                    }
-
-                    $detailscommandes = DetailsCommandes::where('detailscommandes.id_commande', $request->id_commande)->get();
-
-                    for ($i = 0; $i < count($detailscommandes); $i++) {
-                        $exite_article = false;
-                        for ($n = 0; $n < count($request->articles); $n++) {
-                            if ($detailscommandes[$i]->id_article == $request->articles[$n]['id']) {
-                                $exite_article = true;
-                            }
-                        }
-                        if ($exite_article) {
-                            $detailscommandes[$i]->quantite_article = $request->articles[$i]['quantite'];
-                            $detailscommandes[$i]->id_article = $request->articles[$i]['id_article'];
-                            $statut = $detailscommandes[$i]->save();
-                        } else {
-                            DetailsCommandes::where('detailscommandes.id_commande', $request->id_commande)->where('detailscommandes.id_article', $detailscommandes[$i]->id_article)->delete();
-                        }
-                    }
-
-                    for ($j = 0; $j < count($request->articles); $j++) {
-                        $exite_article2 = false;
-                        for ($k = 0; $k < count($detailscommandes); $k++) {
-                            if ($detailscommandes[$k]->id_article == $request->articles[$j]['id']) {
-                                $exite_article2 = true;
-                            }
-                        }
-                        if (!$exite_article2) {
-                            DetailsCommandes::create([
-                                "id_commande" =>  $request->id_commande,
-                                "id_article" => $request->articles[$j]['id'],
-                                "quantite_article" => $request->articles[$j]['quantite'],
-                            ]);
-                        }
-                    }
-
-                    if ($statut) {
-                        $agence = Agence::where('id_ville', $user->id_ville)->first();
-                        $prix_livraison = $ville->prix_livraison;
-                        if ($agence) {
-                            if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id']==$agence->id_ville) {
-                                $prix_livraison = $ville->prix_livraison_meme_ville;
-                            }
-                        }
-
-                        $commande = Commande::where('commandes.id_client', $user->id)->where('etat_commande', 'CREATED')->where('id_commande', $request->id_commande)->first();
-                        $commande->id_ville =  $ville->id;
-                        $commande->nom_client_commande = $request->nom_client_commande;
-                        $commande->id_commande_intern = $request->id_commande_intern;
-                        $commande->adresse_client_commande = $request->adresse_client_commande;
-                        $commande->telephone_client_commande = $request->telephone_client_commande;
-                        $commande->prix_commande = $request->prix_commande;
-                        $commande->additional_commentaire = $request->additional_commentaire;
-                        $commande->prix_livraison_final = $prix_livraison;
-                        $commande->type_autorisation = $type_autorisation;
-                        $statut = $commande->save();
-                    }
-
-
-
-                    if ($statut) {
-                        return response()->json([
-                            'message' => 'commande update successfully'
-                        ]);
+                // Supprimer ou mettre à jour les détails existants
+                foreach ($existingDetails as $i => $detail) {
+                    $match = collect($request->articles)->firstWhere('id', $detail->id_article);
+                    if ($match) {
+                        $detail->quantite_article = $request->articles[$i]['quantite'];
+                        $detail->id_article       = $request->articles[$i]['id_article'];
+                        $statut = $detail->save();
                     } else {
-                        return response()->json([
-                            'message' => 'Erreur'
-                        ]);
+                        DetailsCommandes::where('id_commande', $request->id_commande)
+                            ->where('id_article', $detail->id_article)
+                            ->delete();
                     }
-                } else {
+                }
 
-                    $commande = Commande::where('commandes.id_client', $user->id)->where('etat_commande', 'CREATED')->where('id_commande', $request->id_commande)->first();
-                    if ($commande->id_ville != $ville->id) {
-                        $commande->id_ville =  $ville->id;
-                        $id_commande = $ville->pref_ville . Carbon::now()->format('d') . Carbon::now()->format('m') . Carbon::now()->format('y') . $user->id . chr(rand(65, 90)) . strtoupper(Str::random(3));
-                        $commande->id_commande = $id_commande;
+                // Ajouter les nouveaux articles
+                foreach ($request->articles as $newArticle) {
+                    $exists = $existingDetails->firstWhere('id_article', $newArticle['id']);
+                    if (!$exists) {
+                        DetailsCommandes::create([
+                            'id_commande'      => $request->id_commande,
+                            'id_article'       => $newArticle['id'],
+                            'quantite_article' => $newArticle['quantite'],
+                        ]);
                     }
-                    $agence = Agence::where('id_ville', $user->id_ville)->first();
-                    $prix_livraison = $ville->prix_livraison;
-                    if ($agence) {
-                        if ($user->id_ville == $agence->id_ville && $request->ville_client_commande['id']==$agence->id_ville) {
-                            $prix_livraison = $ville->prix_livraison_meme_ville;
-                        }
-                    }
+                }
 
-                    $commande->nom_client_commande = $request->nom_client_commande;
-                    $commande->id_commande_intern = $request->id_commande_intern;
-                    $commande->adresse_client_commande = $request->adresse_client_commande;
-                    $commande->telephone_client_commande = $request->telephone_client_commande;
-                    $commande->prix_commande = $request->prix_commande;
-                    $commande->additional_commentaire = $request->additional_commentaire;
-                    $commande->prix_livraison_final = $prix_livraison;
-                    $commande->type_autorisation = $type_autorisation;
-                    $statut = $commande->save();
-                    if ($statut) {
-                        return response()->json([
-                            'message' => 'commande update successfully'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'message' => 'Erreur'
-                        ]);
-                    }
+                if (!($statut ?? false)) {
+                    return $this->jsonStatus(false);
                 }
             }
+
+            $commande = Commande::where('id_client', $user->id)
+                ->where('etat_commande', 'CREATED')
+                ->where('id_commande', $request->id_commande)
+                ->first();
+
+            // Regénérer l'id_commande si la ville change (commande simple uniquement)
+            if (!($request->selected_type ?? false) && $commande->id_ville != $ville->id) {
+                $commande->id_commande = $this->generateIdCommande($ville, $user);
+            }
+
+            $commande->id_ville                  = $ville->id;
+            $commande->nom_client_commande        = $request->nom_client_commande;
+            $commande->id_commande_intern         = $request->id_commande_intern;
+            $commande->adresse_client_commande    = $request->adresse_client_commande;
+            $commande->telephone_client_commande  = $request->telephone_client_commande;
+            $commande->prix_commande              = $request->prix_commande;
+            $commande->additional_commentaire     = $request->additional_commentaire;
+            $commande->prix_livraison_final       = $this->resolvePrixLivraison($ville, $user);
+            $commande->type_autorisation          = $type_autorisation;
+
+            $statut = $commande->save();
+
+            return $this->jsonStatus($statut, 'commande update successfully');
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur' . $e
-            ]);
+            return response()->json(['message' => 'Erreur' . $e]);
         }
     }
+
+    /**
+     * Supprime une commande CREATED.
+     */
     public function destroy($id)
     {
         try {
-            $user = auth('sanctum')->user();
-            if ($user->role == 'Client' && $user->statut == 'Active') {
-                $commande = Commande::find($id);
-                if ($commande->etat_commande == 'CREATED') {
-                    $commande->delete();
-                    return response()->json(['message' => "Commande Supprimer"]);
-                }
+            $user = $this->authUser();
+
+            if (!$this->isAuthorized($user, clientOnly: true)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $commande = Commande::find($id);
+
+            if ($commande && $commande->etat_commande === 'CREATED') {
+                $commande->delete();
+                return response()->json(['message' => 'Commande Supprimer']);
+            }
+
+            return response()->json(['message' => 'Erreur']);
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Retourne les commandes d'un package et génère le PDF (stickers ou standard).
+     */
     public function getPackage(Request $request)
     {
+
         try {
-            $user = auth('sanctum')->user();
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                if ($user->role == 'Client') {
+            $user = $this->authUser();
 
-                    $packageClient = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                        ->join('villes', 'commandes.id_ville', '=', 'villes.id')
-                        ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
-                        ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
-                        ->join('zones','zones.id','villes.id_zone')
-                        ->leftjoin('villes as store_ville', 'stores.id_ville', '=', 'store_ville.id')
-                        ->where(function ($query) use ($user) {
-                            $query->where('commandes.id_client', $user->id)
-                                ->orwhere('commandes.id_client', $user->superviseur);
-                        })
-                        ->where('commandes.id_package', $request->id)
-                        ->select(
-                            'commandes.*',
-                            'villes.nom_ville as ville',
-                            'zones.nom_zone',
-                            'clients.company',
-                         
-                            'clients.adresse',
-                            'clients.website',
-                            'clients.telephone as telephone_client',
-                            'villes2.nom_ville as ville_client',
-                            'stores.nom_store',
-                            'stores.siteweb_store',
-                            'clients.telephone_store',
-                            'stores.telephone_store as tele_store',
-                            'stores.adresse_store',
-                            'store_ville.nom_ville as store_ville'
-                        )
-                        ->orderBy('commandes.updated_at', 'desc')
-                        ->get();
-                } else if ($user->role == 'EmployeClient') {
-                    $packageClient = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                        ->join('clients as superviseur', 'superviseur.id', '=', 'commandes.id_client')
-                        ->join('villes', 'commandes.id_ville', '=', 'villes.id')
-                        ->join('zones','zones.id','villes.id_zone')
-                        ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
-                        ->join('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
-                        ->leftjoin('villes as store_ville', 'stores.id_ville', '=', 'store_ville.id')
-                        ->where(function ($query) use ($user) {
-                            $query->where('commandes.id_client', $user->id)
-                                ->orwhere('commandes.id_client', $user->superviseur);
-                        })
-                        ->where('commandes.id_package', $request->id)
-                        ->select(
-                            'commandes.*',
-                            'villes.nom_ville as ville',
-                            'clients.telephone_store',
-                            'zones.nom_zone',
-                            'superviseur.company',
-                            'superviseur.adresse',
-                            'superviseur.website',
-                            'superviseur.telephone as telephone_client',
-                            'villes2.nom_ville as ville_client',
-                            'stores.nom_store',
-                            'stores.siteweb_store',
-                            'stores.telephone_store as tele_store',
-                            'stores.adresse_store',
-                            'store_ville.nom_ville as store_ville'
-
-                        )
-                        ->orderBy('commandes.created_at', 'desc')
-                        ->get();
-                }
-                $data = ['data' => $packageClient];
-           
-                if (isset($request->type) && $request->type == 'smallStickers') {
-                    $pdf = PDF::setOption('page-width', 105)
-                        ->setOption('page-height', 105)
-
-                        ->setOption('margin-top', 2)
-                        ->setOption('margin-right', 2)
-                        ->setOption('margin-left', 2)
-                        ->setOption('margin-bottom', 2)
-
-                        ->loadView('miniStickers', $data);
-                } else {
-                    $pdf = PDF::loadView('myPDF', $data)->setOption('margin-top', 4)
-                        ->setOption('margin-right', 2)
-                        ->setOption('margin-left', 2)
-                        ->setOption('margin-bottom', 2);
-                }
-
-
-
-
-                return $pdf->stream('document.pdf');
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $baseQuery = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
+                ->leftjoin('villes', 'commandes.id_ville', '=', 'villes.id')
+                ->leftjoin('zones', 'zones.id', 'villes.id_zone')
+                ->leftJoin('stores', 'stores.id', '=', 'commandes.id_store')
+                ->leftjoin('villes as villes2', 'clients.id_ville', '=', 'villes2.id')
+                ->leftJoin('villes as store_ville', 'stores.id_ville', '=', 'store_ville.id')
+                ->where(fn($q) => $this->scopeClientOrSupervisor($q, $user))
+                ->where('commandes.id_package', $request->id);
+
+            $commonSelect = [
+                'commandes.*',
+                'villes.nom_ville as ville',
+                'zones.nom_zone',
+                'clients.telephone_store',
+                'villes2.nom_ville as ville_client',
+                'stores.nom_store',
+                'stores.siteweb_store',
+                'stores.telephone_store as tele_store',
+                'stores.adresse_store',
+                'store_ville.nom_ville as store_ville',
+            ];
+
+            if ($user->role === 'Client') {
+                $packageClient = $baseQuery->select(array_merge($commonSelect, [
+                    'clients.company',
+                    'clients.adresse',
+                    'clients.website',
+                    'clients.telephone as telephone_client',
+                ]))->orderBy('commandes.updated_at', 'desc')->get();
+            } else {
+                // EmployeClient — joindre le superviseur pour les infos société
+                $packageClient = $baseQuery
+                    ->join('clients as superviseur', 'superviseur.id', '=', 'commandes.id_client')
+                    ->select(array_merge($commonSelect, [
+                        'superviseur.company',
+                        'superviseur.adresse',
+                        'superviseur.website',
+                        'superviseur.telephone as telephone_client',
+                    ]))->orderBy('commandes.created_at', 'desc')->get();
+            }
+
+            $data = ['data' => $packageClient];
+
+            $pdf = isset($request->type) && $request->type === 'smallStickers'
+                ? PDF::setOption('page-width', 105)->setOption('page-height', 105)
+                     ->setOption('margin-top', 2)->setOption('margin-right', 2)
+                     ->setOption('margin-left', 2)->setOption('margin-bottom', 2)
+                     ->loadView('miniStickers', $data)
+                : PDF::loadView('myPDF', $data)
+                     ->setOption('margin-top', 4)->setOption('margin-right', 2)
+                     ->setOption('margin-left', 2)->setOption('margin-bottom', 2);
+
+            return $pdf->stream('document.pdf');
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Historique complet d'une commande (événements + factures + livreur).
+     */
     public function historiqueCommande($id)
     {
         try {
-            $user = auth('sanctum')->user();
-            if ($user->role == 'Client'  && $user->statut == 'Active') {
-                $commandes2 = DB::table('historiquecommandes')
-                    ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
-                    ->join('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
-                    ->where('historiquecommandes.etat_commande', 'HOME')
-                    ->where('commandes.id_client', $user->id)
-                    ->where('commandes.id_commande', $id)
-                    ->select('employes.telephone')->first();
-                $livreur = DB::table('commandes')
-                    ->join('employes', 'commandes.livre_par', '=', 'employes.id')
-                    ->where('commandes.id_commande', $id)
-                    ->select('employes.telephone', 'employes.nom', 'employes.prenom')->first();
-                $commandes = DB::table('historiquecommandes')
-                    ->leftjoin('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
-                    ->leftjoin('clients', 'historiquecommandes.id_client', '=', 'clients.id')
-                    ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
+            $user      = $this->authUser();
+            $clientId  = $user->role === 'Client' ? $user->id : $user->superviseur;
 
-                    ->join('villes', 'commandes.id_ville', 'villes.id')
-                    ->leftjoin('zones','zones.id','villes.id_zone')
-                    ->where('historiquecommandes.id_commande', $id)
-                    ->where('commandes.id_client', $user->id)
-                    ->select('zones.nom_zone','commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
-                    ->orderBy('historiquecommandes.updated_at', 'asc')
-                    ->get();
-
-                $historiquefactures = DB::table('historiquefactures')
-                    ->leftjoin('employes', 'historiquefactures.id_employe', '=', 'employes.id')
-                    ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
-                    ->where('commandes.id_commande', $id)
-                    ->where('commandes.id_client', $user->id)
-                    ->select('historiquefactures.statut_facture', 'historiquefactures.id_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
-                    ->orderBy('historiquefactures.updated_at', 'asc')
-                    ->get();
-
-                return response()->json([
-                    'data' => $commandes,
-                    'responsable' => $commandes2,
-                    'data2' => $historiquefactures,
-                    'livreur' => $livreur
-                ]);
-            } else if (($user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                $commandes2 = DB::table('historiquecommandes')
-                    ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
-                    ->join('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
-                    ->where('historiquecommandes.etat_commande', 'HOME')
-                    ->where('commandes.id_client', $user->superviseur)
-                    ->where('commandes.id_commande', $id)
-                    ->select('employes.telephone')->first();
-                $livreur = DB::table('commandes')
-                    ->join('employes', 'commandes.livre_par', '=', 'employes.id')
-                    ->where('commandes.id_commande', $id)
-                    ->select('employes.telephone', 'employes.nom', 'employes.prenom')->first();
-                $commandes = DB::table('historiquecommandes')
-                    ->leftjoin('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
-                    ->leftjoin('clients', 'historiquecommandes.id_client', '=', 'clients.id')
-                    ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
-                    ->join('villes', 'commandes.id_ville', 'villes.id')
-                    ->leftjoin('zones','zones.id','villes.id_zone')
-                    
-                    
-                    ->where('historiquecommandes.id_commande', $id)
-                    ->where('commandes.id_client', $user->superviseur)
-                    ->select('zones.nom_zone','commandes.id_bon_retour_client', 'commandes.id_package', 'historiquecommandes.etat_commande', 'commandes.nom_client_commande', 'historiquecommandes.dateCall', 'historiquecommandes.typeCall', 'historiquecommandes.durationCall', 'villes.nom_ville', 'clients.nom as clientUsername', 'historiquecommandes.reported_date', 'historiquecommandes.commentaire_commande', 'employes.nom as username', 'historiquecommandes.updated_at',)
-                    ->orderBy('historiquecommandes.updated_at', 'asc')
-                    ->get();
-
-                $historiquefactures = DB::table('historiquefactures')
-                    ->leftjoin('employes', 'historiquefactures.id_employe', '=', 'employes.id')
-                    ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
-                    ->where('commandes.id_commande', $id)
-                    ->where('commandes.id_client', $user->superviseur)
-                    ->select('historiquefactures.statut_facture', 'employes.nom as username', 'historiquefactures.updated_at',)
-                    ->orderBy('historiquefactures.updated_at', 'asc')
-                    ->get();
-
-                return response()->json([
-                    'data' => $commandes,
-                    'responsable' => $commandes2,
-                    'data2' => $historiquefactures,
-                    'livreur' => $livreur
-                ]);
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
-        } catch (Throwable $e) {
+
+            $commandes2 = DB::table('historiquecommandes')
+                ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
+                ->join('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
+                ->where('historiquecommandes.etat_commande', 'HOME')
+                ->where('commandes.id_client', $clientId)
+                ->where('commandes.id_commande', $id)
+                ->select('employes.telephone')
+                ->first();
+
+            $livreur = DB::table('commandes')
+                ->join('employes', 'commandes.livre_par', '=', 'employes.id')
+                ->where('commandes.id_commande', $id)
+                ->select('employes.telephone', 'employes.nom', 'employes.prenom')
+                ->first();
+
+            $commandes = DB::table('historiquecommandes')
+                ->leftJoin('employes', 'historiquecommandes.id_employe', '=', 'employes.id')
+                ->leftJoin('clients', 'historiquecommandes.id_client', '=', 'clients.id')
+                ->join('commandes', 'commandes.id_commande', '=', 'historiquecommandes.id_commande')
+                ->join('villes', 'commandes.id_ville', 'villes.id')
+                ->leftJoin('zones', 'zones.id', 'villes.id_zone')
+                ->where('historiquecommandes.id_commande', $id)
+                ->where('commandes.id_client', $clientId)
+                ->select(
+                    'zones.nom_zone', 'commandes.id_bon_retour_client', 'commandes.id_package',
+                    'historiquecommandes.etat_commande', 'commandes.nom_client_commande',
+                    'historiquecommandes.dateCall', 'historiquecommandes.typeCall',
+                    'historiquecommandes.durationCall', 'villes.nom_ville',
+                    'clients.nom as clientUsername', 'historiquecommandes.reported_date',
+                    'historiquecommandes.commentaire_commande', 'employes.nom as username',
+                    'historiquecommandes.updated_at'
+                )
+                ->orderBy('historiquecommandes.updated_at', 'asc')
+                ->get();
+
+            $historiquefactures = DB::table('historiquefactures')
+                ->leftJoin('employes', 'historiquefactures.id_employe', '=', 'employes.id')
+                ->join('commandes', 'commandes.id_facture', '=', 'historiquefactures.id_facture')
+                ->where('commandes.id_commande', $id)
+                ->where('commandes.id_client', $clientId)
+                ->select(
+                    'historiquefactures.statut_facture',
+                    'historiquefactures.id_facture',
+                    'employes.nom as username',
+                    'historiquefactures.updated_at'
+                )
+                ->orderBy('historiquefactures.updated_at', 'asc')
+                ->get();
+
             return response()->json([
-                'message' => 'Erreur'
+                'data'        => $commandes,
+                'responsable' => $commandes2,
+                'data2'       => $historiquefactures,
+                'livreur'     => $livreur,
             ]);
+        } catch (Throwable $e) {
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Change le statut d'une commande (ANNULER / RELANCER / CHANGERPRIX).
+     */
     public function changeStatutCommande(Request $request)
     {
-        $this->validate($request, []);
         try {
+            $user = $this->authUser();
 
-            $user = auth('sanctum')->user();
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                if (in_array($request->statut, array('ANNULER', 'RELANCER', 'CHANGERPRIX'))) {
-                    $statut = $commande = Commande::where('commandes.id_commande', $request->id_commande)
-                        ->whereIn('etat_commande', ['HOME', 'TRANSIT', 'RELANCER', 'CHANGERPRIX', 'INHOUSE', 'REPORTED', 'NOREPONSE', 'PROCESSING', 'ASSIGN', 'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER'])
-                        ->where(function ($query) use ($user) {
-                            $query->where('commandes.id_client', $user->id)
-                                ->Orwhere('commandes.id_client', $user->superviseur);
-                        })
-
-                        ->first();
-                }
-                if ($statut) {
-
-                    $commentaire_commande = null;
-                    $reported_date = null;
-                    if ($request->dateReported != '') {
-                        $reported_date = Carbon::parse($request->dateReported);
-                    }
-                    if ($request->statut == 'ANNULER') {
-                        $commentaire_commande = 'Order Cancel';
-                        $commande->etat_commande = $request->statut;
-                    } else if ($request->statut == 'RELANCER') {
-
-                        $commentaire_commande = 'Relaunch request';
-                        $commande->etat_commande = $request->statut;
-                    }
-                    $statut2 = HistoriqueCommande::create([
-                        "id_commande" => $commande->id_commande,
-                        "etat_commande" => $request->statut,
-                        "commentaire_commande" => $commentaire_commande,
-                        "reported_date" =>  $reported_date,
-                        "id_client" => $user->id,
-                    ]);
-
-                    if ($statut2 && $request->statut == 'RELANCER') {
-                        $statut2 = Notification::create([
-                            "id_commande" => $commande->id_commande,
-                            "description" => 'Demande Relance: ' . $commande->id_commande,
-                            "titre" => 'Demande Relance',
-                            "affichage" =>  'notSeen',
-                            "id_client" => $user->id,
-                            "id_employe" => $commande->livre_par,
-
-                        ]);
-                    }
-                    $commande->updated_at = Carbon::now();
-                    $commande->save();
-                    if ($statut2) {
-                        return response()->json([
-                            'message' => 'Successfully',
-                        ]);
-                    }
-                } else {
-                    return response()->json([
-                        'message' => 'Erreur',
-                    ]);
-                }
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
-        } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
+
+            if (!in_array($request->statut, ['ANNULER', 'RELANCER', 'CHANGERPRIX'])) {
+                return response()->json(['message' => 'Erreur']);
+            }
+
+            $commande = Commande::where('id_commande', $request->id_commande)
+                ->whereIn('etat_commande', [
+                    'HOME', 'TRANSIT', 'RELANCER', 'CHANGERPRIX', 'INHOUSE',
+                    'REPORTED', 'NOREPONSE', 'PROCESSING', 'ASSIGN',
+                    'ENROUTE', 'PICKUP', 'DMSUIVIE', 'RAMASSER',
+                ])
+                ->where(fn($q) => $this->scopeClientOrSupervisor($q, $user))
+                ->first();
+
+            if (!$commande) {
+                return response()->json(['message' => 'Erreur']);
+            }
+
+            $commentaire_commande = null;
+            $reported_date        = null;
+
+            if ($request->dateReported != '') {
+                $reported_date = Carbon::parse($request->dateReported);
+            }
+
+            if ($request->statut === 'ANNULER') {
+                $commentaire_commande  = 'Order Cancel';
+                $commande->etat_commande = 'ANNULER';
+            } elseif ($request->statut === 'RELANCER') {
+                $commentaire_commande  = 'Relaunch request';
+                $commande->etat_commande = 'RELANCER';
+            }
+
+            $historique = HistoriqueCommande::create([
+                'id_commande'          => $commande->id_commande,
+                'etat_commande'        => $request->statut,
+                'commentaire_commande' => $commentaire_commande,
+                'reported_date'        => $reported_date,
+                'id_client'            => $user->id,
             ]);
+
+            if ($historique && $request->statut === 'RELANCER') {
+                Notification::create([
+                    'id_commande' => $commande->id_commande,
+                    'description' => 'Demande Relance: ' . $commande->id_commande,
+                    'titre'       => 'Demande Relance',
+                    'affichage'   => 'notSeen',
+                    'id_client'   => $user->id,
+                    'id_employe'  => $commande->livre_par,
+                ]);
+            }
+
+            $commande->updated_at = Carbon::now();
+            $commande->save();
+
+            return $this->jsonStatus((bool) $historique);
+        } catch (Throwable $e) {
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Liste paginée des commandes en suivi (état DMSUIVIE).
+     */
     public function getCommandeSuivie(Request $request)
     {
         try {
-            $user = auth('sanctum')->user();
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                $sub = HistoriqueCommande::orderBy('updated_at', 'desc');
-                $historiquecommandes = DB::table(DB::raw("({$sub->toSql()}) as historiquecommandes"))
-                    ->whereIn('historiquecommandes.commentaire_commande', ["Pas de réponse", "Retours envoye vers agence"])
-                    ->groupBy('id_commande');
-                $commandes = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
-                    ->join('villes', 'commandes.id_ville', '=', 'villes.id')
-                    ->leftjoin('stores', 'stores.id', '=', 'commandes.id_store')
-                    ->where('commandes.etat_commande', 'DMSUIVIE')
-                    ->where(function ($query) use ($user) {
-                        $query->where('commandes.id_client', $user->id)
-                            ->orwhere('commandes.id_client', $user->superviseur);
-                    })
-                    ->leftjoinSub($historiquecommandes, 'historiquecommandes', function ($join) {
-                        $join->on('commandes.id_commande', '=', 'historiquecommandes.id_commande');
-                    })
-                    ->selectRaw('commandes.adresse_client_commande,commandes.id_commande,commandes.nom_client_commande,commandes.type_commande,stores.nom_store,clients.company,	
-                commandes.telephone_client_commande,commandes.prix_commande,commandes.etat_commande,commandes.updated_at,villes.nom_ville as ville_client_commande,historiquecommandes.commentaire_commande')
-                    ->orderBy('commandes.updated_at', 'desc')
-                    ->paginate($_GET['count_nbr']);
-                return response()->json([
-                    'data' => $commandes
-                ]);
+            $user = $this->authUser();
+
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $historiquecommandes = $this->buildHistoriqueSubQuery();
+
+            $commandes = Commande::join('clients', 'commandes.id_client', '=', 'clients.id')
+                ->join('villes', 'commandes.id_ville', '=', 'villes.id')
+                ->leftJoin('stores', 'stores.id', '=', 'commandes.id_store')
+                ->leftJoinSub($historiquecommandes, 'historiquecommandes', function ($join) {
+                    $join->on('commandes.id_commande', '=', 'historiquecommandes.id_commande');
+                })
+                ->where('commandes.etat_commande', 'DMSUIVIE')
+                ->where(fn($q) => $this->scopeClientOrSupervisor($q, $user))
+                ->selectRaw('
+                    commandes.adresse_client_commande, commandes.id_commande,
+                    commandes.nom_client_commande, commandes.type_commande,
+                    stores.nom_store, clients.company, commandes.telephone_client_commande,
+                    commandes.prix_commande, commandes.etat_commande, commandes.updated_at,
+                    villes.nom_ville as ville_client_commande,
+                    historiquecommandes.commentaire_commande
+                ')
+                ->orderBy('commandes.updated_at', 'desc')
+                ->paginate(request('count_nbr'));
+
+            return response()->json(['data' => $commandes]);
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Liste paginée des bons de retour du client.
+     */
     public function getBonRetour(Request $request)
     {
         try {
-            $user = auth('sanctum')->user();
-            if ($user->role == 'Client' && $user->statut == 'Active') {
-                if ($request->selected_option == 'id_bon_retour_client' && $request->valeur_recherche != '') {
-                    $commandes = DB::table('bonretourclients')
-                        ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
-                        ->where('id_client', $user->id)
-                        ->where('id_bon_retour_client', 'LIKE', "%$request->valeur_recherche%")
-                        ->orderBy('bonretourclients.updated_at', 'desc')
-                        ->paginate($_GET['count_nbr']);
-                } else if ($request->selected_option == 'id_commande' && $request->valeur_recherche != '') {
-                    $commandes = DB::table('bonretourclients')
-                        ->join('commandes', 'commandes.id_bon_retour_client', 'bonretourclients.id_bon_retour_client')
-                        ->selectRaw('bonretourclients.id_bon_retour_client,bonretourclients.statut_bonRetourClient,bonretourclients.nbrColis_bonRetourClient,bonretourclients.updated_at')
-                        ->where('bonretourclients.id_client', $user->id)
-                        ->where('commandes.id_commande', 'LIKE', "%$request->valeur_recherche%")
-                        ->orderBy('bonretourclients.updated_at', 'desc')
-                        ->paginate($_GET['count_nbr']);
-                } else {
-                    $commandes = DB::table('bonretourclients')
-                        ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient,updated_at')
-                        ->where('id_client', $user->id)
-                        ->orderBy('bonretourclients.updated_at', 'desc')
-                        ->paginate($_GET['count_nbr']);
-                }
+            $user = $this->authUser();
 
-                return response()->json([
-                    'data' => $commandes
-                ]);
+            if (!$this->isAuthorized($user, clientOnly: true)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $query = DB::table('bonretourclients')->where('id_client', $user->id);
+
+            if ($request->selected_option === 'id_bon_retour_client' && $request->valeur_recherche != '') {
+                $query->where('id_bon_retour_client', 'LIKE', "%{$request->valeur_recherche}%")
+                      ->selectRaw('id_bon_retour_client, statut_bonRetourClient, nbrColis_bonRetourClient, updated_at');
+            } elseif ($request->selected_option === 'id_commande' && $request->valeur_recherche != '') {
+                $query->join('commandes', 'commandes.id_bon_retour_client', 'bonretourclients.id_bon_retour_client')
+                      ->where('commandes.id_commande', 'LIKE', "%{$request->valeur_recherche}%")
+                      ->selectRaw('bonretourclients.id_bon_retour_client, bonretourclients.statut_bonRetourClient, bonretourclients.nbrColis_bonRetourClient, bonretourclients.updated_at');
+            } else {
+                $query->selectRaw('id_bon_retour_client, statut_bonRetourClient, nbrColis_bonRetourClient, updated_at');
+            }
+
+            $commandes = $query->orderBy('bonretourclients.updated_at', 'desc')->paginate(request('count_nbr'));
+
+            return response()->json(['data' => $commandes]);
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur' . $e
-            ]);
+            return response()->json(['message' => 'Erreur' . $e]);
         }
     }
+
+    /**
+     * Téléchargement du PDF d'un bon de retour depuis S3.
+     */
     public function getBonRetourClient($id)
     {
         try {
-            $user = auth('sanctum')->user();
-            if ($user->role == 'Client' && $user->statut == 'Active') {
-                $commandes = DB::table('bonretourclients')
-                    ->selectRaw('id_bon_retour_client,statut_bonRetourClient,nbrColis_bonRetourClient')
-                    ->where('id_client', $user->id)->where('bonretourclients.id_bon_retour_client', $id)
-                    ->first();
-                $contents = Storage::disk('s3')->download('public/Bons/BonRetourClient/' . $commandes->id_bon_retour_client . '.pdf');
-                return $contents;
+            $user = $this->authUser();
+
+            if (!$this->isAuthorized($user, clientOnly: true)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $bon = DB::table('bonretourclients')
+                ->where('id_client', $user->id)
+                ->where('id_bon_retour_client', $id)
+                ->selectRaw('id_bon_retour_client, statut_bonRetourClient, nbrColis_bonRetourClient')
+                ->first();
+
+            return Storage::disk('s3')->download(
+                'public/Bons/BonRetourClient/' . $bon->id_bon_retour_client . '.pdf'
+            );
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Confirme la réception d'un retour (RETURNEDRR → RETURNED).
+     */
     public function receptionRetour($id)
     {
         try {
-            $user = auth('sanctum')->user();
-            if ($user->role == 'Client' && $user->statut == 'Active') {
-                $commande_client = Commande::where('commandes.id_commande', $id)->where('commandes.id_client', $user->id)->where('commandes.etat_commande', 'RETURNEDRR')->first();
-                $commande_client->etat_commande = 'RETURNED';
-                $statut = $commande_client->save();
+            $user = $this->authUser();
 
-
-                if ($statut) {
-                    $statut = HistoriqueCommande::create([
-                        "id_commande" =>   $commande_client->id_commande,
-                        "etat_commande" => 'RETURNED',
-                        "commentaire_commande" => 'Return received by ' . $user->username,
-                        "id_client" => $user->id,
-                    ]);
-                    if ($statut) {
-                        return response()->json([
-                            'message' => 'Commande RETURNED Successfully'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'message' => 'Erreur'
-                        ]);
-                    }
-                } else {
-                    return response()->json([
-                        'message' => 'Erreur'
-                    ]);
-                }
+            if (!$this->isAuthorized($user, clientOnly: true)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
-        } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
+
+            $commande = Commande::where('id_commande', $id)
+                ->where('id_client', $user->id)
+                ->where('etat_commande', 'RETURNEDRR')
+                ->firstOrFail();
+
+            $commande->etat_commande = 'RETURNED';
+            $saved = $commande->save();
+
+            if (!$saved) {
+                return $this->jsonStatus(false);
+            }
+
+            $historique = HistoriqueCommande::create([
+                'id_commande'          => $commande->id_commande,
+                'etat_commande'        => 'RETURNED',
+                'commentaire_commande' => 'Return received by ' . $user->username,
+                'id_client'            => $user->id,
             ]);
+
+            return $this->jsonStatus((bool) $historique, 'Commande RETURNED Successfully');
+        } catch (Throwable $e) {
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Vérifie si une commande a déjà été relancée.
+     */
     public function verificationRelaunch($id)
     {
         try {
-            $user = auth('sanctum')->user();
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                $statut = HistoriqueCommande::where('historiquecommandes.id_commande', $id)
-                    ->where(function ($query) use ($user) {
-                        $query->where('historiquecommandes.id_client', $user->id)
-                            ->orwhere('historiquecommandes.id_client', $user->superviseur);
-                    })
-                    ->where('historiquecommandes.etat_commande', 'RELANCER')->first();
+            $user = $this->authUser();
 
-                if ($statut) {
-                    return response()->json([
-                        'message' => 'Order already relaunch'
-                    ]);
-                } else {
-                    return response()->json([
-                        'message' => 'Order not relaunched'
-                    ]);
-                }
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
-        } catch (Throwable $e) {
+
+            $exists = HistoriqueCommande::where('id_commande', $id)
+                ->where(fn($q) => $this->scopeClientOrSupervisor(
+                    $q->select('*')->from('historiquecommandes')
+                        ->whereColumn('historiquecommandes.id_commande', 'historiquecommandes.id_commande'),
+                    $user
+                ))
+                ->where('etat_commande', 'RELANCER')
+                ->exists();
+
+            // Note: la logique originale filtre par id_client directement
+            $statut = HistoriqueCommande::where('id_commande', $id)
+                ->where(function ($q) use ($user) {
+                    $q->where('id_client', $user->id)
+                      ->orWhere('id_client', $user->superviseur);
+                })
+                ->where('etat_commande', 'RELANCER')
+                ->first();
+
             return response()->json([
-                'message' => 'Erreur'
+                'message' => $statut ? 'Order already relaunch' : 'Order not relaunched',
             ]);
+        } catch (Throwable $e) {
+            return response()->json(['message' => 'Erreur']);
         }
     }
+
+    /**
+     * Marque un package comme imprimé.
+     */
     public function changeStatusToPrint($id)
     {
-        $user = auth('sanctum')->user();
-        if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-            $Package = Package::join('commandes', 'commandes.id_package', 'packages.id_package')
-                ->where(function ($query) use ($user) {
-                    $query->where('commandes.id_client', $user->id)
-                        ->orwhere('commandes.id_client', $user->superviseur);
-                })
-                ->where('packages.id_package', $id)
-                ->first();
-            $Package->statut_package = 'Printed';
-            $Package->save();
+        $user = $this->authUser();
+
+        if (!$this->isAuthorized($user)) {
+            return;
+        }
+
+        $package = Package::join('commandes', 'commandes.id_package', 'packages.id_package')
+            ->where(fn($q) => $this->scopeClientOrSupervisor($q, $user))
+            ->where('packages.id_package', $id)
+            ->first();
+
+        if ($package) {
+            $package->statut_package = 'Printed';
+            $package->save();
         }
     }
 
+    /**
+     * Mise à jour partielle d'une commande (nom, adresse, téléphone, prix).
+     */
     public function updateCommandeInfo(Request $request)
     {
         $this->validate($request, [
-            "adresse_client_commande" => 'required|string',
-            "nom_client_commande" => 'required|string',
-            "telephone_client_commande" => "required|regex:/(0)[0-9]{9}$/",
-            "prix_commande" => "required|numeric",
+            'adresse_client_commande'   => 'required|string',
+            'nom_client_commande'       => 'required|string',
+            'telephone_client_commande' => 'required|regex:/(0)[0-9]{9}$/',
+            'prix_commande'             => 'required|numeric',
         ]);
-        $user = auth('sanctum')->user();
+
+        $user = $this->authUser();
+
         try {
-            if (($user->role == 'Client' || $user->role == 'EmployeClient')  && $user->statut == 'Active') {
-                $commande = Commande::where(function ($query) use ($user) {
-                    $query->where('commandes.id_client', $user->id)
-                        ->orwhere('commandes.id_client', $user->superviseur);
-                })->whereNotIn('etat_commande', ['DELIVERED', 'CANCEL', 'ANNULER', 'RETURNED', 'RETURNEDEV', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDRR'])->where('id_commande', $request->id_commande)->first();
-                $etat_commande = "COMMENTAIRE";
-                $commentaire_commande = "Changement de destination";
-                if ($request->nom_client_commande != $commande->nom_client_commande) {
-                    $commande->nom_client_commande = $request->nom_client_commande;
-                } else if ($request->prix_commande != $commande->prix_commande) {
-                    $etat_commande = "CHANGERPRIX";
-                    if ($request->prix_commande < 0) {
-                        return response()->json([
-                            'message' => 'Le prix doit etre superieur ou egale 0',
-                        ]);
-                    } else if ($request->prix_commande >= $commande->prix_commande) {
-                        return response()->json([
-                            'message' => 'Le prix doit être inférieur au prix précédent',
-                        ]);
-                    }
-                    if ($commande->etat_commande == 'PROCESSING') {
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
-                        $commande->prix_commande = $request->prix_commande;
-                        $commande->etat_commande = 'PROCESSING';
-                    } else if ($commande->etat_commande == 'PICKUP') {
-
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
-                        $commande->prix_commande = $request->prix_commande;
-                        $commande->etat_commande = 'PICKUP';
-                    } else if ($commande->etat_commande == 'ENROUTE') {
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
-                        $commande->prix_commande = $request->prix_commande;
-                        $commande->etat_commande = 'ENROUTE';
-                    } else {
-                        $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande .  ' à (' . $request->prix_commande . ' Dhs)';
-                        $commande->prix_commande = $request->prix_commande;
-                        $commande->etat_commande = $etat_commande;
-                    }
-
-
-                    $statut = $commande->save();
-                } else if ($request->adresse_client_commande != $commande->adresse_client_commande) {
-                    $commande->adresse_client_commande = $request->adresse_client_commande;
-                } else if ($request->telephone_client_commande != $commande->telephone_client_commande) {
-                    $commande->telephone_client_commande = $request->telephone_client_commande;
-                } else {
-                    return response()->json([
-                        'message' => 'No Change'
-                    ]);
-                }
-
-                $statut = $commande->save();
-                if ($statut) {
-                    HistoriqueCommande::create([
-                        "id_commande" => $commande->id_commande,
-                        "etat_commande" => $etat_commande,
-                        "commentaire_commande" => $commentaire_commande,
-                        "id_client" => $user->id,
-                    ]);
-                    return response()->json([
-                        'message' => 'commande update successfully'
-                    ]);
-                } else {
-                    return response()->json([
-                        'message' => 'Erreur'
-                    ]);
-                }
+            if (!$this->isAuthorized($user)) {
+                return response()->json(['message' => 'Non autorisé'], 403);
             }
+
+            $commande = Commande::where(fn($q) => $this->scopeClientOrSupervisor($q, $user))
+                ->whereNotIn('etat_commande', [
+                    'DELIVERED', 'CANCEL', 'ANNULER', 'RETURNED',
+                    'RETURNEDEV', 'RETURNEDLV', 'RETURNEDAG', 'RETURNEDRR',
+                ])
+                ->where('id_commande', $request->id_commande)
+                ->first();
+
+            $etat_commande        = 'COMMENTAIRE';
+            $commentaire_commande = 'Changement de destination';
+
+            if ($request->nom_client_commande != $commande->nom_client_commande) {
+                $commande->nom_client_commande = $request->nom_client_commande;
+            } elseif ($request->prix_commande != $commande->prix_commande) {
+                if ($request->prix_commande < 0) {
+                    return response()->json(['message' => 'Le prix doit etre superieur ou egale 0']);
+                }
+
+                if ($request->prix_commande >= $commande->prix_commande) {
+                    return response()->json(['message' => 'Le prix doit être inférieur au prix précédent']);
+                }
+
+                $etat_commande        = 'CHANGERPRIX';
+                $commentaire_commande = 'Changement de prix de ' . $commande->prix_commande . ' à (' . $request->prix_commande . ' Dhs)';
+                $commande->prix_commande = $request->prix_commande;
+
+                // Conserver l'état actuel si en cours de traitement/livraison
+                if (!in_array($commande->etat_commande, ['PROCESSING', 'PICKUP', 'ENROUTE'])) {
+                    $commande->etat_commande = $etat_commande;
+                }
+            } elseif ($request->adresse_client_commande != $commande->adresse_client_commande) {
+                $commande->adresse_client_commande = $request->adresse_client_commande;
+            } elseif ($request->telephone_client_commande != $commande->telephone_client_commande) {
+                $commande->telephone_client_commande = $request->telephone_client_commande;
+            } else {
+                return response()->json(['message' => 'No Change']);
+            }
+
+            $statut = $commande->save();
+
+            if ($statut) {
+                HistoriqueCommande::create([
+                    'id_commande'          => $commande->id_commande,
+                    'etat_commande'        => $etat_commande,
+                    'commentaire_commande' => $commentaire_commande,
+                    'id_client'            => $user->id,
+                ]);
+
+                return response()->json(['message' => 'commande update successfully']);
+            }
+
+            return response()->json(['message' => 'Erreur']);
         } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Erreur'
-            ]);
+            return response()->json(['message' => 'Erreur']);
         }
     }
 }
